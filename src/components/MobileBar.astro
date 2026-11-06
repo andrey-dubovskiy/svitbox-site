@@ -1,0 +1,22 @@
+---
+// Sticky sign-up bar on phones.
+import { site } from '../data/site';
+---
+<div class="mbar">
+  <a class="btn" href="#signup"><span>Записатись</span></a>
+  <a class="msg" href={site.messengers.telegram} aria-label="Telegram">TG</a>
+  <a class="msg" href={site.messengers.viber} aria-label="Viber">VB</a>
+</div>
+
+<style is:global>
+  .mbar { display: none; }
+  @media (max-width: 980px) {
+    .mbar {
+      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; gap: 8px;
+      padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+      background: rgba(5,5,5,.94); border-top: 1px solid var(--line);
+    }
+    .mbar .btn { flex: 1; height: 50px; justify-content: center; padding: 0 16px; }
+    .mbar .msg { height: 50px; width: 50px; display: grid; place-items: center; border: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  }
+</style>

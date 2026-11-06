@@ -1,0 +1,44 @@
+---
+// Round 06: reviews (placeholders until real ones are collected).
+import RoundLabel from './RoundLabel.astro';
+import { reviews, rating } from '../data/content';
+import { isTodo } from '../lib/util';
+---
+<section class="blk" id="reviews">
+  <div class="wrap">
+    <RoundLabel n="Раунд 06" label="Відгуки" />
+    <h2 class="h2 reviews-title" data-punch>Що кажуть у залі</h2>
+    <div class="reviews">
+      {reviews.map((r) => (
+        <figure class="review">
+          <span class="q" aria-hidden="true">“</span>
+          <blockquote class:list={[{ todo: isTodo(r.text) }]}>{r.text}</blockquote>
+          <figcaption>
+            <span class="av" aria-hidden="true"></span>
+            <span class:list={[{ todo: isTodo(r.name) }]}>{r.name}<small>{r.who}</small></span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="rating mono">
+      <span class:list={[{ todo: isTodo(rating) }]}>{rating}</span>
+      <a class="link" href="#">Усі відгуки</a>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .reviews-title { margin-bottom: clamp(32px, 4vw, 56px); }
+  .reviews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .review { margin: 0; border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .review .q { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 72px; line-height: .6; color: var(--red); height: 32px; }
+  .review blockquote { margin: 0; font-family: var(--serif); font-size: 20px; line-height: 1.45; flex: 1; }
+  .review figcaption { display: flex; gap: 14px; align-items: center; }
+  .review .av { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; background: var(--surface); border: 1px dashed var(--muted); }
+  .review figcaption > span:last-child { display: flex; flex-direction: column; font-size: 15px; }
+  .review figcaption small { color: var(--muted); font-size: 13px; }
+  .review figcaption .todo small { color: var(--todo); }
+  .rating { display: flex; gap: 16px; align-items: baseline; margin-top: 28px; }
+  .rating .link { height: auto; }
+  @media (max-width: 980px) { .reviews { grid-template-columns: minmax(0, 1fr); } }
+</style>

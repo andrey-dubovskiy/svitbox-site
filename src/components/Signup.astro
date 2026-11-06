@@ -1,0 +1,158 @@
+---
+// Round 08: sign-up form.
+// NOTE: the form validates and shows a confirmation, but does not send data anywhere yet.
+// Connect it to Telegram bot / email / CRM in the submit handler below.
+import RoundLabel from './RoundLabel.astro';
+import { programs } from '../data/content';
+import { site } from '../data/site';
+---
+<section class="blk" id="signup">
+  <div class="wrap signup">
+    <div>
+      <RoundLabel n="Раунд 08" label="Запис" />
+      <h2 class="h2" data-punch>Перший раунд за тобою</h2>
+      <div class="clock">
+        <svg viewBox="0 0 112 112" aria-hidden="true">
+          <circle cx="56" cy="56" r="50" fill="none" stroke="rgba(244,244,242,.16)" stroke-width="2"></circle>
+          <circle id="arc" cx="56" cy="56" r="50" fill="none" stroke="#ff2936" stroke-width="4" stroke-dasharray="314.16" stroke-dashoffset="0" transform="rotate(-90 56 56)"></circle>
+        </svg>
+        <div>
+          <div class="time" id="time" aria-hidden="true">3:00</div>
+          <p>Раунд у боксі триває три хвилини. Заявка займе менше.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <form id="form" novalidate>
+        <div class="field" id="fName">
+          <label for="name">Ім’я</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="Як до вас звертатись" />
+          <span class="msg" id="nameMsg"></span>
+        </div>
+        <div class="field" id="fPhone">
+          <label for="tel">Телефон</label>
+          <input id="tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+38 (0__) ___ __ __" />
+          <span class="msg" id="telMsg"></span>
+        </div>
+        <fieldset class="field">
+          <legend>Програма</legend>
+          <div class="chips">
+            {programs.map((p, i) => (
+              <label class="chip"><input type="radio" name="prog" id={`p-${p.id}`} value={p.id} checked={i === 0} /><span>{p.chip}</span></label>
+            ))}
+          </div>
+        </fieldset>
+        <div class="form-end">
+          <button class="btn" type="submit"><span>Записатись</span><span class="arr">→</span></button>
+          <p class="consent">Надсилаючи форму, ви погоджуєтесь на обробку персональних даних. Ми передзвонимо і підберемо групу.</p>
+        </div>
+      </form>
+      <div class="done" id="done" hidden>
+        <span class="bell">Дзінь!</span>
+        <p id="doneText">Заявку прийнято.</p>
+        <p class="muted done-note">Якщо хочеться швидше, телефонуйте: <span class="phone">{site.phone.display}</span></p>
+        <button class="link" type="button" id="again">Нова заявка</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .signup { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); align-items: start; }
+  .clock { display: flex; gap: 22px; align-items: center; margin-top: 36px; }
+  .clock svg { width: 112px; height: 112px; flex-shrink: 0; }
+  .clock .time { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .clock p { margin: 6px 0 0; color: var(--muted); font-size: 15px; max-width: 30ch; }
+  #form { display: flex; flex-direction: column; gap: 28px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label, .field legend { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .field input { font-family: var(--sans); font-size: 22px; color: var(--fg); background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 10px 0; outline: none; border-radius: 0; transition: border-color .2s; }
+  .field input::placeholder { color: #5f5f5b; }
+  .field input:focus { border-bottom-color: var(--fg); }
+  .field.err input { border-bottom-color: var(--red); }
+  .field .msg { font-family: var(--mono); font-size: 12px; color: var(--red); min-height: 16px; }
+  fieldset { border: 0; margin: 0; padding: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip span { display: inline-flex; align-items: center; height: 46px; padding: 0 18px; border: 1px solid var(--line); font-size: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
+  .chip span:hover { border-color: var(--fg); }
+  .chip input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .chip input:focus-visible + span { outline: 2px solid var(--red); outline-offset: 3px; }
+  .form-end { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .consent { font-size: 13px; color: var(--muted); margin: 0; }
+  .done { border: 1px solid var(--line); padding: 36px; display: flex; flex-direction: column; gap: 14px; }
+  .done .bell { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 88px; line-height: .9; color: var(--red); text-transform: uppercase; }
+  .done p { margin: 0; font-size: 18px; }
+  .done .done-note { font-size: 15px; }
+  .done .link { align-self: flex-start; height: auto; padding-bottom: 2px; }
+  @media (max-width: 980px) { .signup { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) {
+    .clock .time { font-size: 48px; }
+    .clock svg { width: 84px; height: 84px; }
+  }
+</style>
+
+<script>
+  import { reduce } from '../scripts/motion';
+
+  // Round clock: 3:00 counting down, looping
+  const timeEl = document.getElementById('time')!, arc = document.getElementById('arc')!;
+  const C = 314.16, start = performance.now();
+  function clock(t: number) {
+    const el = ((t - start) / 1000) % 180, left = 180 - el;
+    timeEl.textContent = Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0');
+    arc.setAttribute('stroke-dashoffset', (C * el / 180).toFixed(2));
+    requestAnimationFrame(clock);
+  }
+  if (!reduce) requestAnimationFrame(clock);
+
+  // Form
+  const form = document.getElementById('form') as HTMLFormElement;
+  const done = document.getElementById('done')!;
+  const nameI = document.getElementById('name') as HTMLInputElement;
+  const telI = document.getElementById('tel') as HTMLInputElement;
+
+  // Format as +38 (0XX) XXX XX XX while typing
+  telI.addEventListener('input', () => {
+    let d = telI.value.replace(/\D/g, '');
+    if (d.startsWith('38')) d = d.slice(2);
+    d = d.slice(0, 10);
+    let out = '+38';
+    if (d.length) out += ' (' + d.slice(0, 3);
+    if (d.length >= 3) out += ')';
+    if (d.length > 3) out += ' ' + d.slice(3, 6);
+    if (d.length > 6) out += ' ' + d.slice(6, 8);
+    if (d.length > 8) out += ' ' + d.slice(8, 10);
+    telI.value = out;
+  });
+
+  function setErr(fieldId: string, msgId: string, text = '') {
+    document.getElementById(fieldId)!.classList.toggle('err', !!text);
+    document.getElementById(msgId)!.textContent = text;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameI.value.trim(), digits = telI.value.replace(/\D/g, '');
+    let ok = true;
+    if (name.length < 2) { setErr('fName', 'nameMsg', 'Вкажіть ім’я, щоб тренер знав, як звертатись'); ok = false; } else setErr('fName', 'nameMsg');
+    if (digits.length !== 12) { setErr('fPhone', 'telMsg', 'Потрібен номер з 10 цифр, наприклад 073 721 71 71'); ok = false; } else setErr('fPhone', 'telMsg');
+    if (!ok) return;
+
+    const prog = form.querySelector('input[name=prog]:checked + span')!.textContent;
+    // TODO: send { name, phone: telI.value, program } to the club (Telegram bot, email or CRM)
+
+    document.getElementById('doneText')!.textContent = `${name}, заявку прийнято: «${prog}». Ми передзвонимо на ${telI.value}.`;
+    form.hidden = true; done.hidden = false;
+    if (!reduce) done.querySelector('.bell')!.animate([
+      { transform: 'rotate(-8deg) scale(.6)', opacity: 0 },
+      { transform: 'rotate(4deg) scale(1.08)', opacity: 1, offset: .6 },
+      { transform: 'none', opacity: 1 },
+    ], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  });
+
+  document.getElementById('again')!.addEventListener('click', () => {
+    form.reset(); done.hidden = true; form.hidden = false; nameI.focus();
+  });
+</script>

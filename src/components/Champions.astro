@@ -1,0 +1,58 @@
+---
+// Round 04: champions raised in the club, with a "tale of the tape" for each.
+import RoundLabel from './RoundLabel.astro';
+import { champions } from '../data/content';
+import { asset, isTodo } from '../lib/util';
+---
+<section class="blk" id="champions">
+  <div class="wrap">
+    <RoundLabel n="Раунд 04" label="Чемпіони клубу" />
+    <div class="champ-head">
+      <h2 class="h2" data-punch>Чемпіони світу виросли тут</h2>
+      <p>Вихованці клубу неодноразово ставали чемпіонами світу серед професіоналів і привозили нагороди з міських, обласних, всеукраїнських і міжнародних турнірів.</p>
+    </div>
+    <div class="champs">
+      {champions.map((c) => (
+        <article class="champ reveal-parent">
+          <div class="ph photo"><img src={asset(c.img)} alt={c.alt} loading="lazy" style={`object-position:${c.pos}`} /></div>
+          <div class="t">
+            <span class:list={['mono', 'belt', { todo: isTodo(c.belt) }]}>
+              {c.belt}{c.beltNote && <> <span class="todo">{c.beltNote}</span></>}
+            </span>
+            <h3 class:list={[{ todo: isTodo(c.name) }]}>{c.name}</h3>
+            <p class:list={[{ todo: isTodo(c.meta) }]}>{c.meta}</p>
+            <dl class="tape">
+              {c.tape.map(([k, v]) => (
+                <div><dt>{k}</dt><dd class:list={[{ todo: isTodo(v) }]}>{v}</dd></div>
+              ))}
+            </dl>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .champ-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: clamp(32px, 4vw, 56px); }
+  .champ-head p { margin: 0; max-width: 40ch; color: var(--muted); }
+  .champs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .champ { background: var(--bg); display: flex; flex-direction: column; min-width: 0; }
+  .champ .ph { aspect-ratio: 3/4; border: 0; border-bottom: 1px solid var(--line); }
+  .champ .t { padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 8px; }
+  .champ .belt { color: var(--red); }
+  .champ .belt.todo { color: var(--todo); }
+  .champ h3 { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(28px, 2.6vw, 40px); line-height: .92; text-transform: uppercase; }
+  .champ p { margin: 0; font-size: 14px; color: var(--muted); }
+  .champ p.todo { color: var(--todo); }
+
+  /* Tale of the tape, as on a fight poster */
+  .tape { margin: 10px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .tape div { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; min-width: 0; }
+  .tape div:nth-child(odd) { padding-right: 10px; border-right: 1px solid var(--line); }
+  .tape div:nth-child(even) { padding-left: 10px; }
+  .tape dt { color: var(--muted); }
+  .tape dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 980px) { .champs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

@@ -1,0 +1,71 @@
+---
+// Round 03: head coach and the rest of the coaching team.
+import RoundLabel from './RoundLabel.astro';
+import { headCoach, coaches } from '../data/content';
+import { asset, isTodo } from '../lib/util';
+const firstName = headCoach.name[0];
+---
+<section class="blk" id="coach">
+  <div class="wrap">
+    <RoundLabel n="Раунд 03" label="Тренерський склад" />
+    <div class="coach">
+      <div class="coach-ph ph photo">
+        <img src={asset(headCoach.img)} alt={`${headCoach.name.join(' ')}, засновник і головний тренер клубу «Світ Боксу»`} loading="lazy" />
+        <span class="tag mono">Головний тренер</span>
+      </div>
+      <div class="coach-info">
+        <span class="mono muted">{headCoach.role}</span>
+        <h2 class="coach-name" data-punch>{headCoach.name[0]}<br />{headCoach.name[1]}</h2>
+        <p class="coach-bio">{headCoach.bio}</p>
+        <ul class="creds">
+          {headCoach.creds.map((c) => (
+            <li><b>{c.big}{c.plus && <sup>+</sup>}</b><span>{c.label}</span></li>
+          ))}
+        </ul>
+        <div><a class="btn" href="#signup"><span>Тренуватись з {firstName}ом</span><span class="arr">→</span></a></div>
+      </div>
+    </div>
+
+    <div class="coach-more">
+      {coaches.map((c) => (
+        <article>
+          <div class="ph"><span class="cap">{c.photoBrief}</span></div>
+          <span class="mono muted">Тренер · <span class:list={[{ todo: isTodo(c.area) }]}>{c.area}</span></span>
+          <h3 class:list={[{ todo: isTodo(c.name) }]}>{c.name}</h3>
+          <p class:list={[{ todo: isTodo(c.text) }]}>{c.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .coach { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: stretch; }
+  .coach-ph { min-height: 560px; aspect-ratio: 4/5; max-height: 760px; }
+  .coach-ph img { object-position: 58% 30%; filter: grayscale(1) contrast(1.1) brightness(.92); }
+  .coach-ph:hover img { filter: grayscale(0) contrast(1.05) brightness(1); }
+  .coach-ph .tag { position: absolute; left: 14px; bottom: 14px; z-index: 1; background: var(--red); color: #fff; padding: 6px 10px; }
+  .coach-info { display: flex; flex-direction: column; gap: 28px; min-width: 0; justify-content: center; }
+  .coach-name { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(64px, 8.5vw, 140px); line-height: .86; text-transform: uppercase; }
+  .coach-bio { font-family: var(--serif); font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; margin: 0; max-width: 36em; }
+  .creds { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .creds li { border-bottom: 1px solid var(--line); padding: 18px 18px 18px 0; display: flex; flex-direction: column; gap: 6px; }
+  .creds li:nth-child(odd) { border-right: 1px solid var(--line); }
+  .creds li:nth-child(even) { padding-left: 18px; }
+  .creds b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(34px, 3.4vw, 52px); line-height: .9; text-transform: uppercase; }
+  .creds b sup { color: var(--red); font-size: .5em; vertical-align: top; }
+  .creds span { font-size: 14px; color: var(--muted); }
+
+  .coach-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: clamp(40px, 5vw, 72px); }
+  .coach-more article { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .coach-more .ph { aspect-ratio: 4/5; }
+  .coach-more h3 { font-family: var(--display); font-style: italic; font-weight: 800; font-size: 34px; line-height: .95; text-transform: uppercase; }
+  .coach-more p { margin: 0; color: var(--muted); font-size: 15px; }
+  .coach-more p.todo { color: var(--todo); }
+
+  @media (max-width: 980px) {
+    .coach { grid-template-columns: minmax(0, 1fr); }
+    .coach-ph { min-height: 0; max-height: none; }
+    .coach-more { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

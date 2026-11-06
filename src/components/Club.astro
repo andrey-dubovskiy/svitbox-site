@@ -1,0 +1,61 @@
+---
+// Round 02: the club in numbers.
+import RoundLabel from './RoundLabel.astro';
+import { clubStats } from '../data/content';
+import { asset } from '../lib/util';
+---
+<section class="blk" id="club">
+  <div class="wrap">
+    <RoundLabel n="Раунд 02" label="Клуб" />
+    <div class="club">
+      <div>
+        <h2 class="h2" data-punch>Один з найсильніших залів Броварів</h2>
+        <div class="club-ph ph photo reveal"><img src={asset('img/club.jpg')} alt="Ринг у боксерському залі" loading="lazy" /></div>
+      </div>
+      <div class="club-side">
+        <p class="lead">Індивідуальні програми, графік тренувань і харчування під кожного. <em>Від першого заняття до рингу на міжнародному турнірі.</em></p>
+        <div class="stats">
+          {clubStats.map((s) => (
+            <div class="stat">
+              {s.plus
+                ? <span class="v"><span data-to={s.value}>{s.value}</span><sup>+</sup></span>
+                : <span class="v" data-to={s.value}>{s.value}</span>}
+              <span class="l">{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .club { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .club-side { display: flex; flex-direction: column; gap: 40px; min-width: 0; }
+  .lead { font-family: var(--serif); font-size: clamp(24px, 2.5vw, 36px); line-height: 1.3; margin: 0; }
+  .lead em { color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .stat { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px 22px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .stat .v { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(56px, 6vw, 92px); line-height: .9; font-variant-numeric: tabular-nums; }
+  .stat .v sup { font-size: .45em; color: var(--red); vertical-align: top; position: relative; top: .15em; }
+  .stat .l { font-size: 15px; color: var(--muted); }
+  .club-ph { margin-top: 28px; aspect-ratio: 16/9; }
+  @media (max-width: 980px) { .club { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .stats { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<script>
+  import { reduce, countTo } from '../scripts/motion';
+  // Numbers count up when they scroll into view (they show final values at rest)
+  if (!reduce) {
+    const io = new IntersectionObserver((es) => es.forEach((en) => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const el = en.target as HTMLElement, to = +el.dataset.to!;
+      countTo(el, to > 1000 ? to - 40 : 0, to, 1300);
+    }), { threshold: .6 });
+    document.querySelectorAll<HTMLElement>('#club [data-to]').forEach((c) => {
+      if (c.getBoundingClientRect().top > innerHeight) io.observe(c);
+    });
+  }
+</script>

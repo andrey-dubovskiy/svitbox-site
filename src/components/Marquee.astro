@@ -1,0 +1,38 @@
+---
+// Running line of boxing values. Speeds up while the page scrolls.
+import { marquee } from '../data/content';
+const items = [...marquee, ...marquee];
+---
+<div class="marquee" aria-hidden="true">
+  <div class="track" id="track">
+    {items.map((w, i) => <span class:list={[{ out: i % 2 === 1 }]}>{w}</span>)}
+  </div>
+</div>
+
+<style is:global>
+  .marquee { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 18px; background: var(--bg); }
+  .track { display: flex; width: max-content; animation: run 38s linear infinite; }
+  .track span {
+    font-family: var(--display); font-style: italic; font-weight: 800;
+    font-size: clamp(34px, 4.6vw, 64px); line-height: 1; text-transform: uppercase;
+    padding-right: 42px; white-space: nowrap; display: inline-flex; align-items: center; gap: 42px;
+  }
+  .track span::after { content: ""; width: .28em; height: .28em; background: var(--red); display: inline-block; }
+  .track .out { color: transparent; -webkit-text-stroke: 1px var(--fg); }
+  @keyframes run { to { transform: translateX(-50%); } }
+</style>
+
+<script>
+  import { reduce } from '../scripts/motion';
+  const track = document.getElementById('track')!;
+  if (!reduce && track.getAnimations) {
+    let last = scrollY, boost = 0;
+    addEventListener('scroll', () => { boost = Math.min(6, boost + Math.abs(scrollY - last) / 40); last = scrollY; }, { passive: true });
+    (function tick() {
+      boost *= .92;
+      const a = track.getAnimations()[0];
+      if (a) a.playbackRate = 1 + boost;
+      requestAnimationFrame(tick);
+    })();
+  }
+</script>

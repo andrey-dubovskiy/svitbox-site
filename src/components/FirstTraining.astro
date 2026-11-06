@@ -1,0 +1,51 @@
+---
+// Round 07: how the first training works, plus FAQ.
+import RoundLabel from './RoundLabel.astro';
+import { steps, faq } from '../data/content';
+import { isTodo } from '../lib/util';
+---
+<section class="blk" id="first">
+  <div class="wrap first">
+    <div>
+      <RoundLabel n="Раунд 07" label="Перше тренування" />
+      <h2 class="h2" data-punch>Як почати</h2>
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li>
+            <span class="k">{i + 1}</span>
+            <div><b>{s.title}</b><p class:list={[{ todo: isTodo(s.text) }]}>{s.text}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <div>
+      <RoundLabel n="FAQ" label="Часті питання" />
+      <div class="faq">
+        {faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p class:list={[{ todo: isTodo(f.a) }]}>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .first { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); align-items: start; }
+  .steps { list-style: none; margin: 32px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .steps li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .steps .k { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 44px; line-height: .9; color: var(--red); }
+  .steps b { display: block; font-size: 19px; font-weight: 600; margin-bottom: 4px; }
+  .steps p { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps p.todo, .faq details p.todo { color: var(--todo); }
+  .faq { border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 22px 0; font-size: 19px; font-weight: 500; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-family: var(--mono); font-size: 24px; transition: transform .3s; flex-shrink: 0; }
+  .faq details[open] summary::after { transform: rotate(45deg); color: var(--red); }
+  .faq details p { margin: 0 0 22px; color: var(--muted); max-width: 60ch; }
+  @media (max-width: 980px) { .first { grid-template-columns: minmax(0, 1fr); } }
+</style>

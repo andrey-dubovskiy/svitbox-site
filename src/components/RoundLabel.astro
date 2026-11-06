@@ -1,0 +1,8 @@
+---
+// Section label: "Раунд 01 · Програми". The scoreboard reads these to know the current round.
+interface Props { n: string; label: string; flush?: boolean; }
+const { n, label, flush = false } = Astro.props;
+---
+<div class="round mono" style={flush ? 'margin-bottom:0' : undefined}>
+  <span class="n">{n}</span><span class="muted">{label}</span>
+</div>

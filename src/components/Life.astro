@@ -1,0 +1,33 @@
+---
+// Round 05: club life outside the gym.
+import RoundLabel from './RoundLabel.astro';
+import { life } from '../data/content';
+import { asset } from '../lib/util';
+---
+<section class="blk" id="life">
+  <div class="wrap">
+    <RoundLabel n="Раунд 05" label="Більше, ніж зал" />
+    <div class="life">
+      {life.map((l) => (
+        <article class="reveal-parent">
+          <div class="ph photo"><img src={asset(l.img)} alt={l.alt} loading="lazy" /></div>
+          <div class="t"><h3>{l.title}</h3><p>{l.text}</p></div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .life { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .life article { background: var(--bg); display: flex; flex-direction: column; min-width: 0; }
+  .life .ph { aspect-ratio: 3/4; border: 0; border-bottom: 1px solid var(--line); }
+  .life .t { padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 6px; }
+  .life h3 { font-family: var(--display); font-style: italic; font-weight: 800; font-size: 30px; line-height: .95; text-transform: uppercase; }
+  .life p { margin: 0; font-size: 14px; color: var(--muted); }
+  @media (max-width: 980px) {
+    .life { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .life article:last-child { grid-column: 1 / -1; }
+    .life article:last-child .ph { aspect-ratio: 16/9; }
+  }
+</style>

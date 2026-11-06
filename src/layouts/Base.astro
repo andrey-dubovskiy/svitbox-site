@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+import { asset } from '../lib/util';
+
+interface Props { title?: string; description?: string; }
+const {
+  title = 'Світ Боксу — бокс у Броварах',
+  description = 'Боксерський клуб «Світ Боксу» у Броварах з 2012 року. Групи для дітей, дівчат і чоловіків, індивідуальні тренування. Запис на тренування.',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#050505" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={asset('img/hero.jpg')} />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:ital,wght@1,800;1,900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Lora:ital,wght@0,400;1,400&display=swap" />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/headlines';
+    </script>
+  </body>
+</html>
