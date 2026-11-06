@@ -98,7 +98,8 @@ const letters = [...site.name];
   .sf-tbar { height: 3px; background: var(--surface); position: relative; }
   .sf-tbar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--red); }
 
-  .sf-word { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 23.5vw; line-height: .84; text-transform: uppercase; white-space: nowrap; text-align: center; height: .7em; overflow: hidden; letter-spacing: -.02em; user-select: none; margin-top: 8px; cursor: default; }
+  .sf-word { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 19vw;
+    padding-inline: max(var(--gx), 4vw); line-height: .84; text-transform: uppercase; white-space: nowrap; text-align: center; height: .7em; overflow: hidden; letter-spacing: -.02em; user-select: none; margin-top: 8px; cursor: default; }
   .sf-word .l { display: inline-block; will-change: transform; transition: color .3s; }
   .sf-word .l.hit { color: var(--red); }
   .sf-word .gap { display: inline-block; width: .18em; }
@@ -117,6 +118,20 @@ const letters = [...site.name];
   import { thud } from '../scripts/sound';
 
   const foot = document.querySelector<HTMLElement>('footer.sf')!;
+  const word = document.getElementById('sfWord')!;
+
+  // Size the giant name to fill the width between the side margins exactly
+  function fitWord() {
+    word.style.fontSize = '100px';
+    const cs = getComputedStyle(word);
+    const avail = word.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const range = document.createRange(); range.selectNodeContents(word);
+    const textW = range.getBoundingClientRect().width;
+    if (textW > 0) word.style.fontSize = (100 * avail / textW * .985).toFixed(2) + 'px';
+  }
+  fitWord();
+  document.fonts?.ready.then(fitWord);
+  addEventListener('resize', fitWord);
   const board = document.getElementById('board');
   const letters = [...document.querySelectorAll<HTMLElement>('#sfWord .l')].map((el) => ({ el, y: 0, r: 0, ty: 0, tr: 0 }));
   let visible = false, cursorX: number | null = null;
