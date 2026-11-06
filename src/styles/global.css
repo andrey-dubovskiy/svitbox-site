@@ -116,7 +116,31 @@ section.blk { border-bottom: 1px solid var(--line); padding-block: clamp(64px, 9
 
 @media (max-width: 980px) {
   body { padding-bottom: 76px; }
+
+  /* Rows of cards become a swipeable rail on phones and tablets */
+  .m-rail {
+    display: flex !important;
+    gap: 12px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    background: none !important;
+    border: 0 !important;
+    margin-inline: calc(-1 * max(var(--gx), 4vw));
+    padding-inline: max(var(--gx), 4vw);
+    scroll-padding-inline: max(var(--gx), 4vw);
+  }
+  .m-rail::-webkit-scrollbar { display: none; }
+  .m-rail > * { flex: 0 0 min(82%, 340px); scroll-snap-align: start; border: 1px solid var(--line); }
+  .rail-hint { display: flex !important; }
 }
+.rail-hint {
+  display: none; justify-content: space-between; align-items: center;
+  margin-top: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.rail-hint b { color: var(--fg); font-weight: 500; }
 @media (max-width: 560px) {
   .phone { font-size: 12px; }
 }

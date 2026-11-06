@@ -1,6 +1,7 @@
 ---
 // Round 06: reviews (placeholders until real ones are collected).
 import RoundLabel from './RoundLabel.astro';
+import RailHint from './RailHint.astro';
 import { reviews, rating } from '../data/content';
 import { isTodo } from '../lib/util';
 ---
@@ -8,7 +9,7 @@ import { isTodo } from '../lib/util';
   <div class="wrap">
     <RoundLabel n="Раунд 06" label="Відгуки" />
     <h2 class="h2 reviews-title" data-punch>Що кажуть у залі</h2>
-    <div class="reviews">
+    <div class="reviews m-rail">
       {reviews.map((r) => (
         <figure class="review">
           <span class="q" aria-hidden="true">“</span>
@@ -20,6 +21,7 @@ import { isTodo } from '../lib/util';
         </figure>
       ))}
     </div>
+    <RailHint total={reviews.length} />
     <div class="rating mono">
       <span class:list={[{ todo: isTodo(rating) }]}>{rating}</span>
       <a class="link" href="#">Усі відгуки</a>
@@ -40,5 +42,9 @@ import { isTodo } from '../lib/util';
   .review figcaption .todo small { color: var(--todo); }
   .rating { display: flex; gap: 16px; align-items: baseline; margin-top: 28px; }
   .rating .link { height: auto; }
-  @media (max-width: 980px) { .reviews { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 980px) {
+    .review { padding: 22px; }
+    .review blockquote { font-size: 18px; }
+    .rating { flex-wrap: wrap; }
+  }
 </style>

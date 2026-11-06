@@ -1,6 +1,7 @@
 ---
 // Round 03: head coach and the rest of the coaching team.
 import RoundLabel from './RoundLabel.astro';
+import RailHint from './RailHint.astro';
 import { headCoach, coaches } from '../data/content';
 import { asset, isTodo } from '../lib/util';
 const firstName = headCoach.name[0];
@@ -26,7 +27,7 @@ const firstName = headCoach.name[0];
       </div>
     </div>
 
-    <div class="coach-more">
+    <div class="coach-more m-rail">
       {coaches.map((c) => (
         <article>
           <div class="ph"><span class="cap">{c.photoBrief}</span></div>
@@ -36,6 +37,7 @@ const firstName = headCoach.name[0];
         </article>
       ))}
     </div>
+    <RailHint total={coaches.length} />
   </div>
 </section>
 
@@ -65,7 +67,11 @@ const firstName = headCoach.name[0];
 
   @media (max-width: 980px) {
     .coach { grid-template-columns: minmax(0, 1fr); }
-    .coach-ph { min-height: 0; max-height: none; }
-    .coach-more { grid-template-columns: minmax(0, 1fr); }
+    .coach-ph { min-height: 0; max-height: 70vh; width: 100%; }
+    .coach-more > article { border: 0 !important; }
+    .coach-more .ph { aspect-ratio: 4/4.4; }
+    .coach-info { gap: 22px; }
+    .creds b { font-size: 34px; }
+    .coach-info .btn { width: 100%; justify-content: space-between; }
   }
 </style>

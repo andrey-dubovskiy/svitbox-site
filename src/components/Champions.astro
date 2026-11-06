@@ -1,6 +1,7 @@
 ---
 // Round 04: champions raised in the club, with a "tale of the tape" for each.
 import RoundLabel from './RoundLabel.astro';
+import RailHint from './RailHint.astro';
 import { champions } from '../data/content';
 import { asset, isTodo } from '../lib/util';
 ---
@@ -11,7 +12,7 @@ import { asset, isTodo } from '../lib/util';
       <h2 class="h2" data-punch>Чемпіони світу виросли тут</h2>
       <p>Вихованці клубу неодноразово ставали чемпіонами світу серед професіоналів і привозили нагороди з міських, обласних, всеукраїнських і міжнародних турнірів.</p>
     </div>
-    <div class="champs">
+    <div class="champs m-rail">
       {champions.map((c) => (
         <article class="champ reveal-parent">
           <div class="ph photo"><img src={asset(c.img)} alt={c.alt} loading="lazy" style={`object-position:${c.pos}`} /></div>
@@ -30,6 +31,7 @@ import { asset, isTodo } from '../lib/util';
         </article>
       ))}
     </div>
+    <RailHint total={champions.length} />
   </div>
 </section>
 
@@ -54,5 +56,8 @@ import { asset, isTodo } from '../lib/util';
   .tape dt { color: var(--muted); }
   .tape dd { margin: 0; font-variant-numeric: tabular-nums; }
 
-  @media (max-width: 980px) { .champs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 980px) {
+    .champ-head p { font-size: 15px; }
+    .champ .ph { aspect-ratio: 4/4.6; }
+  }
 </style>

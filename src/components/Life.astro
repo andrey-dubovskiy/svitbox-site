@@ -1,13 +1,14 @@
 ---
 // Round 05: club life outside the gym.
 import RoundLabel from './RoundLabel.astro';
+import RailHint from './RailHint.astro';
 import { life } from '../data/content';
 import { asset } from '../lib/util';
 ---
 <section class="blk" id="life">
   <div class="wrap">
     <RoundLabel n="Раунд 05" label="Більше, ніж зал" />
-    <div class="life">
+    <div class="life m-rail">
       {life.map((l) => (
         <article class="reveal-parent">
           <div class="ph photo"><img src={asset(l.img)} alt={l.alt} loading="lazy" /></div>
@@ -15,6 +16,7 @@ import { asset } from '../lib/util';
         </article>
       ))}
     </div>
+    <RailHint total={life.length} />
   </div>
 </section>
 
@@ -26,8 +28,6 @@ import { asset } from '../lib/util';
   .life h3 { font-family: var(--display); font-style: italic; font-weight: 800; font-size: 30px; line-height: .95; text-transform: uppercase; }
   .life p { margin: 0; font-size: 14px; color: var(--muted); }
   @media (max-width: 980px) {
-    .life { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .life article:last-child { grid-column: 1 / -1; }
-    .life article:last-child .ph { aspect-ratio: 16/9; }
+    .life > article { flex-basis: min(72%, 300px) !important; }
   }
 </style>

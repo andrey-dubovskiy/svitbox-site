@@ -20,7 +20,9 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={asset('img/hero.jpg')} />
-    <meta name="robots" content="noindex" />
+    <!-- Draft: keep out of search engines. Remove both lines and public/robots.txt at launch. -->
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="googlebot" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

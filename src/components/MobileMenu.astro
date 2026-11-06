@@ -1,0 +1,62 @@
+---
+// Full-screen menu for phones and tablets, opened from the "Меню" button in the header.
+import { site, mainNav, pages } from '../data/site';
+---
+<div class="mmenu" id="mmenu" hidden role="dialog" aria-modal="true" aria-label="Меню">
+  <div class="mmenu-top wrap">
+    <span class="brand">СВІТ БОКСУ <b>©</b>2012</span>
+    <button type="button" class="mmenu-close mono" id="mmenuClose">Закрити <span aria-hidden="true">✕</span></button>
+  </div>
+  <nav class="mmenu-nav wrap" aria-label="Меню сайту">
+    {mainNav.filter((n) => n.href !== '#signup').map((n, i) => (
+      <a href={n.href}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+    ))}
+  </nav>
+  <div class="mmenu-pages wrap mono">
+    {pages.map((p) => <a href={p.href}>{p.label} →</a>)}
+  </div>
+  <div class="mmenu-bottom wrap">
+    <a class="btn" href="#signup"><span>Записатись на тренування</span><span class="arr">→</span></a>
+    <a class="mmenu-phone" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
+  </div>
+</div>
+
+<style is:global>
+  .mmenu {
+    position: fixed; inset: 0; z-index: 60; background: var(--bg);
+    display: flex; flex-direction: column; overflow-y: auto;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  .mmenu-top { display: flex; justify-content: space-between; align-items: center; padding-block: 18px; border-bottom: 1px solid var(--line); }
+  .mmenu-close { background: none; border: 1px solid var(--line); color: var(--fg); height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+  .mmenu-nav { display: flex; flex-direction: column; padding-block: 12px; }
+  .mmenu-nav a {
+    display: flex; align-items: baseline; gap: 16px; padding-block: 12px; border-bottom: 1px solid var(--line);
+    font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(40px, 11vw, 64px);
+    line-height: .95; text-transform: uppercase;
+  }
+  .mmenu-nav a .mono { color: var(--red); font-style: normal; font-size: 12px; }
+  .mmenu-pages { display: flex; flex-wrap: wrap; gap: 10px 24px; padding-block: 18px; color: var(--muted); }
+  .mmenu-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 16px; padding-top: 12px; }
+  .mmenu-bottom .btn { justify-content: space-between; }
+  .mmenu-phone { font-family: var(--display); font-style: italic; font-weight: 800; font-size: 34px; }
+  html.menu-open { overflow: hidden; }
+</style>
+
+<script>
+  const menu = document.getElementById('mmenu')!;
+  const openBtn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('mmenuClose')!;
+
+  function setOpen(open: boolean) {
+    menu.hidden = !open;
+    document.documentElement.classList.toggle('menu-open', open);
+    openBtn?.setAttribute('aria-expanded', String(open));
+    if (open) closeBtn.focus(); else openBtn?.focus();
+  }
+
+  openBtn?.addEventListener('click', () => setOpen(true));
+  closeBtn.addEventListener('click', () => setOpen(false));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) setOpen(false); });
+</script>

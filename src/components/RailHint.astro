@@ -1,0 +1,27 @@
+---
+// Phone-only line under a swipeable rail: "Гортайте →" and a "1 / 4" counter.
+interface Props { total: number; }
+const { total } = Astro.props;
+---
+<div class="rail-hint" aria-hidden="true" data-rail-hint>
+  <span>Гортайте →</span>
+  <span><b data-rail-cur>1</b> / {total}</span>
+</div>
+
+<script>
+  // Update the counter from the rail just before the hint
+  document.querySelectorAll<HTMLElement>('[data-rail-hint]').forEach((hint) => {
+    const rail = hint.previousElementSibling as HTMLElement | null;
+    const cur = hint.querySelector('[data-rail-cur]');
+    if (!rail || !cur) return;
+    const items = [...rail.children] as HTMLElement[];
+    const update = () => {
+      const x = rail.scrollLeft;
+      let i = 0;
+      items.forEach((el, k) => { if (el.offsetLeft - rail.offsetLeft - 20 <= x) i = k; });
+      if (x + rail.clientWidth >= rail.scrollWidth - 4) i = items.length - 1;
+      cur.textContent = String(i + 1);
+    };
+    rail.addEventListener('scroll', update, { passive: true });
+  });
+</script>

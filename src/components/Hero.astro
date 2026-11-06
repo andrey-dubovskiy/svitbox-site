@@ -17,6 +17,9 @@ const letters = [...site.name];
       <div class="top-right">
         <a class="phone" href={`tel:${site.phone.tel}`}>{site.phone.short}</a>
         <a class="lang" href="#">EN</a>
+        <button type="button" class="menu-btn mono" id="menuBtn" aria-expanded="false" aria-controls="mmenu">
+          Меню <span class="menu-ico" aria-hidden="true"><i></i><i></i></span>
+        </button>
       </div>
     </header>
 
@@ -87,10 +90,28 @@ const letters = [...site.name];
   .hint { display: flex; justify-content: space-between; gap: 16px; padding-block: 18px; color: var(--muted); }
   .hint .count { color: var(--fg); font-variant-numeric: tabular-nums; }
 
-  @media (max-width: 980px) { nav.main { display: none; } }
+  .menu-btn {
+    display: none; align-items: center; gap: 10px; height: 44px; padding: 0 14px;
+    background: none; color: var(--fg); border: 1px solid rgba(244,244,242,.4); cursor: pointer;
+  }
+  .menu-ico { display: inline-flex; flex-direction: column; gap: 5px; }
+  .menu-ico i { display: block; width: 18px; height: 2px; background: currentColor; }
+  .menu-ico i:last-child { width: 12px; background: var(--red); }
+
+  @media (max-width: 980px) {
+    nav.main { display: none; }
+    .menu-btn { display: inline-flex; }
+    header.top { padding-block: 14px; }
+    /* Title in the upper part, ropes stretched across the empty lower part */
+    .hero-center { justify-content: flex-start; padding-block: 9vh 32px; gap: 16px; }
+    .word { font-size: clamp(64px, 19vw, 180px); }
+    .ctas { flex-direction: column; gap: 6px; width: 100%; max-width: 360px; }
+    .ctas .btn { width: 100%; justify-content: center; }
+  }
   @media (max-width: 560px) {
-    .top-right .lang { display: none; }
-    .hint { flex-direction: column; gap: 4px; }
+    .top-right .lang, .top-right .phone { display: none; }
+    .tags { font-size: 11px; gap: 6px 12px; }
+    .hint { flex-direction: column; gap: 4px; font-size: 11px; }
   }
 </style>
 
@@ -114,6 +135,9 @@ const letters = [...site.name];
   type Pt = { x: number; y: number; px: number; py: number };
   type Rope = { y: number; color: string; w: number; pts: Pt[]; len: number };
   const N = 46;
+  // On narrow screens the title sits higher, so the ropes go lower and stay off the text
+  const narrow = () => innerWidth <= 980;
+  const ropeY = () => (narrow() ? [.72, .8, .88] : [.50, .63, .76]);
   const spec = [
     { y: .50, color: '#ff2936', w: 7 },
     { y: .63, color: '#e8e8e4', w: 6 },
@@ -127,10 +151,11 @@ const letters = [...site.name];
     W = r.width; H = r.height;
     cv.width = W * dpr; cv.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ropes = spec.map((s) => {
+    const ys = ropeY();
+    ropes = spec.map((s, k) => {
       const pts: Pt[] = [];
       for (let i = 0; i < N; i++) {
-        const x = -30 + (W + 60) * i / (N - 1), y = H * s.y;
+        const x = -30 + (W + 60) * i / (N - 1), y = H * ys[k];
         pts.push({ x, y, px: x, py: y });
       }
       return { ...s, pts, len: (W + 60) / (N - 1) * .992 };

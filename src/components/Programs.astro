@@ -11,6 +11,7 @@ import { asset } from '../lib/util';
       <div class="follow ph photo" id="follow" aria-hidden="true"><img id="followImg" src={asset(programs[0].img)} alt="" /></div>
       {programs.map((p) => (
         <a class="prog" href="#signup" data-p={p.id} data-img={asset(p.img)}>
+          <img class="prog-thumb" src={asset(p.img)} alt="" loading="lazy" />
           <span class="name" data-punch>{p.name}</span>
           <p>{p.text}</p>
           <span class="go" aria-hidden="true">→</span>
@@ -47,9 +48,18 @@ import { asset } from '../lib/util';
   }
   .progs .follow.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   .progs .follow img { filter: grayscale(.2) contrast(1.05); }
+  .prog-thumb { display: none; }
   @media (max-width: 980px) {
-    .prog { grid-template-columns: minmax(0, 1fr) auto; }
-    .prog p { grid-column: 1 / -1; grid-row: 2; }
+    /* No hover on phones: each row gets its own photo */
+    .prog { grid-template-columns: 88px minmax(0, 1fr) auto; gap: 8px 16px; padding-block: 18px; align-items: start; }
+    .prog-thumb {
+      display: block; grid-row: 1 / span 2; width: 88px; height: 110px; object-fit: cover;
+      filter: grayscale(1) contrast(1.08); border: 1px solid var(--line);
+    }
+    .prog .name { font-size: clamp(30px, 8.6vw, 52px); align-self: end; }
+    .prog p { grid-column: 2 / -1; grid-row: 2; font-size: 15px; }
+    .prog .go { width: 44px; height: 44px; grid-column: 3; grid-row: 1; }
+    .prog:hover .name { transform: none; }
     .progs .follow { display: none; }
   }
 </style>

@@ -1,6 +1,7 @@
 ---
 // Placeholder for the future background video: a brief for the videographer.
 import { videoBrief } from '../data/content';
+import RailHint from './RailHint.astro';
 ---
 <section class="blk video-sec" id="video">
   <div class="brief ph">
@@ -10,7 +11,7 @@ import { videoBrief } from '../data/content';
         <h2 class="h2" data-punch>Фонове відео</h2>
         <p>Тут буде беззвучна петля на всю ширину екрана: вона грає сама і показує атмосферу залу за 15–20 секунд. Поверх відео стоять заголовок і кнопка, тому важливе те, що в кадрі в центрі і правіше, а лівий нижній кут залиште спокійним.</p>
       </div>
-      <div class="brief-grid">
+      <div class="brief-grid m-rail">
         {videoBrief.map((b) => (
           <section>
             <h3 class="mono">{b.title}</h3>
@@ -20,6 +21,7 @@ import { videoBrief } from '../data/content';
           </section>
         ))}
       </div>
+      <RailHint total={videoBrief.length} />
     </div>
   </div>
 </section>
@@ -37,6 +39,10 @@ import { videoBrief } from '../data/content';
   .brief-grid h3 { font-size: 12px; color: var(--red); margin: 0 0 14px; font-weight: 500; }
   .brief-grid ul, .brief-grid ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 9px; font-size: 15px; line-height: 1.45; }
   .brief-grid li::marker { color: var(--muted); }
-  @media (max-width: 980px) { .brief-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 560px) { .brief-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 980px) {
+    .brief-in { gap: 28px; }
+    .brief-head p { font-size: 15px; }
+    .brief-grid { align-items: flex-start; }
+    .brief-grid section { padding: 20px; }
+  }
 </style>
