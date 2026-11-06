@@ -46,16 +46,21 @@ import { asset } from '../lib/util';
 
 <script>
   import { reduce, countTo } from '../scripts/motion';
-  // Numbers count up when they scroll into view (they show final values at rest)
+  // Numbers count up when they scroll into view. Counters below the first screen
+  // start from their low value right away, so the number does not flick back before counting.
   if (!reduce) {
+    const startOf = (to: number) => (to > 1000 ? to - 40 : 0);
     const io = new IntersectionObserver((es) => es.forEach((en) => {
       if (!en.isIntersecting) return;
       io.unobserve(en.target);
       const el = en.target as HTMLElement, to = +el.dataset.to!;
-      countTo(el, to > 1000 ? to - 40 : 0, to, 1300);
+      countTo(el, startOf(to), to, 1400);
     }), { threshold: .6 });
     document.querySelectorAll<HTMLElement>('#club [data-to]').forEach((c) => {
-      if (c.getBoundingClientRect().top > innerHeight) io.observe(c);
+      if (c.getBoundingClientRect().top > innerHeight) {
+        c.textContent = String(startOf(+c.dataset.to!));
+        io.observe(c);
+      }
     });
   }
 </script>

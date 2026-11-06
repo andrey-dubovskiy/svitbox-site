@@ -27,9 +27,9 @@ const items = [...marquee, ...marquee];
   const track = document.getElementById('track')!;
   if (!reduce && track.getAnimations) {
     let last = scrollY, boost = 0;
-    addEventListener('scroll', () => { boost = Math.min(6, boost + Math.abs(scrollY - last) / 40); last = scrollY; }, { passive: true });
+    addEventListener('scroll', () => { boost = Math.min(2, boost + Math.abs(scrollY - last) / 120); last = scrollY; }, { passive: true });
     (function tick() {
-      boost *= .92;
+      boost *= .95;
       const a = track.getAnimations()[0];
       if (a) a.playbackRate = 1 + boost;
       requestAnimationFrame(tick);

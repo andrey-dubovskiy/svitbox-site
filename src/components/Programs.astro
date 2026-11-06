@@ -58,11 +58,14 @@ import { asset } from '../lib/util';
   const follow = document.getElementById('follow')!;
   const fImg = document.getElementById('followImg') as HTMLImageElement;
   const progs = document.getElementById('progs')!;
-  let fx = 0, fy = 0, tx = 0, ty = 0;
+  let fx = 0, fy = 0, tx = 0, ty = 0, chasing = false;
 
   document.querySelectorAll<HTMLElement>('.prog').forEach((row) => {
     new Image().src = row.dataset.img!;
-    row.addEventListener('mouseenter', () => { fImg.src = row.dataset.img!; follow.classList.add('on'); });
+    row.addEventListener('mouseenter', () => {
+      fImg.src = row.dataset.img!; follow.classList.add('on');
+      if (!chasing) { chasing = true; requestAnimationFrame(chase); }
+    });
     row.addEventListener('mouseleave', () => follow.classList.remove('on'));
     row.addEventListener('mousemove', (e) => {
       const r = progs.getBoundingClientRect(), half = follow.offsetWidth / 2, x = e.clientX - r.left;
@@ -76,9 +79,12 @@ import { asset } from '../lib/util';
     });
   });
 
-  (function chase() {
+  // The photo eases toward the cursor; the loop stops once it has settled and is hidden
+  function chase() {
     fx += (tx - fx) * .16; fy += (ty - fy) * .16;
     follow.style.left = fx + 'px'; follow.style.top = fy + 'px';
+    const settled = Math.abs(tx - fx) < .5 && Math.abs(ty - fy) < .5;
+    if (settled && !follow.classList.contains('on')) { chasing = false; return; }
     requestAnimationFrame(chase);
-  })();
+  }
 </script>

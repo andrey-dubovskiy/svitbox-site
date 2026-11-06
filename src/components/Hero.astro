@@ -22,8 +22,9 @@ const letters = [...site.name];
 
     <div class="hero-center wrap">
       <div class="tags mono"><span class="sq" aria-hidden="true"></span><span>[ Бровари ]</span><span>[ 120+ боксерів ]</span><span>[ since 2012 ]</span></div>
-      <p class="word" id="word" aria-label={site.name}>
-        {letters.map((c) => (c === ' ' ? <span class="sp"></span> : <span class="ch" aria-hidden="true">{c}</span>))}
+      <p class="word" id="word">
+        <span class="sr-only">{site.name}</span>
+        {letters.map((c) => (c === ' ' ? <span class="sp" aria-hidden="true"></span> : <span class="ch" aria-hidden="true">{c}</span>))}
       </p>
       <h1 class="sub">Бокс у Броварах — <em>новий спосіб життя</em></h1>
       <div class="ctas">

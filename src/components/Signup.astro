@@ -99,13 +99,19 @@ import { site } from '../data/site';
   // Round clock: 3:00 counting down, looping
   const timeEl = document.getElementById('time')!, arc = document.getElementById('arc')!;
   const C = 314.16, start = performance.now();
+  let clockOn = false;
   function clock(t: number) {
+    if (!clockOn) return;
     const el = ((t - start) / 1000) % 180, left = 180 - el;
     timeEl.textContent = Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0');
     arc.setAttribute('stroke-dashoffset', (C * el / 180).toFixed(2));
     requestAnimationFrame(clock);
   }
-  if (!reduce) requestAnimationFrame(clock);
+  // Run only while the clock is on screen
+  if (!reduce) new IntersectionObserver(([en]) => {
+    const was = clockOn; clockOn = en.isIntersecting;
+    if (clockOn && !was) requestAnimationFrame(clock);
+  }).observe(timeEl);
 
   // Form
   const form = document.getElementById('form') as HTMLFormElement;
