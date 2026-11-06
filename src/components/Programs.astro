@@ -38,9 +38,12 @@ import { asset } from '../lib/util';
     width: 56px; height: 56px; border: 1px solid var(--line); display: grid; place-items: center;
     transition: background .25s, border-color .25s, transform .35s;
   }
-  .prog:hover .name { transform: translateX(18px); color: var(--red); }
-  .prog:hover .go { background: var(--fg); border-color: var(--fg); color: var(--bg); transform: rotate(-45deg); }
-  .prog:hover p { color: var(--fg); }
+  @media (hover: hover) {
+    .prog:hover .name { transform: translateX(18px); color: var(--red); }
+    .prog:hover .go { background: var(--fg); border-color: var(--fg); color: var(--bg); transform: rotate(-45deg); }
+    .prog:hover p { color: var(--fg); }
+  }
+  .prog:active .name { color: var(--red); }
   .progs .follow {
     position: absolute; left: 0; top: 0; width: 260px; aspect-ratio: 4/5; max-width: 100%;
     pointer-events: none; z-index: 3; opacity: 0;
@@ -59,7 +62,6 @@ import { asset } from '../lib/util';
     .prog .name { font-size: clamp(30px, 8.6vw, 52px); align-self: end; }
     .prog p { grid-column: 2 / -1; grid-row: 2; font-size: 15px; }
     .prog .go { width: 44px; height: 44px; grid-column: 3; grid-row: 1; }
-    .prog:hover .name { transform: none; }
     .progs .follow { display: none; }
   }
 </style>
