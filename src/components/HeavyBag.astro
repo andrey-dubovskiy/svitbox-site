@@ -1,11 +1,12 @@
 ---
 // Between rounds: a punching bag with pendulum physics and a playful "punch power" meter.
 import RoundLabel from './RoundLabel.astro';
+import { asset } from '../lib/util';
 ---
 <section class="blk bag-sec" id="bag">
   <div class="wrap bag-grid">
     <div class="bag-stage">
-      <canvas id="bagCv" aria-hidden="true"></canvas>
+      <canvas id="bagCv" aria-hidden="true" data-logo={asset('img/logo-bag.png')}></canvas>
       <span class="mono muted bag-hint">[ Клікни по груші. Що швидше рука, то сильніший удар ]</span>
     </div>
     <div class="bag-info">
@@ -61,6 +62,9 @@ import RoundLabel from './RoundLabel.astro';
   const bcv = document.getElementById('bagCv') as HTMLCanvasElement;
   const bx = bcv.getContext('2d')!;
   const stage = bcv.parentElement!;
+  const logo = new Image();
+  logo.src = bcv.dataset.logo!;
+  let print: HTMLCanvasElement | null = null; // shaded logo, built once the image loads
   const kgEl = document.getElementById('kg')!, kgBar = document.getElementById('kgBar')!;
   const bestEl = document.getElementById('best')!, rankEl = document.getElementById('rank')!;
 
@@ -100,12 +104,13 @@ import RoundLabel from './RoundLabel.astro';
     bx.fillStyle = g;
     bx.beginPath(); bx.roundRect(-w / 2, top, w, h, [14, 14, 26, 26]); bx.fill();
     bx.fillStyle = 'rgba(244,244,242,.08)'; bx.fillRect(-w / 2, top + 18, w, 6); bx.fillRect(-w / 2, top + h - 30, w, 6);
-    // red band with the club name
-    bx.fillStyle = '#ff2936'; bx.fillRect(-w / 2, top + h * .38, w, 54);
-    bx.fillStyle = 'rgba(0,0,0,.25)'; bx.fillRect(w * .18, top + h * .38, w * .32, 54);
-    bx.fillStyle = '#f4f4f2'; bx.font = 'italic 900 30px "Fira Sans Extra Condensed", Impact, sans-serif';
-    bx.textAlign = 'center'; bx.textBaseline = 'middle';
-    bx.fillText('СВІТ БОКСУ', 0, top + h * .38 + 28);
+    // club logo printed on the leather (stretches with the bag on impact)
+    if (print) {
+      const lw = w * .82, lh = lw * print.height / print.width;
+      bx.globalAlpha = .94;
+      bx.drawImage(print, -lw / 2, top + h * .5 - lh / 2, lw, lh);
+      bx.globalAlpha = 1;
+    }
     // fading dents where it was hit
     dents.forEach((d) => { bx.fillStyle = `rgba(0,0,0,${d.a * .55})`; bx.beginPath(); bx.ellipse(d.x, top + d.y, 20 * d.a + 6, 26 * d.a + 8, 0, 0, Math.PI * 2); bx.fill(); });
     bx.fillStyle = 'rgba(255,255,255,.05)'; bx.fillRect(-w * .2, top + 10, w * .08, h - 20);
@@ -125,7 +130,20 @@ import RoundLabel from './RoundLabel.astro';
   new IntersectionObserver(([en]) => { bagOn = en.isIntersecting; }).observe(stage);
   bsize(); bagDraw();
   addEventListener('resize', () => { bsize(); bagDraw(); });
-  document.fonts?.ready.then(bagDraw);
+  // Pre-render the logo with the bag's cylinder shading baked into the print only
+  function makePrint() {
+    const c = document.createElement('canvas');
+    c.width = logo.naturalWidth; c.height = logo.naturalHeight;
+    const g = c.getContext('2d')!;
+    g.drawImage(logo, 0, 0);
+    g.globalCompositeOperation = 'source-atop';
+    const shade = g.createLinearGradient(0, 0, c.width, 0);
+    shade.addColorStop(0, 'rgba(0,0,0,.6)'); shade.addColorStop(.3, 'rgba(0,0,0,.05)');
+    shade.addColorStop(.5, 'rgba(0,0,0,0)'); shade.addColorStop(.75, 'rgba(0,0,0,.2)'); shade.addColorStop(1, 'rgba(0,0,0,.7)');
+    g.fillStyle = shade; g.fillRect(0, 0, c.width, c.height);
+    print = c; bagDraw();
+  }
+  if (logo.complete && logo.naturalWidth) makePrint(); else logo.addEventListener('load', makePrint);
 
   // Hand speed before the click sets the "power"
   let trail: { x: number; y: number; t: number }[] = [];
