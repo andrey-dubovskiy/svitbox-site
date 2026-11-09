@@ -1,6 +1,6 @@
 ---
 // Footer: ring ropes, call to action, link columns, live clocks and a giant name that dodges the cursor.
-import { site, socials } from '../data/site';
+import { site, socials, halls } from '../data/site';
 import { isTodo, link } from '../lib/util';
 const letters = [...site.name];
 ---
@@ -29,11 +29,11 @@ const letters = [...site.name];
       <li><a href={link('#programs')}>Програми</a></li><li><a href={link('#club')}>Про клуб</a></li><li><a href={link('#coach')}>Тренери</a></li><li><a href={link('#champions')}>Чемпіони</a></li><li><a href={link('#life')}>Події</a></li>
     </ul></nav>
     <nav aria-label="Сторінки"><h3 class="mono">Сторінки</h3><ul>
-      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href="#">Як дістатися</a></li><li><a href={link('#first')}>Перше тренування</a></li><li><a href="#">Політика конфіденційності</a></li>
+      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('#first')}>Перше тренування</a></li><li><a href="#">Політика конфіденційності</a></li>
     </ul></nav>
-    <div><h3 class="mono">Зал</h3><ul>
-      <li>{site.city}, <span class:list={[{ todo: isTodo(site.address) }]}>{site.address}</span></li>
-      {site.hours.map((h) => <li class:list={[{ todo: isTodo(h) }]}>{h}</li>)}
+    <div><h3 class="mono">Зали</h3><ul>
+      {halls.map((h) => <li><a href={link('kontakty/#' + h.id)}>{h.address}</a></li>)}
+      <li class="muted">{site.hours[0]}</li>
       <li class="muted">У Броварах зараз <b class="sf-live" id="sfTime">--:--</b></li>
     </ul></div>
     <nav aria-label="Соцмережі"><h3 class="mono">Соцмережі</h3><ul>
