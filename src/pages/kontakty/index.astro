@@ -212,6 +212,7 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
   /* Map section */
   .mapx { position: relative; min-height: min(86vh, 820px); border-bottom: 1px solid var(--line); display: flex; align-items: center; overflow: hidden; scroll-margin-top: 0; }
   .mapx-map { position: absolute; inset: 0; background: #111; }
+  .mapx-map::before { content: "Завантажуємо карту…"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, 40px); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .mapx-map iframe { position: absolute; inset: -60px 0 -60px 0; width: 100%; height: calc(100% + 120px); border: 0; filter: grayscale(1) invert(.92) contrast(.88) brightness(.9); }
   .mapx-map::after { content: ""; position: absolute; inset: 0; pointer-events: none;
     background: linear-gradient(90deg, rgba(5,5,5,.88) 0%, rgba(5,5,5,.45) 34%, rgba(5,5,5,0) 58%), linear-gradient(180deg, var(--bg) 0, transparent 14%, transparent 86%, var(--bg) 100%); }
