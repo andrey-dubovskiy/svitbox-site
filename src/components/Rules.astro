@@ -2,7 +2,8 @@
 // Before the first training: medical certificate, kit, payment, how long a pass lasts.
 import RoundLabel from './RoundLabel.astro';
 import { rules } from '../data/schedule';
-interface Props { n: string; }
+interface Props { n: string; only?: string[]; title?: string; }
+const list = Astro.props.only ? rules.filter((r) => Astro.props.only!.includes(r.icon)) : rules;
 // Line icons, drawn for this site
 const icons: Record<string, string> = {
   doc: '<rect x="10" y="6" width="28" height="36" rx="2"/><path d="M18 6v-2h12v2"/><path d="M24 16v12M18 22h12" stroke="var(--red)"/><path d="M16 34h16"/>',
@@ -14,9 +15,9 @@ const icons: Record<string, string> = {
 <section class="blk">
   <div class="wrap">
     <RoundLabel n={Astro.props.n} label="Важливо знати" />
-    <h2 class="h2" data-punch>Перед першим тренуванням</h2>
+    <h2 class="h2" data-punch>{Astro.props.title ?? 'Перед першим тренуванням'}</h2>
     <ol class="rules m-rail">
-      {rules.map((r, i) => (
+      {list.map((r, i) => (
         <li><span class="rule-top"><svg class="rule-ico" viewBox="0 0 48 48" aria-hidden="true" set:html={icons[r.icon]} /><span class="mono">{String(i + 1).padStart(2, '0')}</span></span><b>{r.title}</b><p class="muted">{r.text}</p></li>
       ))}
     </ol>
@@ -24,7 +25,7 @@ const icons: Record<string, string> = {
 </section>
 
 <style is:global>
-  .rules { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .rules { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); border-top: 1px solid var(--line); }
   .rules li { padding: 28px 24px 32px 0; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
   .rules li + li { padding-left: 24px; }
   .rules li:last-child { border-right: 0; }
