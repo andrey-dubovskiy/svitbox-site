@@ -20,7 +20,7 @@ const { title, description, current, kicker, heading, lead } = Astro.props;
   <div class="page-head">
     <div class="wrap">
       <nav class="crumbs mono" aria-label="Ви тут"><a href={asset('')}>Головна</a><span aria-hidden="true">/</span><span>{kicker}</span></nav>
-      <h1 class="page-h" data-punch>{heading}</h1>
+      <h1 class="page-h" data-punch style={`--chars:${[...heading].length}`}>{heading}</h1>
       <div class="page-lead">
         <p>{lead}</p>
         <slot name="head" />
@@ -51,5 +51,9 @@ const { title, description, current, kicker, heading, lead } = Astro.props;
   .page-lead > p { margin: 0; font-family: var(--serif); font-size: clamp(19px, 1.7vw, 24px); line-height: 1.4; max-width: 34ch; }
   @media (max-width: 980px) {
     .page-lead { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* Phones: long titles shrink so they never run under the hanging gloves */
+  @media (max-width: 760px) {
+    .page-h { font-size: min(19vw, calc((100vw - 2 * max(var(--gx), 4vw) - 96px) / (var(--chars) * .5))); }
   }
 </style>
