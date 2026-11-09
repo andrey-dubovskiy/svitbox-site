@@ -6,6 +6,7 @@ import RoundLabel from './RoundLabel.astro';
 import { days, daysFull, type Track } from '../data/schedule';
 interface Props { track: Track; n: string; }
 const { track, n } = Astro.props;
+// The age picker (if the page has one) is passed in as a slot above the table
 const byDay = days.map((_, i) =>
   track.groups.filter((g) => g.days.includes(i + 1)).sort((a, b) => a.from.localeCompare(b.from)));
 ---
@@ -16,6 +17,7 @@ const byDay = days.map((_, i) =>
       <h2 class="h2" data-punch>{track.title}</h2>
       <p class="muted">{track.note}</p>
     </div>
+    <slot />
 
     <table class="tt">
       <caption class="sr-only">{track.title}: розклад з понеділка по пʼятницю</caption>
@@ -27,8 +29,13 @@ const byDay = days.map((_, i) =>
       </thead>
       <tbody>
         {track.groups.map((g) => (
-          <tr>
-            <th scope="row"><b>{g.name}</b><span class="mono">{g.meta}</span></th>
+          <tr data-amin={g.ages?.[0]} data-amax={g.ages?.[1]}>
+            <th scope="row">
+              <b>{g.name}</b><span class="mono">{g.meta}</span>
+              {g.signup
+                ? <a class="tt-join mono" href="#signup" data-signup={g.signup}>Записатись <span aria-hidden="true">→</span></a>
+                : g.note && <span class="tt-note mono">{g.note}</span>}
+            </th>
             {days.map((_, i) => g.days.includes(i + 1)
               ? <td data-day={i + 1} data-from={g.from} data-to={g.to}><span class="t">{g.from}<i>–</i>{g.to}</span></td>
               : <td data-day={i + 1} class="off"><span aria-label="немає">—</span></td>)}
@@ -46,9 +53,10 @@ const byDay = days.map((_, i) =>
       {byDay.map((list, i) => (
         <ol class="tt-day" data-panel={i + 1} hidden={i !== 0} aria-label={daysFull[i]}>
           {list.map((g) => (
-            <li data-day={i + 1} data-from={g.from} data-to={g.to}>
+            <li data-day={i + 1} data-from={g.from} data-to={g.to} data-amin={g.ages?.[0]} data-amax={g.ages?.[1]}>
               <span class="t">{g.from}<i>–</i>{g.to}</span>
-              <span><b>{g.name}</b><span class="mono">{g.meta}</span></span>
+              <span><b>{g.name}</b><span class="mono">{g.meta}</span>{g.note && <span class="tt-note mono">{g.note}</span>}</span>
+              {g.signup && <a class="tt-join-m" href="#signup" data-signup={g.signup} aria-label={`Записатись: ${g.name}`}>→</a>}
             </li>
           ))}
         </ol>
@@ -85,6 +93,15 @@ const byDay = days.map((_, i) =>
   .tt td.next, .tt-day li.next { box-shadow: inset 0 0 0 1px var(--red); }
   .tt td.next .t::after { content: "Наступне"; display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; color: var(--red); }
 
+  .tt-join { display: inline-flex; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--fg); border-bottom: 1px solid var(--red); padding-bottom: 2px; opacity: .55; transition: opacity .2s, color .2s; }
+  .tt tbody tr:hover .tt-join, .tt-join:focus-visible { opacity: 1; }
+  .tt-join:hover { color: var(--red); }
+  .tt-note { display: block; margin-top: 8px; font-size: 11px; color: var(--red) !important; }
+  /* Age picker result */
+  .tt tr.dim, .tt-day li.dim { opacity: .28; }
+  .tt tr.match th b, .tt-day li.match b { color: var(--red); }
+  .tt tr.match { background: rgba(255,41,54,.06); }
+  .tt tr { transition: opacity .3s, background .3s; }
   .tt-m { display: none; }
   @media (max-width: 980px) {
     .tt { display: none; }
@@ -97,11 +114,13 @@ const byDay = days.map((_, i) =>
     .tt-tabs button[aria-selected="true"] { background: var(--fg); color: var(--bg); }
     .tt-tabs button.today::after { content: ""; position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background: var(--red); }
     .tt-day { list-style: none; margin: 0; padding: 0; }
-    .tt-day li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: center; padding: 18px 12px; border-bottom: 1px solid var(--line); }
+    .tt-day li { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 18px 12px; border-bottom: 1px solid var(--line); }
     .tt-day .t { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; }
     .tt-day .t i { font-style: normal; color: var(--muted); }
     .tt-day b { display: block; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 28px; line-height: 1; }
     .tt-day .mono { color: var(--muted); font-size: 11px; }
     .tt-day li.live .mono { color: var(--fg); }
+    .tt-join-m { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--line); }
+    .tt-day li.match .tt-join-m { background: var(--fg); color: var(--bg); }
   }
 </style>

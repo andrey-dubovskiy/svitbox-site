@@ -10,7 +10,7 @@ import { asset } from '../lib/util';
     <div class="progs" id="progs">
       <div class="follow ph photo" id="follow" aria-hidden="true"><img id="followImg" src={asset(programs[0].img)} alt="" /></div>
       {programs.map((p) => (
-        <a class="prog" href="#signup" data-p={p.id} data-img={asset(p.img)}>
+        <a class="prog" href="#signup" data-p={p.signup} data-img={asset(p.img)}>
           <img class="prog-thumb" src={asset(p.img)} alt="" loading="lazy" />
           <span class="name" data-punch>{p.name}</span>
           <p>{p.text}</p>

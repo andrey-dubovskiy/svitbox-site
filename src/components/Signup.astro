@@ -3,7 +3,7 @@
 // NOTE: the form validates and shows a confirmation, but does not send data anywhere yet.
 // Connect it to Telegram bot / email / CRM in the submit handler below.
 import RoundLabel from './RoundLabel.astro';
-import { programs } from '../data/content';
+import { signupOptions, signupDefault } from '../data/schedule';
 import { site } from '../data/site';
 interface Props { n?: string; }
 const { n = 'Раунд 08' } = Astro.props;
@@ -38,10 +38,10 @@ const { n = 'Раунд 08' } = Astro.props;
           <span class="msg" id="telMsg"></span>
         </div>
         <fieldset class="field">
-          <legend>Програма</legend>
+          <legend>Група</legend>
           <div class="chips">
-            {programs.map((p, i) => (
-              <label class="chip"><input type="radio" name="prog" id={`p-${p.id}`} value={p.id} checked={i === 0} /><span>{p.chip}</span></label>
+            {signupOptions.map((p) => (
+              <label class="chip"><input type="radio" name="prog" id={`p-${p.id}`} value={p.id} checked={p.id === signupDefault} /><span>{p.chip}</span></label>
             ))}
           </div>
         </fieldset>
@@ -96,6 +96,14 @@ const { n = 'Раунд 08' } = Astro.props;
 </style>
 
 <script>
+  // Any link with data-signup="<option id>" preselects that group in the form (schedule rows, price cards)
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLElement>('[data-signup]');
+    if (!a) return;
+    const radio = document.getElementById('p-' + a.dataset.signup) as HTMLInputElement | null;
+    if (radio) radio.checked = true;
+  });
+
   import { reduce } from '../scripts/motion';
 
   // Round clock: 3:00 counting down, looping

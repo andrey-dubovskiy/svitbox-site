@@ -36,7 +36,7 @@ const { n, title, plans, anchor } = Astro.props;
           <p class="mono muted plan-days">{p.days}</p>
           <p class="plan-price"><b class="num" data-to={p.price}>{p.price}</b><span class="mono">{p.unit}</span></p>
           {p.perSession && <p class="mono muted plan-per">{p.perSession}</p>}
-          <a class="btn" href="#signup"><span>Записатись</span><span class="arr">→</span></a>
+          <a class="btn" href="#signup" data-signup={anchor === 'fit' ? 'fit' : undefined}><span>Записатись</span><span class="arr">→</span></a>
         </article>
       ))}
     </div>

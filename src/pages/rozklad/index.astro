@@ -1,10 +1,13 @@
 ---
 import Page from '../../layouts/Page.astro';
+import RoundLabel from '../../components/RoundLabel.astro';
 import Tape from '../../components/Tape.astro';
 import LiveNow from '../../components/LiveNow.astro';
 import ScheduleTable from '../../components/ScheduleTable.astro';
 import Rules from '../../components/Rules.astro';
-import { schedule } from '../../data/schedule';
+import AgePick from '../../components/AgePick.astro';
+import { schedule, scheduleNotice, otherGroups } from '../../data/schedule';
+import { isTodo } from '../../lib/util';
 import { link } from '../../lib/util';
 ---
 <Page
@@ -16,10 +19,33 @@ import { link } from '../../lib/util';
   lead="Тренуємось з понеділка по пʼятницю. Групи за віком: діти з 5 років, юніори, дорослі. Вранці — для всіх."
 >
   <LiveNow slot="head" />
-  <ScheduleTable track={schedule[0]} n="Раунд 01" />
+  {scheduleNotice && (
+    <div class="notice"><div class="wrap"><span class="mono">Зміни в розкладі</span><p>{scheduleNotice}</p></div></div>
+  )}
+  <ScheduleTable track={schedule[0]} n="Раунд 01"><AgePick /></ScheduleTable>
   <Tape tilt={1.4} reverse />
   <ScheduleTable track={schedule[1]} n="Раунд 02" />
-  <Rules n="Раунд 03" />
+  <section class="blk">
+    <div class="wrap">
+      <RoundLabel n="Раунд 03" label="Інші формати" />
+      <h2 class="h2" data-punch>Не знайшли свою групу?</h2>
+      <div class="other-groups m-rail">
+        {otherGroups.map((g) => (
+          <article>
+            <h3>{g.title}</h3>
+            <p class:list={[{ todo: isTodo(g.text) }]}>{g.text}</p>
+            <a class="link" href="#signup" data-signup={g.signup}>Записатись →</a>
+          </article>
+        ))}
+        <article>
+          <h3>Не впевнені</h3>
+          <p>Залиште заявку — тренер подзвонить і порадить групу за віком і рівнем.</p>
+          <a class="link" href="#signup">Залишити заявку →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+  <Rules n="Раунд 04" />
   <section class="blk to-prices">
     <div class="wrap">
       <a href={link('tsiny/')} class="big-link">
@@ -38,6 +64,17 @@ import { link } from '../../lib/util';
 </script>
 
 <style is:global>
+  .notice { background: var(--red); color: var(--fg); }
+  .notice .wrap { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; padding-block: 16px; }
+  .notice p { margin: 0; font-size: 18px; font-weight: 500; }
+  .other-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(32px, 4vw, 56px); border-top: 1px solid var(--line); }
+  .other-groups article { padding: 28px 24px 28px 0; display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--line); }
+  .other-groups article + article { padding-left: 24px; }
+  .other-groups article:last-child { border-right: 0; }
+  .other-groups h3 { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(30px, 2.8vw, 44px); line-height: .95; }
+  .other-groups p { margin: 0; color: var(--muted); flex: 1; }
+  .other-groups .link { align-self: flex-start; height: 44px; }
+  @media (max-width: 980px) { .other-groups article, .other-groups article + article { padding: 22px; } }
   .to-prices { padding-block: 0; }
   .big-link { display: flex; flex-direction: column; gap: 8px; padding-block: clamp(40px, 6vw, 80px); }
   .big-link b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(56px, 9vw, 150px); line-height: .85; transition: color .25s; }
