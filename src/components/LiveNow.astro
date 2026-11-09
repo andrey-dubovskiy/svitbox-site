@@ -1,59 +1,89 @@
 ---
-// "Right now in the gym" line: what is on now, or what is next and how soon (Kyiv time).
+// "Right now in the gym": a ring bell and a round clock counting down to the next
+// training, or the time left of the one going on (Kyiv time). The bell rings on click.
 import { schedule } from '../data/schedule';
 const all = schedule.flatMap((t) => t.groups.map((g) => ({ name: g.name, meta: g.meta, days: g.days, from: g.from, to: g.to })));
 ---
-<div class="live-now" id="liveNow" data-groups={JSON.stringify(all)} aria-live="polite">
-  <span class="dot" aria-hidden="true"></span>
-  <div>
+<div class="live-now" id="liveNow" data-groups={JSON.stringify(all)}>
+  <button type="button" class="bell-btn" id="lnBell" aria-label="Вдарити в гонг (зі звуком)">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="29" y="4" width="6" height="10" fill="#d8d8d3"/>
+      <circle cx="32" cy="34" r="22" fill="#d6a640"/>
+      <circle cx="32" cy="34" r="22" fill="none" stroke="#7b5a14" stroke-width="2"/>
+      <circle cx="32" cy="34" r="14" fill="none" stroke="#f3d27c" stroke-width="2" opacity=".8"/>
+      <circle cx="32" cy="34" r="5" fill="#7b5a14"/>
+      <ellipse cx="24" cy="25" rx="6" ry="3.5" fill="#fff" opacity=".45" transform="rotate(-30 24 25)"/>
+    </svg>
+  </button>
+  <div class="ln-body">
     <span class="mono muted" id="lnLabel">У Броварах зараз --:--</span>
     <p id="lnText">Розклад тренувань з понеділка по пʼятницю.</p>
+    <div class="ln-clock mono"><span id="lnClockLabel">До гонгу</span><b id="lnClock">--:--:--</b></div>
   </div>
 </div>
 
 <style is:global>
-  .live-now { display: flex; gap: 16px; align-items: flex-start; border: 1px solid var(--line); padding: 18px 20px; background: var(--surface); }
+  .live-now { display: flex; gap: 18px; align-items: flex-start; border: 1px solid var(--line); padding: 18px 20px; background: var(--surface); position: relative; }
   .live-now p { margin: 4px 0 0; font-size: 18px; line-height: 1.35; }
   .live-now p b { color: var(--red); font-weight: 600; }
-  .live-now .dot { flex: none; width: 10px; height: 10px; margin-top: 5px; background: var(--muted); }
-  .live-now.on .dot { background: var(--red); animation: lnPulse 1.4s ease-in-out infinite; }
-  @keyframes lnPulse { 50% { opacity: .25; } }
+  .bell-btn { flex: none; width: 64px; height: 64px; padding: 0; border: 0; background: none; cursor: pointer; transform-origin: 50% 8%; }
+  .bell-btn svg { width: 100%; height: 100%; display: block; }
+  .bell-btn.ring { animation: bellRing .9s cubic-bezier(.3,.6,.3,1); }
+  .live-now.on .bell-btn { animation: bellRing 1.8s ease-in-out infinite; }
+  @keyframes bellRing { 10% { transform: rotate(14deg); } 25% { transform: rotate(-11deg); } 40% { transform: rotate(7deg); } 55% { transform: rotate(-4deg); } 70% { transform: rotate(2deg); } 100% { transform: none; } }
+  .ln-clock { display: flex; align-items: baseline; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); }
+  .ln-clock b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(34px, 3.2vw, 46px); line-height: .9; color: var(--fg); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+  .live-now.on .ln-clock b { color: var(--red); }
+  @media (max-width: 560px) { .bell-btn { width: 48px; height: 48px; } }
 </style>
 
 <script>
   import { kyivNow, toMin } from '../scripts/schedule-live';
+  import { gong, isSoundOn, toggleSound } from '../scripts/sound';
   const box = document.getElementById('liveNow')!;
   const label = document.getElementById('lnLabel')!, text = document.getElementById('lnText')!;
+  const clock = document.getElementById('lnClock')!, clockLabel = document.getElementById('lnClockLabel')!;
+  const bell = document.getElementById('lnBell')!;
   type G = { name: string; meta: string; days: number[]; from: string; to: string };
   const groups: G[] = JSON.parse(box.dataset.groups!);
   const dayWords = ['', 'у понеділок', 'у вівторок', 'у середу', 'у четвер', 'у пʼятницю'];
 
-  function span(min: number) {
-    const h = Math.floor(min / 60), m = min % 60;
-    return h ? `${h} год ${m} хв` : `${m} хв`;
-  }
+  bell.addEventListener('click', () => {
+    if (!isSoundOn()) toggleSound(); else gong(); // first click turns sound on (and rings)
+    bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring');
+  });
 
+  const span = (min: number) => { const h = Math.floor(min / 60), m = min % 60; return h ? `${h} год ${m} хв` : `${m} хв`; };
+  const hms = (s: number) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((v) => String(v).padStart(2, '0')).join(':');
+
+  let lastText = '';
   function render() {
-    const { day, min, hhmm } = kyivNow();
+    const { day, min, sec, hhmm } = kyivNow();
     label.textContent = `У Броварах зараз ${hhmm}`;
     const now = groups.filter((g) => g.days.includes(day) && toMin(g.from) <= min && min < toMin(g.to));
     box.classList.toggle('on', now.length > 0);
+    let html = '', left = 0;
     if (now.length) {
-      text.innerHTML = `Зараз у залі: <b>${now.map((g) => g.name).join(', ')}</b> до ${now[0].to}`;
-      return;
+      html = `Раунд іде: <b>${now.map((g) => g.name).join(', ')}</b> до ${now[0].to}`;
+      clockLabel.textContent = 'До кінця';
+      left = (toMin(now[0].to) - min) * 60 - sec;
+    } else {
+      for (let k = 0; k < 8; k++) {
+        const d = ((day - 1 + k) % 7) + 1;
+        const list = groups.filter((g) => g.days.includes(d) && (k > 0 || toMin(g.from) > min))
+          .sort((a, b) => toMin(a.from) - toMin(b.from));
+        if (!list.length) continue;
+        const g = list[0];
+        const when = k === 0 ? `сьогодні о ${g.from}, через ${span(toMin(g.from) - min)}` : k === 1 ? `завтра о ${g.from}` : `${dayWords[d]} о ${g.from}`;
+        html = `Наступне тренування: <b>${g.name}</b> (${g.meta.toLowerCase()}), ${when}`;
+        clockLabel.textContent = 'До гонгу';
+        left = (k * 1440 + toMin(g.from) - min) * 60 - sec;
+        break;
+      }
     }
-    // Find the next training over the coming week
-    for (let k = 0; k < 8; k++) {
-      const d = ((day - 1 + k) % 7) + 1;
-      const list = groups.filter((g) => g.days.includes(d) && (k > 0 || toMin(g.from) > min))
-        .sort((a, b) => toMin(a.from) - toMin(b.from));
-      if (!list.length) continue;
-      const g = list[0];
-      const when = k === 0 ? `сьогодні о ${g.from}, через ${span(toMin(g.from) - min)}` : k === 1 ? `завтра о ${g.from}` : `${dayWords[d]} о ${g.from}`;
-      text.innerHTML = `Наступне тренування: <b>${g.name}</b> (${g.meta.toLowerCase()}), ${when}`;
-      return;
-    }
+    if (html !== lastText) { text.innerHTML = html; lastText = html; }
+    clock.textContent = hms(Math.max(0, left));
   }
   render();
-  setInterval(render, 30000);
+  setInterval(render, 1000);
 </script>

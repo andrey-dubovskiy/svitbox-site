@@ -1,12 +1,12 @@
 // Kyiv-time helpers and live highlighting of the schedule tables.
 export function kyivNow() {
   const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/Kyiv', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false,
+    timeZone: 'Europe/Kyiv', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
   }).formatToParts(new Date());
   const get = (t: string) => parts.find((p) => p.type === t)!.value;
   const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(get('weekday')) + 1; // 1..7
-  const h = +get('hour') % 24, m = +get('minute');
-  return { day, min: h * 60 + m, hhmm: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}` };
+  const h = +get('hour') % 24, m = +get('minute'), sec = +get('second');
+  return { day, min: h * 60 + m, sec, hhmm: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}` };
 }
 
 export const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };

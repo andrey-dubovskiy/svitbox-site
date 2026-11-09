@@ -1,0 +1,135 @@
+---
+// Page-head decor: a pair of gloves hanging on laces (swing on hover, punch on click)
+// and three ring ropes with corner posts along the bottom edge (bend under the cursor).
+const glove = (flip: boolean) => `
+  <g class="glove-shape"${flip ? ' transform="scale(-1,1)"' : ''}>
+    <path d="M-44 250 C-60 300,-62 370,-30 402 C0 428,54 420,64 380 C74 338,64 290,44 250 Z" fill="var(--red)"/>
+    <path d="M-44 278 C-74 288,-78 342,-52 356 C-42 360,-38 342,-40 318 Z" fill="#c11522"/>
+    <path d="M-34 334 C-4 350,30 350,58 334" fill="none" stroke="#a5101c" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-40 300 C-40 330,-30 352,-24 360" fill="none" stroke="#a5101c" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="22" cy="372" rx="14" ry="26" fill="#fff" opacity=".16"/>
+    <rect x="-40" y="176" width="80" height="78" rx="10" fill="#f4f4f2"/>
+    <rect x="-40" y="198" width="80" height="9" fill="var(--red)"/>
+    <rect x="-40" y="230" width="80" height="4" fill="#050505" opacity=".85"/>
+    <path d="M-14 176 L-6 186 L-14 196 M14 176 L6 186 L14 196" fill="none" stroke="#050505" stroke-width="2"/>
+  </g>`;
+---
+<div class="gloves" id="gloves" aria-hidden="true">
+  <svg viewBox="-150 0 330 430" preserveAspectRatio="xMidYMin meet">
+    <g class="g" data-len="1" style="transform-origin: -40px 0">
+      <path d="M-40 0 V188" stroke="#d8d8d3" stroke-width="2.5" fill="none"/>
+      <g transform="translate(-40 0)" set:html={glove(false)} />
+    </g>
+    <g class="g" data-len=".9" style="transform-origin: 70px 0">
+      <path d="M70 0 V160" stroke="#d8d8d3" stroke-width="2.5" fill="none"/>
+      <g transform="translate(70 -28) rotate(8 0 200)" set:html={glove(true)} />
+    </g>
+  </svg>
+</div>
+
+<div class="ring-ropes" id="ringRopes" aria-hidden="true">
+  <svg id="ropesSvg" preserveAspectRatio="none">
+    <path class="rope r1" /><path class="rope r2" /><path class="rope r3" />
+    <rect class="post l" /><rect class="post r" />
+  </svg>
+</div>
+
+<style is:global>
+  .page-head { position: relative; overflow: hidden; isolation: isolate; padding-bottom: 0 !important; }
+  .page-head > .wrap { position: relative; z-index: 1; padding-bottom: clamp(32px, 4vw, 56px); }
+  .gloves { position: absolute; top: 0; right: max(2vw, 8px); width: clamp(220px, 22vw, 320px); height: min(380px, 66%); z-index: 0; pointer-events: none; }
+  .gloves svg { width: 100%; height: 100%; overflow: visible; }
+  .gloves .g { pointer-events: auto; cursor: pointer; }
+  .ring-ropes { position: relative; height: 84px; cursor: crosshair; touch-action: pan-y; }
+  .ring-ropes svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .ring-ropes .rope { fill: none; stroke-width: 6; stroke-linecap: round; stroke: #e8e8e4; filter: drop-shadow(0 5px 0 rgba(0,0,0,.6)); }
+  .ring-ropes .r1 { stroke: var(--red); }
+  .ring-ropes .post { fill: #1a1a19; stroke: var(--line); }
+  .ring-ropes .post.r { fill: var(--red); stroke: none; }
+  @media (max-width: 760px) {
+    .gloves { width: 120px; right: 4px; height: 170px; opacity: .9; }
+    .ring-ropes { height: 64px; }
+  }
+</style>
+
+<script>
+  import { reduce } from '../scripts/motion';
+  import { thud } from '../scripts/sound';
+
+  // --- Ropes: three springs, bent toward the cursor, kicked by a click ---
+  const box = document.getElementById('ringRopes')!;
+  const svg = document.getElementById('ropesSvg')!;
+  const ropes = [...svg.querySelectorAll<SVGPathElement>('.rope')];
+  const [postL, postR] = [...svg.querySelectorAll<SVGRectElement>('.post')];
+  let W = 0, H = 0, px = 0.5, py = -1;
+  const st = ropes.map(() => ({ d: 0, v: 0 }));
+  const baseY = (i: number) => H * (.22 + i * .27);
+
+  function size() {
+    W = box.clientWidth; H = box.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const pw = 14;
+    [postL, postR].forEach((p, i) => {
+      p.setAttribute('x', String(i ? W - pw : 0)); p.setAttribute('y', '0');
+      p.setAttribute('width', String(pw)); p.setAttribute('height', String(H)); p.setAttribute('rx', '3');
+    });
+  }
+  function draw() {
+    ropes.forEach((r, i) => {
+      const y = baseY(i), cx = px * W;
+      r.setAttribute('d', `M0 ${y} Q ${cx} ${y + st[i].d * 2} ${W} ${y}`);
+    });
+  }
+  let running = false;
+  function tick() {
+    let moving = false;
+    st.forEach((s, i) => {
+      const y = baseY(i);
+      const target = py >= 0 && Math.abs(py - y) < 22 ? Math.max(-18, Math.min(18, (py - y) * 1.4 + 10)) : 0;
+      s.v += (target - s.d) * .12; s.v *= .84; s.d += s.v;
+      if (Math.abs(s.v) > .02 || Math.abs(target - s.d) > .05) moving = true;
+    });
+    draw();
+    if (moving) requestAnimationFrame(tick); else running = false;
+  }
+  const kick = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
+  size(); draw();
+  addEventListener('resize', () => { size(); draw(); });
+  if (!reduce) {
+    box.addEventListener('pointermove', (e) => { const r = box.getBoundingClientRect(); px = (e.clientX - r.left) / r.width; py = e.clientY - r.top; kick(); });
+    box.addEventListener('pointerleave', () => { py = -1; kick(); });
+    box.addEventListener('pointerdown', (e) => {
+      const r = box.getBoundingClientRect(); px = (e.clientX - r.left) / r.width;
+      st.forEach((s, i) => { s.v += 14 - i * 3; }); thud(500); kick();
+    });
+  }
+
+  // --- Gloves: damped pendulums; the cursor brushes them, a click punches ---
+  const gs = [...document.querySelectorAll<SVGGElement>('#gloves .g')].map((el, i) => ({ el, a: 0, w: 0, k: .0025 / +(el.dataset.len || 1), i }));
+  let gRun = false, lastX: number | null = null;
+  function swing() {
+    let moving = false;
+    gs.forEach((g) => {
+      g.w += -g.k * 10 * Math.sin(g.a) - .025 * g.w; g.a += g.w;
+      g.el.style.transform = `rotate(${(g.a * 180 / Math.PI).toFixed(2)}deg)`;
+      if (Math.abs(g.w) > .0003 || Math.abs(g.a) > .002) moving = true;
+    });
+    if (moving) requestAnimationFrame(swing); else gRun = false;
+  }
+  const push = () => { if (!gRun) { gRun = true; requestAnimationFrame(swing); } };
+  if (!reduce) {
+    gs.forEach((g) => {
+      g.el.addEventListener('pointermove', (e) => {
+        if (lastX !== null) g.w += Math.max(-.02, Math.min(.02, (lastX - e.clientX) * .0012));
+        lastX = e.clientX; push();
+      });
+      g.el.addEventListener('pointerleave', () => { lastX = null; });
+      g.el.addEventListener('pointerdown', () => {
+        g.w += g.i ? .07 : -.07; gs.forEach((o) => { if (o !== g) o.w += g.i ? .03 : -.03; });
+        thud(700); push();
+      });
+    });
+    // A small idle sway when the page opens
+    setTimeout(() => { gs[0].w = -.025; gs[1].w = .018; push(); }, 400);
+  }
+</script>

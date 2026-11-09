@@ -1,5 +1,6 @@
 ---
 import Page from '../../layouts/Page.astro';
+import Tape from '../../components/Tape.astro';
 import PriceBlock from '../../components/PriceBlock.astro';
 import Rules from '../../components/Rules.astro';
 import RoundLabel from '../../components/RoundLabel.astro';
@@ -19,6 +20,7 @@ import { isTodo, link } from '../../lib/util';
     <a href="#fit"><span class="mono muted">Функціональні</span><b>від 300 <small>грн</small></b></a>
   </div>
   <div id="box"><PriceBlock n="Раунд 01" title={prices[0].title} plans={prices[0].plans} anchor="box" /></div>
+  <Tape tilt={1.4} reverse />
   <div id="fit"><PriceBlock n="Раунд 02" title={prices[1].title} plans={prices[1].plans} anchor="fit" /></div>
   <section class="blk">
     <div class="wrap">

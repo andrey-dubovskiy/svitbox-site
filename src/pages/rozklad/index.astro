@@ -1,5 +1,6 @@
 ---
 import Page from '../../layouts/Page.astro';
+import Tape from '../../components/Tape.astro';
 import LiveNow from '../../components/LiveNow.astro';
 import ScheduleTable from '../../components/ScheduleTable.astro';
 import Rules from '../../components/Rules.astro';
@@ -16,6 +17,7 @@ import { link } from '../../lib/util';
 >
   <LiveNow slot="head" />
   <ScheduleTable track={schedule[0]} n="Раунд 01" />
+  <Tape tilt={1.4} reverse />
   <ScheduleTable track={schedule[1]} n="Раунд 02" />
   <Rules n="Раунд 03" />
   <section class="blk to-prices">

@@ -15,10 +15,23 @@ const { n, title, plans, anchor } = Astro.props;
     </div>
     <div class="plans">
       {plans.map((p) => (
-        <article class:list={['plan', { hot: p.badge }]}>
+        <article class:list={['plan', { hot: p.badge, ticket: !p.perSession }]}>
+          {!p.perSession && <span class="stub mono" aria-hidden="true">Вхід · 1 тренування · № {String(p.price * 7 % 9973).padStart(4, '0')}</span>}
           <header>
             <h3>{p.title}</h3>
-            {p.badge && <span class="badge mono">{p.badge}</span>}
+            {p.badge && (
+              <span class="belt" title={p.badge}>
+                <svg viewBox="0 0 160 56" aria-hidden="true">
+                  <rect x="0" y="16" width="160" height="24" rx="4" fill="#121211" stroke="#3a3a37"/>
+                  <path d="M6 22h148M6 34h148" stroke="#5a5a55" stroke-dasharray="3 3"/>
+                  <circle cx="18" cy="28" r="5" fill="#d6a640"/><circle cx="142" cy="28" r="5" fill="#d6a640"/>
+                  <path d="M58 4h44l14 24-14 24H58L44 28z" fill="#d6a640" stroke="#7b5a14" stroke-width="2"/>
+                  <path d="M64 12h32l9 16-9 16H64l-9-16z" fill="var(--red)"/>
+                  <path d="M80 18l3 6.5 7 .7-5.3 4.6 1.6 6.9L80 33l-6.3 3.7 1.6-6.9-5.3-4.6 7-.7z" fill="#f4f4f2"/>
+                </svg>
+                <span class="mono">{p.badge}</span>
+              </span>
+            )}
           </header>
           <p class="mono muted plan-days">{p.days}</p>
           <p class="plan-price"><b class="num" data-to={p.price}>{p.price}</b><span class="mono">{p.unit}</span></p>
@@ -37,7 +50,26 @@ const { n, title, plans, anchor } = Astro.props;
   .plan:hover { background: var(--surface); }
   .plan header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
   .plan h3 { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.8vw, 44px); line-height: .95; }
-  .plan .badge { background: var(--red); color: var(--fg); padding: 6px 10px; font-size: 11px; white-space: nowrap; }
+  .belt { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: none; }
+  .belt svg { width: 120px; height: auto; transition: transform .4s var(--ease-out); }
+  .belt .mono { font-size: 11px; color: #d6a640; }
+  .plan:hover .belt svg { transform: rotate(-4deg) scale(1.06); }
+  /* Single session looks like a fight-night ticket: notches and a torn-off stub */
+  .plan.ticket {
+    background: #121211; margin: 14px; box-shadow: inset 0 0 0 1px rgba(214,166,64,.45);
+    -webkit-mask: radial-gradient(circle at 0 50%, transparent 15px, #000 16px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 15px, #000 16px) right / 51% 100% no-repeat;
+            mask: radial-gradient(circle at 0 50%, transparent 15px, #000 16px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 15px, #000 16px) right / 51% 100% no-repeat;
+    padding-left: calc(clamp(24px, 3vw, 44px) + 34px);
+  }
+  .plan.ticket:hover { background: #171716; }
+  .plan + .plan.ticket { border-left: 0; }
+  .plan.ticket .stub { color: #d6a640; }
+  .plan .stub {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 34px; border-right: 2px dashed var(--line);
+    writing-mode: vertical-rl; transform: rotate(180deg); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; letter-spacing: .12em; color: var(--muted); border-left: 0;
+  }
+  .plan .stub { border-right: 0; border-left: 2px dashed var(--line); }
   .plan.hot { box-shadow: inset 0 3px 0 var(--red); }
   .plan-days, .plan-per { margin: 0; }
   .plan-price { margin: clamp(16px, 3vw, 40px) 0 0; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
