@@ -2,66 +2,98 @@
 import Page from '../../layouts/Page.astro';
 import Tape from '../../components/Tape.astro';
 import RoundLabel from '../../components/RoundLabel.astro';
-import { site, halls, socials } from '../../data/site';
-import { isTodo, link } from '../../lib/util';
+import { site, halls, visitFaq } from '../../data/site';
+import { isTodo } from '../../lib/util';
 
+const hall = halls[0];
 const enc = encodeURIComponent;
-const channels = [
-  { label: 'Подзвонити', value: site.phone.display, href: `tel:${site.phone.tel}` },
-  { label: 'Telegram', value: site.messengers.telegram === '#' ? '[посилання]' : 'Написати', href: site.messengers.telegram },
-  { label: 'Viber', value: site.messengers.viber === '#' ? '[посилання]' : 'Написати', href: site.messengers.viber },
-  { label: 'Пошта', value: site.email, href: `mailto:${site.email}` },
-  ...socials.filter((s) => !s.note).map((s) => ({ label: s.label, value: 'Відкрити ↗', href: s.href })),
+const fmt = (m: number) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+const week = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця', 'Субота', 'Неділя'];
+const modes = [
+  { id: 'driving', label: 'Авто' },
+  { id: 'transit', label: 'Транспорт' },
+  { id: 'walking', label: 'Пішки' },
 ];
+const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destination=${enc(hall.query)}&travelmode=${mode}`;
 ---
 <Page
   title="Контакти — Світ Боксу, Бровари"
-  description="Зал боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30, спорткомплекс «Манеж». Телефон +38 (073) 721 71 71."
+  description="Зал боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30, спорткомплекс «Манеж». Щодня 7:00–22:00. Телефон +38 (073) 721 71 71."
   current="kontakty/"
   kicker="Контакти"
   heading="Контакти"
-  lead="Зал у спорткомплексі «Манеж» у Броварах. Подзвоніть або напишіть — підберемо групу під ваш графік."
+  lead="Зал у спорткомплексі «Манеж» у Броварах. Подзвоніть — підберемо групу під ваш графік."
 >
   <div slot="head" class="call-card">
-    <span class="mono muted">Дзвоніть щодня з 7:00 до 22:00</span>
+    <span class="open-state mono" data-open={hall.open} data-close={hall.close}><i aria-hidden="true"></i><span>Зал працює щодня {fmt(hall.open)}–{fmt(hall.close)}</span></span>
     <a class="call-num" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
     <div class="call-row">
-      <button type="button" class="link" id="copyPhone" data-phone={site.phone.display}>Копіювати номер</button>
+      <button type="button" class="link" data-copy={site.phone.display} data-done="Номер скопійовано ✓">Копіювати номер</button>
       <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
     </div>
   </div>
 
+  <!-- Full-bleed dark map with a floating gym card (store-locator pattern) -->
+  <section class="mapx" id={hall.id} aria-label="Зал на карті">
+    <div class="mapx-map">
+      <iframe title={`Карта: ${hall.name}, ${hall.address}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1"
+        src={`https://maps.google.com/maps?q=${enc(hall.query)}&z=16&hl=uk&output=embed`}></iframe>
+      <span class="radar" aria-hidden="true"><i></i><i></i><i></i></span>
+      <button type="button" class="map-shield" id="mapShield"><span class="mono">Натисніть, щоб рухати карту</span></button>
+    </div>
+
+    <div class="wrap mapx-wrap">
+      <article class="gym-card">
+        <span class="corner mono"><i aria-hidden="true"></i>{hall.corner} · Бровари</span>
+        <h2>{hall.address}</h2>
+        <p class="gym-name">{hall.name}</p>
+        <p class="open-state big mono" data-open={hall.open} data-close={hall.close}><i aria-hidden="true"></i><span>Щодня {fmt(hall.open)}–{fmt(hall.close)}</span></p>
+
+        <ol class="week mono" aria-label="Години роботи">
+          {week.map((d, i) => <li data-dow={i + 1}><span>{d}</span><span>{fmt(hall.open)}–{fmt(hall.close)}</span></li>)}
+        </ol>
+
+        <div class="route">
+          <div class="modes" role="radiogroup" aria-label="Як добиратись">
+            {modes.map((m, i) => (
+              <button type="button" role="radio" class="mono" data-mode={m.id} data-href={dir(m.id)} aria-checked={i === 0 ? 'true' : 'false'}>{m.label}</button>
+            ))}
+          </div>
+          <a class="btn" id="routeBtn" href={dir('driving')} target="_blank" rel="noopener"><span>Прокласти маршрут</span><span class="arr">↗</span></a>
+          <button type="button" class="link" data-copy={`Бровари, ${hall.address}, ${hall.name}`} data-done="Адресу скопійовано ✓">Копіювати адресу</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section class="blk">
     <div class="wrap">
-      <RoundLabel n="Раунд 01" label="Зал" />
-      <div class="sched-head">
-        <h2 class="h2" data-punch>Де тренуємось</h2>
-        <p class="muted">Усі групи — в одному залі. Приходьте за 10–15 хвилин до початку, щоб переодягнутись.</p>
-      </div>
-      <div class="halls">
-        {halls.map((h, i) => (
-          <article class:list={['hall', { red: i === 0 }]} id={h.id}>
-            <div class="hall-info">
-              <span class="corner mono"><i aria-hidden="true"></i>{h.corner}</span>
-              <h3>{h.address}</h3>
-              <p class="hall-name">{h.name}</p>
-              <ul class="mono">
-                <li>{h.hours}</li>
-                {h.notes.map((n) => <li>{n}</li>)}
-                <li class:list={[{ todo: isTodo(h.find) }]}>{h.find}</li>
-              </ul>
-              <div class="hall-btns">
-                <a class="btn" href={`https://www.google.com/maps/dir/?api=1&destination=${enc(h.query)}`} target="_blank" rel="noopener"><span>Маршрут</span><span class="arr">↗</span></a>
-                <a class="link" href="#signup">Записатись на тренування</a>
-              </div>
-            </div>
-            <div class="hall-map">
-              <iframe title={`Карта: ${h.name}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                src={`https://maps.google.com/maps?q=${enc(h.query)}&z=16&hl=uk&output=embed`}></iframe>
-              <span class="pin" aria-hidden="true"></span>
-            </div>
-          </article>
+      <RoundLabel n="Раунд 01" label="Дорога" />
+      <h2 class="h2" data-punch>Як дістатись</h2>
+      <ol class="get-here m-rail">
+        {hall.getHere.map((g, i) => (
+          <li>
+            <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+            <b>{g.mode}</b>
+            {g.text && <p>{g.text}</p>}
+            {g.todo && <p class:list={[{ todo: isTodo(g.todo) }]}>{g.todo}</p>}
+          </li>
         ))}
+      </ol>
+
+      <div class="find">
+        <div class="find-head">
+          <h3 class="mono">Як знайти вхід</h3>
+          <p class:list={['muted', { todo: isTodo(hall.find) }]}>{hall.find}</p>
+        </div>
+        <div class="find-photos m-rail">
+          {hall.photos.map((p, i) => (
+            <figure class="ph">
+              <span class="step mono">{String(i + 1).padStart(2, '0')}</span>
+              <figcaption class="cap"><b>{p.cap}</b><br />Фото з фотосесії: {p.brief}</figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -69,78 +101,157 @@ const channels = [
   <Tape tilt={1.4} reverse />
 
   <section class="blk">
-    <div class="wrap">
-      <RoundLabel n="Раунд 02" label="Звʼязок" />
-      <h2 class="h2" data-punch>Напишіть нам</h2>
-      <ul class="channels">
-        {channels.map((c) => (
-          <li>
-            <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel={c.href.startsWith('http') ? 'noopener' : undefined}>
-              <b>{c.label}</b>
-              <span class:list={['mono', { todo: isTodo(c.value) }]}>{c.value}</span>
-              <span class="go" aria-hidden="true">→</span>
-            </a>
-          </li>
+    <div class="wrap visit">
+      <div>
+        <RoundLabel n="Раунд 02" label="Перед візитом" />
+        <h2 class="h2" data-punch>Питання до гонгу</h2>
+      </div>
+      <div class="faq-list">
+        {visitFaq.map((f) => (
+          <details>
+            <summary>{f.q}<span aria-hidden="true">+</span></summary>
+            <p class:list={[{ todo: isTodo(f.a) }]}>{f.a}</p>
+          </details>
         ))}
-      </ul>
-      <p class="muted other-note">Хочете спершу подивитись на групу? <a class="link-inline" href={link('rozklad/')}>Розклад тренувань →</a></p>
+      </div>
     </div>
   </section>
 </Page>
 
 <script>
-  const btn = document.getElementById('copyPhone')!;
-  btn.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(btn.dataset.phone!); btn.textContent = 'Скопійовано ✓'; }
-    catch { btn.textContent = btn.dataset.phone!; }
-    setTimeout(() => { btn.textContent = 'Копіювати номер'; }, 2000);
+  import { kyivNow } from '../../scripts/schedule-live';
+
+  // Copy buttons (phone, address)
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+    const label = b.textContent;
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy!); b.textContent = b.dataset.done!; }
+      catch { b.textContent = b.dataset.copy!; }
+      setTimeout(() => { b.textContent = label; }, 2200);
+    });
   });
+
+  // Open / closed right now (Kyiv time) and today's row in the week list
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const hm = (m: number) => `${Math.floor(m / 60)}:${pad(m % 60)}`;
+  function status() {
+    const { day, min } = kyivNow();
+    document.querySelectorAll<HTMLElement>('.open-state').forEach((el) => {
+      const open = +el.dataset.open!, close = +el.dataset.close!;
+      const isOpen = min >= open && min < close;
+      el.classList.toggle('is-open', isOpen);
+      const left = close - min;
+      el.querySelector('span')!.textContent = isOpen
+        ? (left <= 60 ? `Відчинено · зачиняємось через ${left} хв` : `Відчинено зараз · до ${hm(close)}`)
+        : `Зачинено · відчиняємось ${min < open ? 'сьогодні' : 'завтра'} о ${hm(open)}`;
+    });
+    document.querySelectorAll<HTMLElement>('.week li').forEach((li) => li.classList.toggle('today', +li.dataset.dow! === day));
+  }
+  status(); setInterval(status, 30000);
+
+  // Travel mode switch for the route button
+  const routeBtn = document.getElementById('routeBtn') as HTMLAnchorElement;
+  document.querySelectorAll<HTMLButtonElement>('.modes button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.modes button').forEach((o) => o.setAttribute('aria-checked', String(o === b)));
+    routeBtn.href = b.dataset.href!;
+  }));
+
+  // The map does not hijack page scroll: it becomes interactive after a click
+  const shield = document.getElementById('mapShield')!;
+  const map = shield.parentElement!;
+  shield.addEventListener('click', () => map.classList.add('live'));
+  map.addEventListener('mouseleave', () => map.classList.remove('live'));
 </script>
 
 <style is:global>
-  .call-card { border: 1px solid var(--line); background: var(--surface); padding: 20px 22px; display: flex; flex-direction: column; gap: 6px; }
+  .call-card { border: 1px solid var(--line); background: var(--surface); padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
   .call-num { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(30px, 4.4vw, 64px); line-height: .95; white-space: nowrap; transition: color .25s; }
-  @media (max-width: 560px) { .call-num { font-size: min(9.4vw, 44px); } }
   .call-num:hover { color: var(--red); }
+  @media (max-width: 560px) { .call-num { font-size: min(9.4vw, 44px); } }
   .call-row { display: flex; flex-wrap: wrap; gap: 0 28px; }
-  .call-row .link { height: 44px; font-size: 13px; text-transform: none; letter-spacing: 0; }
+  .call-row .link, .route .link { height: 44px; font-size: 13px; text-transform: none; letter-spacing: 0; }
 
-  .halls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .hall { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); border: 1px solid var(--line); scroll-margin-top: 24px; }
-  .hall-info { padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 12px; position: relative; }
-  .hall-info::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: #e8e8e4; }
-  .hall.red .hall-info::before { background: var(--red); }
-  .corner { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); }
-  .corner i { width: 14px; height: 14px; background: #e8e8e4; }
-  .hall.red .corner i { background: var(--red); }
-  .hall h3 { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(38px, 4.2vw, 64px); line-height: .9; margin-top: 8px; }
-  .hall-name { margin: 0; font-family: var(--serif); font-size: 19px; }
-  .hall ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; color: var(--muted); }
-  .hall ul li::before { content: "— "; color: var(--red); }
-  .hall-btns { margin-top: auto; padding-top: 20px; display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
-  .hall-map { position: relative; min-height: 380px; border-left: 1px solid var(--line); background: var(--surface); overflow: hidden; }
-  .hall-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) invert(.92) contrast(.9) brightness(.95); transition: filter .5s; }
-  .hall-map:hover iframe { filter: grayscale(.2) invert(0) contrast(1); }
-  .hall-map .pin { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -30px 0 0 -11px; background: var(--red); transform: rotate(45deg); border-radius: 50% 50% 0 50%; pointer-events: none; box-shadow: 0 0 0 6px rgba(255,41,54,.25); animation: pinPulse 2s ease-in-out infinite; transition: opacity .3s; }
-  .hall-map:hover .pin { opacity: 0; }
-  @keyframes pinPulse { 50% { box-shadow: 0 0 0 14px rgba(255,41,54,0); } }
+  .open-state { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); }
+  .open-state i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
+  .open-state.is-open { color: var(--fg); }
+  .open-state.is-open i { background: #3ddc84; box-shadow: 0 0 0 0 rgba(61,220,132,.6); animation: openPulse 1.8s ease-out infinite; }
+  @keyframes openPulse { to { box-shadow: 0 0 0 10px rgba(61,220,132,0); } }
+  .open-state.big { font-size: 13px; margin: 0; }
 
-  .channels { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; border-top: 1px solid var(--line); }
-  .channels a { display: grid; grid-template-columns: minmax(0, 1fr) auto 56px; gap: 24px; align-items: center; padding-block: 20px; border-bottom: 1px solid var(--line); }
-  .channels b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(32px, 4vw, 60px); line-height: .95; transition: transform .35s var(--ease-io), color .25s; }
-  .channels .go { width: 48px; height: 48px; border: 1px solid var(--line); display: grid; place-items: center; transition: background .25s, color .25s, transform .35s; }
-  @media (hover: hover) {
-    .channels a:hover b { transform: translateX(14px); color: var(--red); }
-    .channels a:hover .go { background: var(--fg); color: var(--bg); transform: rotate(-45deg); }
+  /* Map section */
+  .mapx { position: relative; min-height: min(86vh, 820px); border-bottom: 1px solid var(--line); display: flex; align-items: center; overflow: hidden; scroll-margin-top: 0; }
+  .mapx-map { position: absolute; inset: 0; background: #111; }
+  .mapx-map iframe { position: absolute; inset: -60px 0 -60px 0; width: 100%; height: calc(100% + 120px); border: 0; filter: grayscale(1) invert(.92) contrast(.88) brightness(.9); }
+  .mapx-map::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgba(5,5,5,.88) 0%, rgba(5,5,5,.45) 34%, rgba(5,5,5,0) 58%), linear-gradient(180deg, var(--bg) 0, transparent 14%, transparent 86%, var(--bg) 100%); }
+  .map-shield { position: absolute; inset: 0; z-index: 2; background: transparent; border: 0; cursor: pointer; display: flex; align-items: flex-end; justify-content: flex-end; padding: 24px max(var(--gxr), 4vw); }
+  .map-shield span { background: rgba(5,5,5,.8); border: 1px solid var(--line); padding: 10px 14px; color: var(--muted); opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
+  .map-shield:hover span, .map-shield:focus-visible span { opacity: 1; transform: none; }
+  .mapx-map.live .map-shield { pointer-events: none; }
+  .mapx-map.live .map-shield span { opacity: 0; }
+  .radar { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 1; pointer-events: none; }
+  .radar i { position: absolute; left: -90px; top: -110px; width: 180px; height: 180px; border: 2px solid var(--red); border-radius: 50%; opacity: 0; animation: radar 3s ease-out infinite; }
+  .radar i:nth-child(2) { animation-delay: 1s; } .radar i:nth-child(3) { animation-delay: 2s; }
+  @keyframes radar { 0% { transform: scale(.15); opacity: .9; } 100% { transform: scale(1.4); opacity: 0; } }
+  .mapx-wrap { position: relative; z-index: 3; pointer-events: none; padding-block: 56px; }
+  .gym-card {
+    pointer-events: auto; width: min(440px, 100%); background: rgba(10,10,9,.94); border: 1px solid var(--line);
+    padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 10px; position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6); backdrop-filter: blur(6px);
   }
-  .other-note { margin: 28px 0 0; max-width: 60ch; }
-  .link-inline { color: var(--fg); border-bottom: 1px solid var(--red); white-space: nowrap; }
+  .gym-card::before { content: ""; position: absolute; left: -1px; top: -1px; bottom: -1px; width: 6px; background: var(--red); }
+  .corner { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); }
+  .corner i { width: 12px; height: 12px; background: var(--red); }
+  .gym-card h2 { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(40px, 4vw, 58px); line-height: .9; margin-top: 6px; }
+  .gym-name { margin: 0 0 4px; font-family: var(--serif); font-size: 19px; }
+  .week { list-style: none; margin: 8px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+  .week li { display: flex; justify-content: space-between; padding: 3px 0; }
+  .week li.today { color: var(--fg); font-weight: 500; }
+  .week li.today span:first-child::after { content: " · сьогодні"; color: var(--red); }
+  .route { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); }
+  .modes button { height: 40px; background: none; border: 0; border-right: 1px solid var(--line); color: var(--muted); cursor: pointer; font-size: 12px; }
+  .modes button:last-child { border-right: 0; }
+  .modes button[aria-checked="true"] { background: var(--fg); color: var(--bg); }
+  .route .btn { justify-content: space-between; }
+  .route .link { align-self: flex-start; }
+
+  /* How to get here */
+  .get-here { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .get-here li { padding: 28px 24px 32px 0; display: flex; flex-direction: column; gap: 10px; border-right: 1px solid var(--line); }
+  .get-here li + li { padding-left: 24px; }
+  .get-here li:last-child { border-right: 0; }
+  .get-here .mono { color: var(--red); }
+  .get-here b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.6vw, 40px); line-height: .95; }
+  .get-here p { margin: 0; color: var(--muted); }
+  .find { margin-top: clamp(48px, 6vw, 88px); }
+  .find-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 32px; align-items: baseline; margin-bottom: 20px; }
+  .find-head h3 { color: var(--fg); }
+  .find-head p { margin: 0; }
+  .find-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .find-photos .ph { aspect-ratio: 4 / 3; margin: 0; flex-direction: column; justify-content: space-between; align-items: flex-start; }
+  .find-photos .step { color: var(--red); position: relative; z-index: 1; padding: 4px 0 0 18px; }
+  .find-photos .cap b { color: var(--fg); font-weight: 500; }
+
+  /* Visit FAQ */
+  .visit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px clamp(32px, 6vw, 96px); align-items: start; }
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; padding: 22px 0; font-size: 19px; font-weight: 500; }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary span { color: var(--red); font-family: var(--mono); transition: transform .3s; }
+  .faq-list details[open] summary span { transform: rotate(45deg); }
+  .faq-list details p { margin: 0 0 22px; color: var(--muted); max-width: 56ch; }
+
   @media (max-width: 980px) {
-    .hall { grid-template-columns: minmax(0, 1fr); }
-    .hall-map { border-left: 0; border-top: 1px solid var(--line); min-height: 280px; }
-    .hall-btns .btn { width: 100%; justify-content: center; }
-    .channels a { grid-template-columns: minmax(0, 1fr) 44px; gap: 4px 16px; }
-    .channels a .mono { grid-row: 2; grid-column: 1; }
-    .channels .go { grid-row: 1 / span 2; grid-column: 2; width: 44px; height: 44px; }
+    .mapx { display: block; min-height: 0; }
+    .mapx-map { position: relative; height: 62vh; min-height: 360px; }
+    .mapx-map::after { background: linear-gradient(180deg, var(--bg) 0, transparent 14%, transparent 80%, var(--bg) 100%); }
+    .map-shield span { opacity: 1; transform: none; }
+    .mapx-wrap { padding-block: 0 40px; margin-top: -64px; }
+    .gym-card { width: 100%; }
+    .get-here li, .get-here li + li { padding: 22px; }
+    .find-photos .ph { min-height: 220px; }
+    .visit { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
