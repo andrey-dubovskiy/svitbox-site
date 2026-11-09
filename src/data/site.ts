@@ -33,7 +33,7 @@ export const mainNav = [
 export const pages = [
   { label: 'Розклад', href: 'rozklad/', text: 'Групи за віком, дні та час' },
   { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
-  { label: 'Контакти', href: 'kontakty/', text: 'Два зали в Броварах, карта і месенджери' },
+  { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },
 ];
 
 export const socials = [
@@ -43,7 +43,7 @@ export const socials = [
   { label: 'Telegram', href: '#', note: '[посилання]' },
 ];
 
-// Two gyms. Source: the club's old site (svitbox.com.ua/contact). Confirm before launch.
+// Gym(s). Source: the club's old site (svitbox.com.ua/contact). Confirm before launch.
 export const halls = [
   {
     id: 'manezh',
@@ -51,16 +51,6 @@ export const halls = [
     name: 'Спорткомплекс «Манеж»',
     address: 'вул. Героїв України, 30',
     query: 'Бровари, вулиця Героїв України, 30, спорткомплекс Манеж',
-    hours: 'Щодня 7:00–22:00',
-    notes: ['Є паркування'],
-    find: '[як знайти вхід: орієнтир, поверх]',
-  },
-  {
-    id: 'krona',
-    corner: 'Білий кут',
-    name: '«Крона Парк» · Світ Боксу II',
-    address: 'вул. Симоненка, 30А',
-    query: 'Бровари, вулиця Симоненка, 30А, Крона Парк',
     hours: 'Щодня 7:00–22:00',
     notes: ['Є паркування'],
     find: '[як знайти вхід: орієнтир, поверх]',

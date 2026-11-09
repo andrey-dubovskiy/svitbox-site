@@ -16,11 +16,11 @@ const channels = [
 ---
 <Page
   title="Контакти — Світ Боксу, Бровари"
-  description="Два зали боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30 (СК «Манеж») і вул. Симоненка, 30А («Крона Парк»). Телефон +38 (073) 721 71 71."
+  description="Зал боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30, спорткомплекс «Манеж». Телефон +38 (073) 721 71 71."
   current="kontakty/"
   kicker="Контакти"
   heading="Контакти"
-  lead="Два зали в Броварах. Подзвоніть або напишіть — підберемо зал і групу під ваш графік."
+  lead="Зал у спорткомплексі «Манеж» у Броварах. Подзвоніть або напишіть — підберемо групу під ваш графік."
 >
   <div slot="head" class="call-card">
     <span class="mono muted">Дзвоніть щодня з 7:00 до 22:00</span>
@@ -33,10 +33,10 @@ const channels = [
 
   <section class="blk">
     <div class="wrap">
-      <RoundLabel n="Раунд 01" label="Зали" />
+      <RoundLabel n="Раунд 01" label="Зал" />
       <div class="sched-head">
-        <h2 class="h2" data-punch>Два кути рингу</h2>
-        <p class="muted">Обидва зали — у Броварах. Розклад груп однаковий, уточніть при записі, у якому залі ваша група.</p>
+        <h2 class="h2" data-punch>Де тренуємось</h2>
+        <p class="muted">Усі групи — в одному залі. Приходьте за 10–15 хвилин до початку, щоб переодягнутись.</p>
       </div>
       <div class="halls">
         {halls.map((h, i) => (
@@ -52,7 +52,7 @@ const channels = [
               </ul>
               <div class="hall-btns">
                 <a class="btn" href={`https://www.google.com/maps/dir/?api=1&destination=${enc(h.query)}`} target="_blank" rel="noopener"><span>Маршрут</span><span class="arr">↗</span></a>
-                <a class="link" href="#signup">Записатись у цей зал</a>
+                <a class="link" href="#signup">Записатись на тренування</a>
               </div>
             </div>
             <div class="hall-map">

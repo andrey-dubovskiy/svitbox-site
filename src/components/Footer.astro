@@ -31,7 +31,7 @@ const letters = [...site.name];
     <nav aria-label="Сторінки"><h3 class="mono">Сторінки</h3><ul>
       <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('#first')}>Перше тренування</a></li><li><a href="#">Політика конфіденційності</a></li>
     </ul></nav>
-    <div><h3 class="mono">Зали</h3><ul>
+    <div><h3 class="mono">Зал</h3><ul>
       {halls.map((h) => <li><a href={link('kontakty/#' + h.id)}>{h.address}</a></li>)}
       <li class="muted">{site.hours[0]}</li>
       <li class="muted">У Броварах зараз <b class="sf-live" id="sfTime">--:--</b></li>
