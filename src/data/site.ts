@@ -19,6 +19,15 @@ export const site = {
   },
 };
 
+// The club's own Google Business profile (not the sports complex). Update the numbers from time to time.
+export const google = {
+  rating: '4,8',
+  count: 46,
+  asOf: '09.11.2026',
+  name: 'Секція боксу в Броварах - "Світ Боксу"',
+  url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Секція боксу в Броварах "Світ Боксу" Героїв України'),
+};
+
 export const mainNav = [
   { label: 'Програми', href: '#programs' },
   { label: 'Клуб', href: '#club' },
@@ -50,7 +59,7 @@ export const halls = [
     corner: 'Червоний кут',
     name: 'Спорткомплекс «Манеж»',
     address: 'вул. Героїв України, 30',
-    query: 'Бровари, вулиця Героїв України, 30, спорткомплекс Манеж',
+    query: 'Секція боксу в Броварах "Світ Боксу", вулиця Героїв України, Бровари',
     notes: ['Є паркування'],
     find: '[як знайти вхід: орієнтир, поверх]',
     getHere: [

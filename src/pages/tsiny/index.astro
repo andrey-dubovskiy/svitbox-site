@@ -6,6 +6,7 @@ import Rules from '../../components/Rules.astro';
 import RoundLabel from '../../components/RoundLabel.astro';
 import { prices, otherPrices } from '../../data/schedule';
 import { isTodo, link } from '../../lib/util';
+import { google } from '../../data/site';
 ---
 <Page
   title="Ціни на тренування з боксу — Світ Боксу, Бровари"
@@ -18,6 +19,7 @@ import { isTodo, link } from '../../lib/util';
   <div slot="head" class="price-summary">
     <a href="#box"><span class="mono muted">Бокс</span><b>від 1800 <small>грн / міс</small></b></a>
     <a href="#fit"><span class="mono muted">Функціональні</span><b>від 300 <small>грн</small></b></a>
+    <a class="trust mono" href={google.url} target="_blank" rel="noopener"><span><b>★ {google.rating}</b> у Google · {google.count} відгуків</span><span>120+ боксерів · з 2012 року</span></a>
   </div>
   <div id="box"><PriceBlock n="Раунд 01" title={prices[0].title} plans={prices[0].plans} anchor="box" /></div>
   <Tape tilt={1.4} reverse />
@@ -54,6 +56,8 @@ import { isTodo, link } from '../../lib/util';
   .price-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); }
   .price-summary a { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; transition: background .25s; }
   .price-summary a + a { border-left: 1px solid var(--line); }
+  .price-summary .trust { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; border-left: 0 !important; border-top: 1px solid var(--line); padding-block: 12px; color: var(--muted); font-size: 12px; }
+  .price-summary .trust b { color: #f4b400; font-weight: 500; }
   .price-summary a:hover { background: var(--surface); }
   .price-summary b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(34px, 3.4vw, 52px); line-height: .9; }
   .price-summary small { font-family: var(--mono); font-style: normal; font-weight: 400; font-size: 12px; color: var(--muted); }

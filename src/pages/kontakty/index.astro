@@ -2,7 +2,7 @@
 import Page from '../../layouts/Page.astro';
 import Tape from '../../components/Tape.astro';
 import RoundLabel from '../../components/RoundLabel.astro';
-import { site, halls, visitFaq } from '../../data/site';
+import { site, halls, visitFaq, google } from '../../data/site';
 import { isTodo, link } from '../../lib/util';
 import { schedule } from '../../data/schedule';
 
@@ -58,6 +58,7 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
         <span class="corner mono"><i aria-hidden="true"></i>{hall.corner} · Бровари</span>
         <h2>{hall.address}</h2>
         <p class="gym-name">{hall.name}</p>
+        <a class="gym-rate mono" href={google.url} target="_blank" rel="noopener"><b>★ {google.rating}</b> · {google.count} відгуків у Google ↗</a>
         <p class="open-state big mono"><i aria-hidden="true"></i><span>Тренування з понеділка по пʼятницю</span></p>
 
         <ol class="week mono" aria-label="Години тренувань клубу" data-sessions={JSON.stringify(sessions)}>
@@ -234,6 +235,9 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
   .corner i { width: 12px; height: 12px; background: var(--red); }
   .gym-card h2 { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(40px, 4vw, 58px); line-height: .9; margin-top: 6px; }
   .gym-name { margin: 0 0 4px; font-family: var(--serif); font-size: 19px; }
+  .gym-rate { color: var(--muted); font-size: 12px; align-self: flex-start; }
+  .gym-rate b { color: #f4b400; font-weight: 500; }
+  .gym-rate:hover { color: var(--fg); }
   .week { list-style: none; margin: 8px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
   .week li { display: flex; justify-content: space-between; padding: 3px 0; }
   .week li.today { color: var(--fg); font-weight: 500; }
