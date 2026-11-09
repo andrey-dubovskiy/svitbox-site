@@ -3,11 +3,22 @@ import Page from '../../layouts/Page.astro';
 import Tape from '../../components/Tape.astro';
 import RoundLabel from '../../components/RoundLabel.astro';
 import { site, halls, visitFaq } from '../../data/site';
-import { isTodo } from '../../lib/util';
+import { isTodo, link } from '../../lib/util';
+import { schedule } from '../../data/schedule';
 
 const hall = halls[0];
 const enc = encodeURIComponent;
-const fmt = (m: number) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+// Club hours come from the training schedule: each day's sessions merged into time windows
+const sessions = schedule.flatMap((t) => t.groups.map((g) => ({ name: g.name, days: g.days, from: toMin(g.from), to: toMin(g.to) })));
+const windows = [1, 2, 3, 4, 5, 6, 7].map((d) => {
+  const list = sessions.filter((s) => s.days.includes(d)).map((s) => [s.from, s.to]).sort((a, b) => a[0] - b[0]);
+  const out: number[][] = [];
+  list.forEach(([a, b]) => { const last = out[out.length - 1]; if (last && a <= last[1]) last[1] = Math.max(last[1], b); else out.push([a, b]); });
+  return out;
+});
+const dayText = (d: number) => windows[d].length ? windows[d].map(([a, b]) => `${fmt(a)}–${fmt(b)}`).join(', ') : 'Вихідний';
 const week = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця', 'Субота', 'Неділя'];
 const modes = [
   { id: 'driving', label: 'Авто' },
@@ -18,14 +29,14 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
 ---
 <Page
   title="Контакти — Світ Боксу, Бровари"
-  description="Зал боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30, спорткомплекс «Манеж». Щодня 7:00–22:00. Телефон +38 (073) 721 71 71."
+  description="Зал боксерського клубу «Світ Боксу» у Броварах: вул. Героїв України, 30, спорткомплекс «Манеж». Тренування з понеділка по пʼятницю. Телефон +38 (073) 721 71 71."
   current="kontakty/"
   kicker="Контакти"
   heading="Контакти"
   lead="Зал у спорткомплексі «Манеж» у Броварах. Подзвоніть — підберемо групу під ваш графік."
 >
   <div slot="head" class="call-card">
-    <span class="open-state mono" data-open={hall.open} data-close={hall.close}><i aria-hidden="true"></i><span>Зал працює щодня {fmt(hall.open)}–{fmt(hall.close)}</span></span>
+    <span class="open-state mono"><i aria-hidden="true"></i><span>Тренування з понеділка по пʼятницю</span></span>
     <a class="call-num" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
     <div class="call-row">
       <button type="button" class="link" data-copy={site.phone.display} data-done="Номер скопійовано ✓">Копіювати номер</button>
@@ -47,11 +58,12 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
         <span class="corner mono"><i aria-hidden="true"></i>{hall.corner} · Бровари</span>
         <h2>{hall.address}</h2>
         <p class="gym-name">{hall.name}</p>
-        <p class="open-state big mono" data-open={hall.open} data-close={hall.close}><i aria-hidden="true"></i><span>Щодня {fmt(hall.open)}–{fmt(hall.close)}</span></p>
+        <p class="open-state big mono"><i aria-hidden="true"></i><span>Тренування з понеділка по пʼятницю</span></p>
 
-        <ol class="week mono" aria-label="Години роботи">
-          {week.map((d, i) => <li data-dow={i + 1}><span>{d}</span><span>{fmt(hall.open)}–{fmt(hall.close)}</span></li>)}
+        <ol class="week mono" aria-label="Години тренувань клубу" data-sessions={JSON.stringify(sessions)}>
+          {week.map((d, i) => <li data-dow={i + 1} class:list={[{ off: !windows[i].length }]}><span>{d}</span><span>{dayText(i)}</span></li>)}
         </ol>
+        <a class="mono week-link" href={link('rozklad/')}>Розклад груп →</a>
 
         <div class="route">
           <div class="modes" role="radiogroup" aria-label="Як добиратись">
@@ -131,19 +143,30 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
     });
   });
 
-  // Open / closed right now (Kyiv time) and today's row in the week list
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const hm = (m: number) => `${Math.floor(m / 60)}:${pad(m % 60)}`;
+  // Training now / next training (club schedule, Kyiv time) and today's row in the week list
+  type S = { name: string; days: number[]; from: number; to: number };
+  const sessions: S[] = JSON.parse(document.querySelector<HTMLElement>('.week')!.dataset.sessions!);
+  const hm = (m: number) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+  const dayWords = ['', 'у понеділок', 'у вівторок', 'у середу', 'у четвер', 'у пʼятницю', 'у суботу', 'у неділю'];
   function status() {
     const { day, min } = kyivNow();
+    const now = sessions.filter((s) => s.days.includes(day) && s.from <= min && min < s.to);
+    let text = '';
+    if (now.length) {
+      const end = Math.min(...now.map((s) => s.to));
+      text = `Зараз тренування: ${now.map((s) => s.name).join(', ')} · до ${hm(end)}`;
+    } else {
+      for (let k = 0; k < 8 && !text; k++) {
+        const d = ((day - 1 + k) % 7) + 1;
+        const next = sessions.filter((s) => s.days.includes(d) && (k > 0 || s.from > min)).sort((a, b) => a.from - b.from)[0];
+        if (!next) continue;
+        const when = k === 0 ? `сьогодні о ${hm(next.from)}` : k === 1 ? `завтра о ${hm(next.from)}` : `${dayWords[d]} о ${hm(next.from)}`;
+        text = `${k === 0 ? 'Перерва' : day > 5 ? 'Сьогодні вихідний' : 'На сьогодні все'} · наступне тренування ${when}`;
+      }
+    }
     document.querySelectorAll<HTMLElement>('.open-state').forEach((el) => {
-      const open = +el.dataset.open!, close = +el.dataset.close!;
-      const isOpen = min >= open && min < close;
-      el.classList.toggle('is-open', isOpen);
-      const left = close - min;
-      el.querySelector('span')!.textContent = isOpen
-        ? (left <= 60 ? `Відчинено · зачиняємось через ${left} хв` : `Відчинено зараз · до ${hm(close)}`)
-        : `Зачинено · відчиняємось ${min < open ? 'сьогодні' : 'завтра'} о ${hm(open)}`;
+      el.classList.toggle('is-open', now.length > 0);
+      el.querySelector('span')!.textContent = text;
     });
     document.querySelectorAll<HTMLElement>('.week li').forEach((li) => li.classList.toggle('today', +li.dataset.dow! === day));
   }
@@ -214,7 +237,9 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
   .week { list-style: none; margin: 8px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
   .week li { display: flex; justify-content: space-between; padding: 3px 0; }
   .week li.today { color: var(--fg); font-weight: 500; }
+  .week li.off span:last-child { color: rgba(244,244,242,.3); }
   .week li.today span:first-child::after { content: " · сьогодні"; color: var(--red); }
+  .week-link { color: var(--fg); align-self: flex-start; border-bottom: 1px solid var(--red); padding-bottom: 2px; font-size: 12px; }
   .route { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
   .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); }
   .modes button { height: 40px; background: none; border: 0; border-right: 1px solid var(--line); color: var(--muted); cursor: pointer; font-size: 12px; }
