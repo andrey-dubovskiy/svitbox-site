@@ -1,0 +1,107 @@
+---
+// One schedule table (boxing or functional). Desktop: groups × days grid.
+// Phones: day tabs with a list of that day's trainings. Today and the training
+// going on right now are highlighted by src/scripts/schedule-live.ts.
+import RoundLabel from './RoundLabel.astro';
+import { days, daysFull, type Track } from '../data/schedule';
+interface Props { track: Track; n: string; }
+const { track, n } = Astro.props;
+const byDay = days.map((_, i) =>
+  track.groups.filter((g) => g.days.includes(i + 1)).sort((a, b) => a.from.localeCompare(b.from)));
+---
+<section class="blk sched" id={track.id}>
+  <div class="wrap">
+    <RoundLabel n={n} label={track.title} />
+    <div class="sched-head">
+      <h2 class="h2" data-punch>{track.title}</h2>
+      <p class="muted">{track.note}</p>
+    </div>
+
+    <table class="tt">
+      <caption class="sr-only">{track.title}: розклад з понеділка по пʼятницю</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="mono">Група</th>
+          {daysFull.map((d, i) => <th scope="col" class="mono" data-day={i + 1}>{d}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {track.groups.map((g) => (
+          <tr>
+            <th scope="row"><b>{g.name}</b><span class="mono">{g.meta}</span></th>
+            {days.map((_, i) => g.days.includes(i + 1)
+              ? <td data-day={i + 1} data-from={g.from} data-to={g.to}><span class="t">{g.from}<i>–</i>{g.to}</span></td>
+              : <td data-day={i + 1} class="off"><span aria-label="немає">—</span></td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <div class="tt-m">
+      <div class="tt-tabs" role="tablist" aria-label="День тижня">
+        {days.map((d, i) => (
+          <button type="button" role="tab" class="mono" data-tab={i + 1} aria-selected={i === 0 ? 'true' : 'false'}>{d}</button>
+        ))}
+      </div>
+      {byDay.map((list, i) => (
+        <ol class="tt-day" data-panel={i + 1} hidden={i !== 0} aria-label={daysFull[i]}>
+          {list.map((g) => (
+            <li data-day={i + 1} data-from={g.from} data-to={g.to}>
+              <span class="t">{g.from}<i>–</i>{g.to}</span>
+              <span><b>{g.name}</b><span class="mono">{g.meta}</span></span>
+            </li>
+          ))}
+        </ol>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .tt { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .tt th, .tt td { border-bottom: 1px solid var(--line); text-align: left; padding: 22px 16px; vertical-align: middle; }
+  .tt thead th { color: var(--muted); font-weight: 500; padding-block: 14px; border-bottom-color: var(--fg); }
+  .tt thead th:first-child { width: 28%; padding-left: 0; }
+  .tt tbody th { padding-left: 0; }
+  .tt tbody th b {
+    display: block; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase;
+    font-size: clamp(26px, 2.6vw, 40px); line-height: .95;
+  }
+  .tt tbody th .mono { color: var(--muted); font-size: 12px; }
+  .tt td .t { font-family: var(--mono); font-size: clamp(14px, 1.15vw, 17px); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tt .t i { font-style: normal; color: var(--muted); margin-inline: 2px; }
+  .tt td.off { color: rgba(244,244,242,.25); }
+  .tt tbody tr { transition: background .25s; }
+  .tt tbody tr:hover { background: var(--surface); }
+  .tt tbody tr:hover th b { color: var(--red); }
+  /* Today's column */
+  .tt .today { background: rgba(255,41,54,.07); }
+  .tt thead th.today { color: var(--red); border-bottom-color: var(--red); }
+  .tt thead th.today::after { content: " · сьогодні"; }
+  /* Training happening right now / next one today */
+  .tt td.live, .tt-day li.live { background: var(--red); color: var(--fg); }
+  .tt td.live .t i, .tt-day li.live .t i { color: var(--fg); }
+  .tt td.live .t::after { content: "Зараз"; display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+  .tt td.next, .tt-day li.next { box-shadow: inset 0 0 0 1px var(--red); }
+  .tt td.next .t::after { content: "Наступне"; display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; color: var(--red); }
+
+  .tt-m { display: none; }
+  @media (max-width: 980px) {
+    .tt { display: none; }
+    .tt-m { display: block; }
+    .tt-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1px solid var(--line); margin-bottom: 8px; }
+    .tt-tabs button {
+      height: 52px; background: none; color: var(--muted); border: 0; border-right: 1px solid var(--line); cursor: pointer; position: relative;
+    }
+    .tt-tabs button:last-child { border-right: 0; }
+    .tt-tabs button[aria-selected="true"] { background: var(--fg); color: var(--bg); }
+    .tt-tabs button.today::after { content: ""; position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background: var(--red); }
+    .tt-day { list-style: none; margin: 0; padding: 0; }
+    .tt-day li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: center; padding: 18px 12px; border-bottom: 1px solid var(--line); }
+    .tt-day .t { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+    .tt-day .t i { font-style: normal; color: var(--muted); }
+    .tt-day b { display: block; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 28px; line-height: 1; }
+    .tt-day .mono { color: var(--muted); font-size: 11px; }
+    .tt-day li.live .mono { color: var(--fg); }
+  }
+</style>

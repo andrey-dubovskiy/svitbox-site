@@ -8,3 +8,10 @@ export function asset(path: string): string {
 export function isTodo(text?: string): boolean {
   return !!text && text.trim().startsWith('[');
 }
+
+// Site link: "#programs" points to a section of the home page, "rozklad/" to a page.
+// Keeps the base path, so links work both on GitHub Pages and on the final domain.
+export function link(href: string): string {
+  if (/^(https?:|tel:|mailto:)/.test(href) || href === '#') return href;
+  return asset(href.startsWith('#') ? '' : href) + (href.startsWith('#') ? href : '');
+}

@@ -1,6 +1,7 @@
 ---
 // Full-screen menu for phones and tablets, opened from the "Меню" button in the header.
 import { site, mainNav, pages } from '../data/site';
+import { link } from '../lib/util';
 ---
 <div class="mmenu" id="mmenu" hidden role="dialog" aria-modal="true" aria-label="Меню">
   <div class="mmenu-top wrap">
@@ -9,11 +10,11 @@ import { site, mainNav, pages } from '../data/site';
   </div>
   <nav class="mmenu-nav wrap" aria-label="Меню сайту">
     {mainNav.filter((n) => n.href !== '#signup').map((n, i) => (
-      <a href={n.href}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+      <a href={link(n.href)}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
     ))}
   </nav>
   <div class="mmenu-pages wrap mono">
-    {pages.map((p) => <a href={p.href}>{p.label} →</a>)}
+    {pages.map((p) => <a href={link(p.href)}>{p.label} →</a>)}
   </div>
   <div class="mmenu-bottom wrap">
     <a class="btn" href="#signup"><span>Записатись на тренування</span><span class="arr">→</span></a>

@@ -1,0 +1,63 @@
+---
+import Page from '../../layouts/Page.astro';
+import PriceBlock from '../../components/PriceBlock.astro';
+import Rules from '../../components/Rules.astro';
+import RoundLabel from '../../components/RoundLabel.astro';
+import { prices, otherPrices } from '../../data/schedule';
+import { isTodo, link } from '../../lib/util';
+---
+<Page
+  title="Ціни на тренування з боксу — Світ Боксу, Бровари"
+  description="Абонементи боксерського клубу «Світ Боксу»: бокс 3 рази на тиждень — 1800 грн, 5 разів — 2400 грн на місяць. Функціональні тренування — 2000 грн, разове заняття — 300 грн."
+  current="tsiny/"
+  kicker="Ціни"
+  heading="Ціни"
+  lead="Абонемент діє місяць з дня першого тренування. Оплата готівкою або на картку."
+>
+  <div slot="head" class="price-summary">
+    <a href="#box"><span class="mono muted">Бокс</span><b>від 1800 <small>грн / міс</small></b></a>
+    <a href="#fit"><span class="mono muted">Функціональні</span><b>від 300 <small>грн</small></b></a>
+  </div>
+  <div id="box"><PriceBlock n="Раунд 01" title={prices[0].title} plans={prices[0].plans} anchor="box" /></div>
+  <div id="fit"><PriceBlock n="Раунд 02" title={prices[1].title} plans={prices[1].plans} anchor="fit" /></div>
+  <section class="blk">
+    <div class="wrap">
+      <RoundLabel n="Раунд 03" label="Інше" />
+      <ul class="other-prices">
+        {otherPrices.map((o) => (
+          <li><b>{o.title}</b><span class:list={['mono', { todo: isTodo(o.price) }]}>{o.price}</span></li>
+        ))}
+      </ul>
+      <p class="muted other-note">Не знаєте, що обрати? Залиште заявку, тренер підбере групу за віком і рівнем. <a class="link-inline" href={link('rozklad/')}>Розклад груп →</a></p>
+    </div>
+  </section>
+  <Rules n="Раунд 04" />
+</Page>
+
+<script>
+  import { countTo, reduce } from '../../scripts/motion';
+  // Prices below the first screen start from zero and count up on view
+  const nums = [...document.querySelectorAll<HTMLElement>('.plan-price .num')];
+  if (!reduce) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target as HTMLElement; io.unobserve(el);
+      countTo(el, 0, +el.dataset.to!, 1200);
+    }), { threshold: .4 });
+    nums.filter((n) => n.getBoundingClientRect().top > innerHeight).forEach((n) => { n.textContent = '0'; io.observe(n); });
+  }
+</script>
+
+<style is:global>
+  .price-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); }
+  .price-summary a { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; transition: background .25s; }
+  .price-summary a + a { border-left: 1px solid var(--line); }
+  .price-summary a:hover { background: var(--surface); }
+  .price-summary b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(34px, 3.4vw, 52px); line-height: .9; }
+  .price-summary small { font-family: var(--mono); font-style: normal; font-weight: 400; font-size: 12px; color: var(--muted); }
+  .other-prices { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .other-prices li { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 22px; border-bottom: 1px solid var(--line); }
+  .other-prices b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 3vw, 44px); line-height: 1; }
+  .other-note { margin: 28px 0 0; max-width: 60ch; }
+  .link-inline { color: var(--fg); border-bottom: 1px solid var(--red); white-space: nowrap; }
+</style>

@@ -1,0 +1,30 @@
+---
+// Before the first training: medical certificate, kit, payment, how long a pass lasts.
+import RoundLabel from './RoundLabel.astro';
+import { rules } from '../data/schedule';
+interface Props { n: string; }
+---
+<section class="blk">
+  <div class="wrap">
+    <RoundLabel n={Astro.props.n} label="Важливо знати" />
+    <h2 class="h2" data-punch>Перед першим тренуванням</h2>
+    <ol class="rules m-rail">
+      {rules.map((r, i) => (
+        <li><span class="mono">{String(i + 1).padStart(2, '0')}</span><b>{r.title}</b><p class="muted">{r.text}</p></li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+  .rules { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .rules li { padding: 28px 24px 32px 0; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+  .rules li + li { padding-left: 24px; }
+  .rules li:last-child { border-right: 0; }
+  .rules .mono { color: var(--red); }
+  .rules b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(26px, 2.4vw, 36px); line-height: .95; }
+  .rules p { margin: 0; }
+  @media (max-width: 980px) {
+    .rules li, .rules li + li { padding: 22px; }
+  }
+</style>

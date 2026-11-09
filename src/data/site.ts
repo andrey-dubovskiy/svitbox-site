@@ -23,15 +23,15 @@ export const mainNav = [
   { label: 'Клуб', href: '#club' },
   { label: 'Тренери', href: '#coach' },
   { label: 'Чемпіони', href: '#champions' },
-  { label: 'Події', href: '#life' },
-  { label: 'Розклад та ціни', href: '#signup' },
+  { label: 'Розклад', href: 'rozklad/' },
+  { label: 'Ціни', href: 'tsiny/' },
   { label: 'Контакти', href: '#contacts' },
 ];
 
-// Separate pages (to be built later)
+// Separate pages
 export const pages = [
-  { label: 'Розклад', href: '#', text: 'Групи за віком і рівнем, дні та час' },
-  { label: 'Ціни', href: '#', text: 'Абонементи і індивідуальні тренування' },
+  { label: 'Розклад', href: 'rozklad/', text: 'Групи за віком, дні та час' },
+  { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
   { label: 'Як дістатись', href: '#', text: 'Адреса залу в Броварах і карта' },
 ];
 

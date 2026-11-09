@@ -1,0 +1,45 @@
+---
+import Page from '../../layouts/Page.astro';
+import LiveNow from '../../components/LiveNow.astro';
+import ScheduleTable from '../../components/ScheduleTable.astro';
+import Rules from '../../components/Rules.astro';
+import { schedule } from '../../data/schedule';
+import { link } from '../../lib/util';
+---
+<Page
+  title="Розклад тренувань — Світ Боксу, Бровари"
+  description="Розклад боксерського клубу «Світ Боксу» у Броварах: ранковий бокс, діти 5–9 років, юніори 10–17, дорослі 18+, функціональні тренування. Понеділок — пʼятниця."
+  current="rozklad/"
+  kicker="Розклад"
+  heading="Розклад"
+  lead="Тренуємось з понеділка по пʼятницю. Групи за віком: діти з 5 років, юніори, дорослі. Вранці — для всіх."
+>
+  <LiveNow slot="head" />
+  <ScheduleTable track={schedule[0]} n="Раунд 01" />
+  <ScheduleTable track={schedule[1]} n="Раунд 02" />
+  <Rules n="Раунд 03" />
+  <section class="blk to-prices">
+    <div class="wrap">
+      <a href={link('tsiny/')} class="big-link">
+        <span class="mono muted">Абонементи від 1800 грн / місяць</span>
+        <b data-punch>Дивитись ціни <span aria-hidden="true">→</span></b>
+      </a>
+    </div>
+  </section>
+</Page>
+
+<script>
+  import { highlight, initTabs } from '../../scripts/schedule-live';
+  const day = highlight();
+  initTabs(day);
+  setInterval(highlight, 30000);
+</script>
+
+<style is:global>
+  .to-prices { padding-block: 0; }
+  .big-link { display: flex; flex-direction: column; gap: 8px; padding-block: clamp(40px, 6vw, 80px); }
+  .big-link b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(56px, 9vw, 150px); line-height: .85; transition: color .25s; }
+  .big-link b span { display: inline-block; transition: transform .35s var(--ease-out); }
+  .big-link:hover b { color: var(--red); }
+  .big-link:hover b span { transform: translateX(16px); }
+</style>

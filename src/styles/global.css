@@ -148,3 +148,8 @@ section.blk { border-bottom: 1px solid var(--line); padding-block: clamp(64px, 9
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* Section title with a note or link on the right (inner pages) */
+.sched-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 48px; margin-bottom: clamp(32px, 4vw, 56px); }
+.sched-head > :first-child { min-width: 0; }
+.sched-head p { margin: 0; max-width: 40ch; }

@@ -1,15 +1,18 @@
 ---
 // Big links to the separate pages: schedule, prices, directions.
 import { pages } from '../data/site';
+import { link } from '../lib/util';
+interface Props { current?: string; }
+const list = pages.filter((p) => p.href !== Astro.props.current);
 ---
 <nav class="pages" aria-label="Корисні сторінки">
-  {pages.map((p) => (
-    <a href={p.href}><b>{p.label} <span aria-hidden="true">→</span></b><span>{p.text}</span></a>
+  {list.map((p) => (
+    <a href={link(p.href)}><b>{p.label} <span aria-hidden="true">→</span></b><span>{p.text}</span></a>
   ))}
 </nav>
 
 <style is:global>
-  .pages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .pages { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .pages a { padding: 36px clamp(16px, 2.5vw, 40px); display: flex; flex-direction: column; gap: 10px; border-right: 1px solid var(--line); transition: background .3s, color .3s; min-width: 0; }
   .pages a:last-child { border-right: 0; }
   .pages a b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(36px, 4vw, 60px); line-height: .9; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 12px; }

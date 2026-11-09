@@ -1,0 +1,59 @@
+---
+// "Right now in the gym" line: what is on now, or what is next and how soon (Kyiv time).
+import { schedule } from '../data/schedule';
+const all = schedule.flatMap((t) => t.groups.map((g) => ({ name: g.name, meta: g.meta, days: g.days, from: g.from, to: g.to })));
+---
+<div class="live-now" id="liveNow" data-groups={JSON.stringify(all)} aria-live="polite">
+  <span class="dot" aria-hidden="true"></span>
+  <div>
+    <span class="mono muted" id="lnLabel">У Броварах зараз --:--</span>
+    <p id="lnText">Розклад тренувань з понеділка по пʼятницю.</p>
+  </div>
+</div>
+
+<style is:global>
+  .live-now { display: flex; gap: 16px; align-items: flex-start; border: 1px solid var(--line); padding: 18px 20px; background: var(--surface); }
+  .live-now p { margin: 4px 0 0; font-size: 18px; line-height: 1.35; }
+  .live-now p b { color: var(--red); font-weight: 600; }
+  .live-now .dot { flex: none; width: 10px; height: 10px; margin-top: 5px; background: var(--muted); }
+  .live-now.on .dot { background: var(--red); animation: lnPulse 1.4s ease-in-out infinite; }
+  @keyframes lnPulse { 50% { opacity: .25; } }
+</style>
+
+<script>
+  import { kyivNow, toMin } from '../scripts/schedule-live';
+  const box = document.getElementById('liveNow')!;
+  const label = document.getElementById('lnLabel')!, text = document.getElementById('lnText')!;
+  type G = { name: string; meta: string; days: number[]; from: string; to: string };
+  const groups: G[] = JSON.parse(box.dataset.groups!);
+  const dayWords = ['', 'у понеділок', 'у вівторок', 'у середу', 'у четвер', 'у пʼятницю'];
+
+  function span(min: number) {
+    const h = Math.floor(min / 60), m = min % 60;
+    return h ? `${h} год ${m} хв` : `${m} хв`;
+  }
+
+  function render() {
+    const { day, min, hhmm } = kyivNow();
+    label.textContent = `У Броварах зараз ${hhmm}`;
+    const now = groups.filter((g) => g.days.includes(day) && toMin(g.from) <= min && min < toMin(g.to));
+    box.classList.toggle('on', now.length > 0);
+    if (now.length) {
+      text.innerHTML = `Зараз у залі: <b>${now.map((g) => g.name).join(', ')}</b> до ${now[0].to}`;
+      return;
+    }
+    // Find the next training over the coming week
+    for (let k = 0; k < 8; k++) {
+      const d = ((day - 1 + k) % 7) + 1;
+      const list = groups.filter((g) => g.days.includes(d) && (k > 0 || toMin(g.from) > min))
+        .sort((a, b) => toMin(a.from) - toMin(b.from));
+      if (!list.length) continue;
+      const g = list[0];
+      const when = k === 0 ? `сьогодні о ${g.from}, через ${span(toMin(g.from) - min)}` : k === 1 ? `завтра о ${g.from}` : `${dayWords[d]} о ${g.from}`;
+      text.innerHTML = `Наступне тренування: <b>${g.name}</b> (${g.meta.toLowerCase()}), ${when}`;
+      return;
+    }
+  }
+  render();
+  setInterval(render, 30000);
+</script>

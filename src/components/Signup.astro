@@ -5,11 +5,13 @@
 import RoundLabel from './RoundLabel.astro';
 import { programs } from '../data/content';
 import { site } from '../data/site';
+interface Props { n?: string; }
+const { n = 'Раунд 08' } = Astro.props;
 ---
 <section class="blk" id="signup">
   <div class="wrap signup">
     <div>
-      <RoundLabel n="Раунд 08" label="Запис" />
+      <RoundLabel n={n} label="Запис" />
       <h2 class="h2" data-punch>Перший раунд за тобою</h2>
       <div class="clock">
         <svg viewBox="0 0 112 112" aria-hidden="true">

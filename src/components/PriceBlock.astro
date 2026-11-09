@@ -1,0 +1,55 @@
+---
+// Prices for one discipline. Numbers count up when the cards come into view.
+import RoundLabel from './RoundLabel.astro';
+import type { Plan } from '../data/schedule';
+import { link } from '../lib/util';
+interface Props { n: string; title: string; plans: Plan[]; anchor: string; }
+const { n, title, plans, anchor } = Astro.props;
+---
+<section class="blk prices">
+  <div class="wrap">
+    <RoundLabel n={n} label={title} />
+    <div class="sched-head">
+      <h2 class="h2" data-punch>{title}</h2>
+      <a class="link" href={link('rozklad/#' + anchor)}>Розклад груп →</a>
+    </div>
+    <div class="plans">
+      {plans.map((p) => (
+        <article class:list={['plan', { hot: p.badge }]}>
+          <header>
+            <h3>{p.title}</h3>
+            {p.badge && <span class="badge mono">{p.badge}</span>}
+          </header>
+          <p class="mono muted plan-days">{p.days}</p>
+          <p class="plan-price"><b class="num" data-to={p.price}>{p.price}</b><span class="mono">{p.unit}</span></p>
+          {p.perSession && <p class="mono muted plan-per">{p.perSession}</p>}
+          <a class="btn" href="#signup"><span>Записатись</span><span class="arr">→</span></a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
+  .plan { position: relative; padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 10px; min-width: 0; transition: background .3s; }
+  .plan + .plan { border-left: 1px solid var(--line); }
+  .plan:hover { background: var(--surface); }
+  .plan header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .plan h3 { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.8vw, 44px); line-height: .95; }
+  .plan .badge { background: var(--red); color: var(--fg); padding: 6px 10px; font-size: 11px; white-space: nowrap; }
+  .plan.hot { box-shadow: inset 0 3px 0 var(--red); }
+  .plan-days, .plan-per { margin: 0; }
+  .plan-price { margin: clamp(16px, 3vw, 40px) 0 0; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .plan-price b {
+    font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(96px, 12vw, 200px);
+    line-height: .8; font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+  }
+  .plan.hot .plan-price b { color: var(--red); }
+  .plan .btn { margin-top: 24px; align-self: flex-start; }
+  @media (max-width: 980px) {
+    .plans { grid-template-columns: minmax(0, 1fr); }
+    .plan + .plan { border-left: 0; border-top: 1px solid var(--line); }
+    .plan .btn { width: 100%; justify-content: center; }
+  }
+</style>

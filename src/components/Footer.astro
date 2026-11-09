@@ -1,7 +1,7 @@
 ---
 // Footer: ring ropes, call to action, link columns, live clocks and a giant name that dodges the cursor.
 import { site, socials } from '../data/site';
-import { isTodo } from '../lib/util';
+import { isTodo, link } from '../lib/util';
 const letters = [...site.name];
 ---
 <footer class="sf" id="contacts">
@@ -26,10 +26,10 @@ const letters = [...site.name];
 
   <div class="wrap sf-grid">
     <nav aria-label="Клуб"><h3 class="mono">Клуб</h3><ul>
-      <li><a href="#programs">Програми</a></li><li><a href="#club">Про клуб</a></li><li><a href="#coach">Тренери</a></li><li><a href="#champions">Чемпіони</a></li><li><a href="#life">Події</a></li>
+      <li><a href={link('#programs')}>Програми</a></li><li><a href={link('#club')}>Про клуб</a></li><li><a href={link('#coach')}>Тренери</a></li><li><a href={link('#champions')}>Чемпіони</a></li><li><a href={link('#life')}>Події</a></li>
     </ul></nav>
     <nav aria-label="Сторінки"><h3 class="mono">Сторінки</h3><ul>
-      <li><a href="#">Розклад</a></li><li><a href="#">Ціни</a></li><li><a href="#">Як дістатися</a></li><li><a href="#first">Перше тренування</a></li><li><a href="#">Політика конфіденційності</a></li>
+      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href="#">Як дістатися</a></li><li><a href={link('#first')}>Перше тренування</a></li><li><a href="#">Політика конфіденційності</a></li>
     </ul></nav>
     <div><h3 class="mono">Зал</h3><ul>
       <li>{site.city}, <span class:list={[{ todo: isTodo(site.address) }]}>{site.address}</span></li>
