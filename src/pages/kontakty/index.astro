@@ -36,8 +36,8 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
   <!-- Full-bleed dark map with a floating gym card (store-locator pattern) -->
   <section class="mapx" id={hall.id} aria-label="Зал на карті">
     <div class="mapx-map">
-      <iframe title={`Карта: ${hall.name}, ${hall.address}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade" tabindex="-1"
-        src={`https://maps.google.com/maps?q=${enc(hall.query)}&z=16&hl=uk&output=embed`}></iframe>
+      <iframe title={`Карта: ${hall.name}, ${hall.address}`} referrerpolicy="no-referrer-when-downgrade" tabindex="-1"
+        data-src={`https://maps.google.com/maps?q=${enc(hall.query)}&z=16&hl=uk&output=embed`}></iframe>
       <span class="radar" aria-hidden="true"><i></i><i></i><i></i></span>
       <button type="button" class="map-shield" id="mapShield"><span class="mono">Натисніть, щоб рухати карту</span></button>
     </div>
@@ -155,6 +155,13 @@ const dir = (mode: string) => `https://www.google.com/maps/dir/?api=1&destinatio
     document.querySelectorAll('.modes button').forEach((o) => o.setAttribute('aria-checked', String(o === b)));
     routeBtn.href = b.dataset.href!;
   }));
+
+  // Load the map only once it is on screen: Google's embed may skip drawing tiles if it starts hidden
+  const frame = document.querySelector<HTMLIFrameElement>('.mapx-map iframe')!;
+  const mio = new IntersectionObserver((es) => {
+    if (es.some((e) => e.isIntersecting)) { frame.src = frame.dataset.src!; mio.disconnect(); }
+  }, { rootMargin: '0px 0px -10% 0px' });
+  mio.observe(frame.parentElement!);
 
   // The map does not hijack page scroll: it becomes interactive after a click
   const shield = document.getElementById('mapShield')!;
