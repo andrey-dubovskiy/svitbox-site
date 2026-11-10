@@ -1,0 +1,178 @@
+---
+// Thank-you page after the sign-up form. Never indexed (alwaysNoindex), even after launch.
+// Ad conversions (GA4 generate_lead, Meta Lead) fire here: see the script below.
+import Page from '../../layouts/Page.astro';
+import RoundLabel from '../../components/RoundLabel.astro';
+import { site, socials } from '../../data/site';
+import { schedule, rules } from '../../data/schedule';
+import { link } from '../../lib/util';
+
+const sessions = schedule.flatMap((t) => t.groups.filter((g) => g.signup).map((g) => ({ signup: g.signup, name: g.name, days: g.days, from: g.from })));
+const kit = rules.filter((r) => r.icon === 'doc' || r.icon === 'bag');
+const insta = socials.find((s) => s.label === 'Instagram');
+---
+<Page
+  title="Дякуємо за заявку — Світ Боксу"
+  description="Заявку на тренування прийнято. Тренер зателефонує, щоб підібрати групу і час першого тренування."
+  current="dyakuyemo/"
+  kicker="Заявка"
+  heading="Дякуємо"
+  lead="Заявку прийнято. Тренер зателефонує, щоб підібрати групу і час першого тренування."
+  signup={false}
+  alwaysNoindex
+>
+  <div slot="head" class="ty-card" id="tyCard" data-sessions={JSON.stringify(sessions)}>
+    <div class="ty-gong" aria-hidden="true">
+      <svg viewBox="0 0 120 150">
+        <path d="M18 8 H102 M28 8 V40 M92 8 V40" stroke="#5a5a55" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g class="ty-disc">
+          <circle cx="60" cy="88" r="46" fill="#d6a640"/>
+          <circle cx="60" cy="88" r="46" fill="none" stroke="#7b5a14" stroke-width="3"/>
+          <circle cx="60" cy="88" r="30" fill="none" stroke="#f3d27c" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="88" r="9" fill="#7b5a14"/>
+          <ellipse cx="44" cy="68" rx="12" ry="6" fill="#fff" opacity=".4" transform="rotate(-30 44 68)"/>
+          <path d="M28 40 L44 48 M92 40 L76 48" stroke="#5a5a55" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
+    <div class="ty-body">
+      <span class="ty-ding">Дзінь!</span>
+      <dl class="ty-sum mono" id="tySum" hidden>
+        <div><dt>Імʼя</dt><dd id="tyName"></dd></div>
+        <div><dt>Група</dt><dd id="tyGroup"></dd></div>
+        <div><dt>Телефон</dt><dd id="tyPhone"></dd></div>
+      </dl>
+      <p class="ty-next" id="tyNext">Перший раунд уже скоро.</p>
+    </div>
+  </div>
+
+  <section class="blk">
+    <div class="wrap">
+      <RoundLabel n="Раунд 01" label="Що далі" />
+      <h2 class="h2" data-punch>Три кроки до рингу</h2>
+      <ol class="ty-steps m-rail">
+        <li>
+          <span class="mono">01</span>
+          <b>Дзвінок тренера</b>
+          <p>Подзвонимо з номера <a href={`tel:${site.phone.tel}`}>{site.phone.display}</a>. Збережіть його, щоб не пропустити дзвінок.</p>
+        </li>
+        <li>
+          <span class="mono">02</span>
+          <b>Перше тренування</b>
+          <p id="tyStep2">Тренер підбере групу за віком і рівнем та запропонує зручний день.</p>
+        </li>
+        <li>
+          <span class="mono">03</span>
+          <b>Що взяти</b>
+          <p>{kit.map((r) => r.text).join(' ')}</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="blk ty-wait">
+    <div class="wrap">
+      <RoundLabel n="Раунд 02" label="Поки чекаєте" />
+      <div class="ty-links">
+        <a href={link('rozklad/')}><span class="mono muted">Коли тренування</span><b>Розклад <span aria-hidden="true">→</span></b></a>
+        <a href={link('kontakty/')}><span class="mono muted">Як дістатись</span><b>Контакти <span aria-hidden="true">→</span></b></a>
+        {insta && <a href={insta.href} target="_blank" rel="noopener"><span class="mono muted">Життя клубу</span><b>Instagram <span aria-hidden="true">↗</span></b></a>}
+      </div>
+      <p class="muted ty-note">Не хочете чекати? Подзвоніть самі: <a class="link-inline" href={`tel:${site.phone.tel}`}>{site.phone.display}</a></p>
+    </div>
+  </section>
+</Page>
+
+<script>
+  import { kyivNow, toMin } from '../../scripts/schedule-live';
+  import { reduce } from '../../scripts/motion';
+
+  type S = { signup: string; name: string; days: number[]; from: string };
+  const card = document.getElementById('tyCard')!;
+  const sessions: S[] = JSON.parse(card.dataset.sessions!);
+  const dayWords = ['', 'у понеділок', 'у вівторок', 'у середу', 'у четвер', 'у пʼятницю', 'у суботу', 'у неділю'];
+
+  let lead: { name: string; phone: string; group: string; groupId: string } | null = null;
+  try { lead = JSON.parse(sessionStorage.getItem('sbx-lead') || 'null'); } catch {}
+
+  if (lead) {
+    document.getElementById('tyName')!.textContent = lead.name;
+    document.getElementById('tyGroup')!.textContent = lead.group;
+    document.getElementById('tyPhone')!.textContent = lead.phone;
+    document.getElementById('tySum')!.hidden = false;
+    document.getElementById('pageLead')!.textContent =
+      `${lead.name}, заявку прийнято. Тренер зателефонує на ${lead.phone}, щоб узгодити перше тренування.`;
+
+    // Nearest session of the chosen group (Kyiv time)
+    const mine = sessions.filter((s) => s.signup === lead!.groupId);
+    const next = document.getElementById('tyNext')!, step2 = document.getElementById('tyStep2')!;
+    if (lead.groupId === 'solo') {
+      next.textContent = 'Час індивідуального тренування тренер узгодить з вами.';
+    } else if (mine.length) {
+      const { day, min } = kyivNow();
+      for (let k = 0; k < 8; k++) {
+        const d = ((day - 1 + k) % 7) + 1;
+        const s = mine.filter((x) => x.days.includes(d) && (k > 0 || toMin(x.from) > min)).sort((a, b) => toMin(a.from) - toMin(b.from))[0];
+        if (!s) continue;
+        const when = k === 0 ? `сьогодні о ${s.from}` : k === 1 ? `завтра о ${s.from}` : `${dayWords[d]} о ${s.from}`;
+        next.innerHTML = `Найближче тренування групи «${s.name}» — <b>${when}</b>. Тренер скаже, чи встигаєте на нього.`;
+        step2.textContent = `Група «${lead.group}». Найближче заняття ${when}, але день першого тренування тренер узгодить з вами.`;
+        break;
+      }
+    }
+    // Ad conversions go here once analytics is connected, e.g.:
+    // gtag('event', 'generate_lead', { group: lead.groupId }); fbq('track', 'Lead');
+    try { sessionStorage.removeItem('sbx-lead'); } catch {} // count each lead once on reload
+  }
+
+  if (!reduce) {
+    document.querySelector('.ty-disc')!.animate(
+      [{ transform: 'rotate(0)' }, { transform: 'rotate(9deg)' }, { transform: 'rotate(-7deg)' }, { transform: 'rotate(4deg)' }, { transform: 'rotate(-2deg)' }, { transform: 'rotate(0)' }],
+      { duration: 1600, delay: 300, easing: 'ease-out' });
+    document.querySelector('.ty-ding')!.animate(
+      [{ transform: 'scale(.6) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.08) rotate(2deg)', opacity: 1, offset: .6 }, { transform: 'none', opacity: 1 }],
+      { duration: 700, delay: 300, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+  }
+</script>
+
+<style is:global>
+  .ty-card { display: flex; gap: 22px; align-items: center; border: 1px solid var(--line); background: var(--surface); padding: 22px; }
+  .ty-gong { flex: none; width: 108px; }
+  .ty-gong svg { width: 100%; display: block; }
+  .ty-disc { transform-origin: 60px 40px; transform-box: view-box; }
+  .ty-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .ty-ding { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(56px, 6vw, 88px); line-height: .85; color: var(--red); text-transform: uppercase; display: inline-block; }
+  .ty-sum { margin: 0; display: grid; gap: 4px; font-size: 12px; }
+  .ty-sum div { display: flex; gap: 12px; }
+  .ty-sum dt { color: var(--muted); width: 72px; flex: none; }
+  .ty-sum dd { margin: 0; color: var(--fg); overflow-wrap: anywhere; }
+  .ty-next { margin: 0; font-size: 16px; color: var(--muted); }
+  .ty-next b { color: var(--fg); font-weight: 600; }
+  .ty-steps { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .ty-steps li { padding: 28px 24px 32px 0; display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--line); }
+  .ty-steps li + li { padding-left: 24px; }
+  .ty-steps li:last-child { border-right: 0; }
+  .ty-steps .mono { color: var(--red); }
+  .ty-steps b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.6vw, 40px); line-height: .95; }
+  .ty-steps p { margin: 0; color: var(--muted); }
+  .ty-steps a { color: var(--fg); border-bottom: 1px solid var(--red); white-space: nowrap; }
+  .ty-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); margin-top: 8px; }
+  .ty-links a { padding: clamp(20px, 2.6vw, 36px); display: flex; flex-direction: column; gap: 8px; transition: background .25s; }
+  .ty-links a + a { border-left: 1px solid var(--line); }
+  .ty-links a:hover { background: var(--surface); }
+  .ty-links b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(36px, 4vw, 60px); line-height: .9; }
+  .ty-links b span { display: inline-block; transition: transform .3s var(--ease-out); }
+  .ty-links a:hover b { color: var(--red); }
+  .ty-links a:hover b span { transform: translateX(10px); }
+  .ty-note { margin: 24px 0 0; }
+  .link-inline { color: var(--fg); border-bottom: 1px solid var(--red); white-space: nowrap; }
+  @media (max-width: 980px) {
+    .ty-steps li, .ty-steps li + li { padding: 22px; }
+    .ty-links { grid-template-columns: minmax(0, 1fr); }
+    .ty-links a + a { border-left: 0; border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 560px) {
+    .ty-card { align-items: flex-start; gap: 14px; padding: 18px; }
+    .ty-gong { width: 60px; }
+  }
+</style>

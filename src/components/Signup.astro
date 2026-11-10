@@ -5,6 +5,7 @@
 import RoundLabel from './RoundLabel.astro';
 import { signupOptions, signupDefault } from '../data/schedule';
 import { site } from '../data/site';
+import { link } from '../lib/util';
 interface Props { n?: string; }
 const { n = 'Раунд 08' } = Astro.props;
 ---
@@ -26,7 +27,7 @@ const { n = 'Раунд 08' } = Astro.props;
     </div>
 
     <div>
-      <form id="form" novalidate>
+      <form id="form" novalidate data-thanks={link('dyakuyemo/')}>
         <div class="field" id="fName">
           <label for="name">Ім’я</label>
           <input id="name" name="name" type="text" autocomplete="name" placeholder="Як до вас звертатись" />
@@ -47,15 +48,10 @@ const { n = 'Раунд 08' } = Astro.props;
         </fieldset>
         <div class="form-end">
           <button class="btn" type="submit"><span>Записатись</span><span class="arr">→</span></button>
-          <p class="consent">Надсилаючи форму, ви погоджуєтесь на обробку персональних даних. Ми передзвонимо і підберемо групу.</p>
+          <p class="consent">Надсилаючи форму, ви погоджуєтесь на обробку персональних даних згідно з <a href={link('polityka/')}>політикою конфіденційності</a>. Ми передзвонимо і підберемо групу.</p>
         </div>
       </form>
-      <div class="done" id="done" hidden>
-        <span class="bell">Дзінь!</span>
-        <p id="doneText">Заявку прийнято.</p>
-        <p class="muted done-note">Якщо хочеться швидше, телефонуйте: <span class="phone">{site.phone.display}</span></p>
-        <button class="link" type="button" id="again">Нова заявка</button>
-      </div>
+</div>
     </div>
   </div>
 </section>
@@ -83,11 +79,8 @@ const { n = 'Раунд 08' } = Astro.props;
   .chip input:focus-visible + span { outline: 2px solid var(--red); outline-offset: 3px; }
   .form-end { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
   .consent { font-size: 13px; color: var(--muted); margin: 0; }
-  .done { border: 1px solid var(--line); padding: 36px; display: flex; flex-direction: column; gap: 14px; }
-  .done .bell { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 88px; line-height: .9; color: var(--red); text-transform: uppercase; }
-  .done p { margin: 0; font-size: 18px; }
-  .done .done-note { font-size: 15px; }
-  .done .link { align-self: flex-start; height: auto; padding-bottom: 2px; }
+  .consent a { color: var(--fg); border-bottom: 1px solid var(--line); }
+  .consent a:hover { border-color: var(--red); }
   @media (max-width: 980px) { .signup { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 560px) {
     .clock .time { font-size: 48px; }
@@ -125,7 +118,6 @@ const { n = 'Раунд 08' } = Astro.props;
 
   // Form
   const form = document.getElementById('form') as HTMLFormElement;
-  const done = document.getElementById('done')!;
   const nameI = document.getElementById('name') as HTMLInputElement;
   const telI = document.getElementById('tel') as HTMLInputElement;
 
@@ -156,19 +148,11 @@ const { n = 'Раунд 08' } = Astro.props;
     if (digits.length !== 12) { setErr('fPhone', 'telMsg', 'Потрібен номер з 10 цифр, наприклад 073 721 71 71'); ok = false; } else setErr('fPhone', 'telMsg');
     if (!ok) return;
 
-    const prog = form.querySelector('input[name=prog]:checked + span')!.textContent;
-    // TODO: send { name, phone: telI.value, program } to the club (Telegram bot, email or CRM)
-
-    document.getElementById('doneText')!.textContent = `${name}, заявку прийнято: «${prog}». Ми передзвонимо на ${telI.value}.`;
-    form.hidden = true; done.hidden = false;
-    if (!reduce) done.querySelector('.bell')!.animate([
-      { transform: 'rotate(-8deg) scale(.6)', opacity: 0 },
-      { transform: 'rotate(4deg) scale(1.08)', opacity: 1, offset: .6 },
-      { transform: 'none', opacity: 1 },
-    ], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
-  });
-
-  document.getElementById('again')!.addEventListener('click', () => {
-    form.reset(); done.hidden = true; form.hidden = false; nameI.focus();
+    const checked = form.querySelector<HTMLInputElement>('input[name=prog]:checked')!;
+    const group = checked.nextElementSibling!.textContent!;
+    // TODO: send { name, phone: telI.value, group: checked.value } to the club (Telegram bot, email or CRM),
+    // then go to the thank-you page. The page reads the summary from sessionStorage (never from the URL).
+    try { sessionStorage.setItem('sbx-lead', JSON.stringify({ name, phone: telI.value, group, groupId: checked.value })); } catch {}
+    location.href = form.dataset.thanks!;
   });
 </script>

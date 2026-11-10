@@ -2,8 +2,9 @@
 import '../styles/global.css';
 import { asset } from '../lib/util';
 
-interface Props { title?: string; description?: string; }
+interface Props { title?: string; description?: string; alwaysNoindex?: boolean; }
 const {
+  alwaysNoindex = false,
   title = 'Світ Боксу — бокс у Броварах',
   description = 'Боксерський клуб «Світ Боксу» у Броварах з 2012 року. Групи для дітей, дівчат і чоловіків, індивідуальні тренування. Запис на тренування.',
 } = Astro.props;
@@ -23,6 +24,8 @@ const {
     <!-- Draft: keep out of search engines. Remove both lines and public/robots.txt at launch. -->
     <meta name="robots" content="noindex, nofollow, noarchive" />
     <meta name="googlebot" content="noindex, nofollow" />
+    {alwaysNoindex && <meta name="robots" content="noindex" data-keep="true" />}
+    <!-- ^ stays after launch: service pages (thank-you) should never be in search -->
     <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

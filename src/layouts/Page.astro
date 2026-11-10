@@ -11,10 +11,10 @@ import RingHead from '../components/RingHead.astro';
 import Tape from '../components/Tape.astro';
 import { asset } from '../lib/util';
 
-interface Props { title: string; description: string; current: string; kicker: string; heading: string; lead: string; }
-const { title, description, current, kicker, heading, lead } = Astro.props;
+interface Props { title: string; description: string; current: string; kicker: string; heading: string; lead: string; signup?: boolean; alwaysNoindex?: boolean; }
+const { title, description, current, kicker, heading, lead, signup = true, alwaysNoindex = false } = Astro.props;
 ---
-<Base title={title} description={description}>
+<Base title={title} description={description} alwaysNoindex={alwaysNoindex}>
   <SiteHeader current={current} />
   <MobileMenu />
   <div class="page-head">
@@ -22,7 +22,7 @@ const { title, description, current, kicker, heading, lead } = Astro.props;
       <nav class="crumbs mono" aria-label="Ви тут"><a href={asset('')}>Головна</a><span aria-hidden="true">/</span><span>{kicker}</span></nav>
       <h1 class="page-h" data-punch style={`--chars:${[...heading].length}`}>{heading}</h1>
       <div class="page-lead">
-        <p>{lead}</p>
+        <p id="pageLead">{lead}</p>
         <slot name="head" />
       </div>
     </div>
@@ -31,7 +31,7 @@ const { title, description, current, kicker, heading, lead } = Astro.props;
   <main>
     <slot />
     <Tape tilt={-1.2} />
-    <Signup n="Останній раунд" />
+    {signup && <Signup n="Останній раунд" />}
   </main>
   <PagesNav current={current} />
   <MobileBar />

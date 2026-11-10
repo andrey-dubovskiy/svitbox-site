@@ -29,6 +29,7 @@ import { site } from '../data/site';
   const hero = document.querySelector('.hero, .page-head');
   const foot = document.querySelector('footer.sf');
   const signup = document.getElementById('signup');
+  if (!signup) bar.remove(); // pages without the form (thank-you, policy) need no sign-up bar
   const seen = new Map<Element, boolean>();
   const io = new IntersectionObserver((es) => {
     es.forEach((e) => seen.set(e.target, e.isIntersecting));

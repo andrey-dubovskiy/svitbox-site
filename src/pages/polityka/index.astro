@@ -1,0 +1,136 @@
+---
+// Privacy policy draft under the Law of Ukraine "On Personal Data Protection" (No. 2297-VI).
+// Fields in [brackets] come from `legal` in src/data/site.ts and show pink until filled.
+// Have a lawyer review the text before launch.
+import Page from '../../layouts/Page.astro';
+import { site, legal } from '../../data/site';
+import { isTodo, link } from '../../lib/util';
+
+const T = (v: string) => isTodo(v) ? `<span class="todo">${v}</span>` : v;
+const email = `<a href="mailto:${site.email}">${site.email}</a>`;
+const phone = `<a href="tel:${site.phone.tel}">${site.phone.display}</a>`;
+
+const sections = [
+  { id: 'hto', title: 'Хто ми', html: `
+    <p>Сайт належить боксерському клубу «Світ Боксу» (м. Бровари). Володілець персональних даних — ${T(legal.owner)}, код ${T(legal.code)}, адреса: ${T(legal.address)}.</p>
+    <p>З усіх питань щодо даних пишіть на ${email} або телефонуйте ${phone}.</p>` },
+  { id: 'dani', title: 'Які дані ми збираємо', html: `
+    <p>Через форму запису: <b>імʼя</b>, <b>номер телефону</b> і <b>обрану групу</b>. Нічого більше форма не просить.</p>
+    <p>Під час відвідування сайту: технічні дані, які браузер передає автоматично (IP-адреса, тип пристрою, сторінки, які ви переглянули). Їх обробляють сервіси, перелічені в розділі «Кому передаємо».</p>
+    <p>Ми не збираємо паспортних даних, даних банківських карток і відомостей про здоровʼя через сайт. Медичну довідку ви приносите на тренування, на сайт її не завантажують.</p>` },
+  { id: 'meta', title: 'Навіщо', html: `
+    <ul>
+      <li>Зателефонувати вам щодо заявки, підібрати групу і час першого тренування.</li>
+      <li>Нагадати про тренування або повідомити про зміни в розкладі, якщо ви вже тренуєтесь у клубі.</li>
+      <li>Зрозуміти, як люди користуються сайтом, і оцінити рекламу: лише в знеособленому вигляді.</li>
+    </ul>
+    <p>Ми не надсилаємо рекламних розсилок без вашої окремої згоди.</p>` },
+  { id: 'pidstava', title: 'Підстава для обробки', html: `
+    <p>Ваша згода. Ви надаєте її, коли надсилаєте форму запису: про це сказано під кнопкою. Згоду можна відкликати будь-коли, написавши на ${email}.</p>` },
+  { id: 'dity', title: 'Дані дітей', html: `
+    <p>Заявку за дитину залишають батьки або інші законні представники: вони вказують своє імʼя і свій номер телефону. Ми не збираємо через сайт дані дітей напряму.</p>` },
+  { id: 'peredacha', title: 'Кому передаємо', html: `
+    <p>Ми не продаємо і не передаємо ваші дані для чужої реклами. Доступ до заявок мають лише тренери й адміністратор клубу.</p>
+    <p>Сайт працює на сторонніх сервісах, які можуть отримувати технічні дані:</p>
+    <ul>
+      <li>Зберігання заявок: ${T(legal.storage)}.</li>
+      <li>Google Maps — карта на сторінці <a href="${link('kontakty/')}">«Контакти»</a>.</li>
+      <li>Google Fonts — шрифти сайту.</li>
+      <li>Хостинг сайту, на якому розміщені його сторінки.</li>
+      <li>Аналітика: ${T(legal.analytics)}.</li>
+    </ul>
+    <p>Ці сервіси можуть обробляти дані за межами України на умовах власних політик конфіденційності.</p>` },
+  { id: 'strok', title: 'Скільки зберігаємо', html: `
+    <p>Дані із заявки зберігаються ${T(legal.retention)} від останнього контакту з вами або до відкликання згоди, залежно від того, що настане раніше. Після цього ми їх видаляємо.</p>` },
+  { id: 'prava', title: 'Ваші права', html: `
+    <p>Відповідно до статті 8 Закону України «Про захист персональних даних» ви маєте право:</p>
+    <ul>
+      <li>знати, які ваші дані ми маємо, навіщо і хто має до них доступ;</li>
+      <li>отримати їх копію;</li>
+      <li>вимагати виправити неточні дані або видалити їх;</li>
+      <li>відкликати згоду на обробку;</li>
+      <li>звернутися зі скаргою до Уповноваженого Верховної Ради України з прав людини або до суду.</li>
+    </ul>
+    <p>Напишіть на ${email}: відповімо не пізніше ніж за 30 календарних днів.</p>` },
+  { id: 'cookie', title: 'Cookie та сховище браузера', html: `
+    <p>Сайт зберігає в браузері лише дрібниці для зручності: ваш найкращий удар по груші на головній сторінці і зведення заявки для сторінки подяки (видаляється одразу після показу). Ці дані не залишають ваш пристрій.</p>
+    <p>Аналітичні cookie зʼявляться лише після підключення аналітики: ${T(legal.analytics)}. Вимкнути cookie можна в налаштуваннях браузера.</p>` },
+  { id: 'bezpeka', title: 'Як захищаємо', html: `
+    <p>Сайт працює через захищене зʼєднання (HTTPS). Доступ до заявок мають лише ті, кому він потрібен для запису на тренування.</p>` },
+  { id: 'zminy', title: 'Зміни політики', html: `
+    <p>Якщо ми змінимо політику, нова редакція зʼявиться на цій сторінці з новою датою. Поточна редакція — від ${legal.updated}.</p>` },
+];
+---
+<Page
+  title="Політика конфіденційності — Світ Боксу"
+  description="Як боксерський клуб «Світ Боксу» збирає, використовує і захищає персональні дані із заявок на тренування."
+  current="polityka/"
+  kicker="Політика конфіденційності"
+  heading="Політика"
+  lead="Коротко: ми просимо лише імʼя, телефон і групу, щоб передзвонити щодо тренування. Не продаємо і не розсилаємо рекламу."
+  signup={false}
+>
+  <div slot="head" class="pol-sum mono">
+    <span>Редакція від {legal.updated}</span>
+    <span>Питання: <a href={`mailto:${site.email}`}>{site.email}</a></span>
+  </div>
+
+  <section class="blk pol">
+    <div class="wrap pol-grid">
+      <nav class="pol-toc" aria-label="Розділи">
+        <span class="mono muted">Розділи</span>
+        <ol>
+          {sections.map((s, i) => <li><a href={`#${s.id}`} data-toc={s.id}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{s.title}</a></li>)}
+        </ol>
+      </nav>
+      <div class="pol-body">
+        {sections.map((s, i) => (
+          <section class="pol-sec" id={s.id}>
+            <h2><span class="mono">Раунд {String(i + 1).padStart(2, '0')}</span>{s.title}</h2>
+            <Fragment set:html={s.html} />
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+</Page>
+
+<script>
+  // Highlight the section being read in the table of contents
+  const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')].map((a) => [a.dataset.toc!, a]));
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.classList.remove('on'));
+    links.get(e.target.id)?.classList.add('on');
+  }), { rootMargin: '-30% 0px -60% 0px' });
+  document.querySelectorAll('.pol-sec').forEach((s) => io.observe(s));
+</script>
+
+<style is:global>
+  .pol-sum { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 18px 20px; color: var(--muted); font-size: 12px; }
+  .pol-sum a { color: var(--fg); border-bottom: 1px solid var(--red); }
+  .pol-grid { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .pol-toc { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .pol-toc ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .pol-toc a { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 15px; transition: color .2s, padding .25s; }
+  .pol-toc a .mono { color: var(--muted); font-size: 11px; padding-top: 3px; }
+  .pol-toc a:hover, .pol-toc a.on { color: var(--fg); }
+  .pol-toc a.on { padding-left: 10px; box-shadow: inset 3px 0 0 var(--red); }
+  .pol-toc a.on .mono { color: var(--red); }
+  .pol-body { max-width: 72ch; }
+  .pol-sec { padding-bottom: clamp(32px, 4vw, 48px); margin-bottom: clamp(32px, 4vw, 48px); border-bottom: 1px solid var(--line); scroll-margin-top: 24px; }
+  .pol-sec:last-child { border-bottom: 0; margin-bottom: 0; }
+  .pol-sec h2 { display: flex; flex-direction: column; gap: 10px; font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(34px, 3.6vw, 52px); line-height: .92; margin: 0 0 20px; }
+  .pol-sec h2 .mono { font-family: var(--mono); font-style: normal; font-weight: 400; font-size: 12px; color: var(--red); letter-spacing: .06em; }
+  .pol-sec p, .pol-sec li { font-size: 17px; line-height: 1.6; color: #d4d4cf; }
+  .pol-sec p { margin: 0 0 14px; }
+  .pol-sec ul { margin: 0 0 14px; padding-left: 0; list-style: none; }
+  .pol-sec li { padding-left: 22px; position: relative; margin-bottom: 6px; }
+  .pol-sec li::before { content: ""; position: absolute; left: 0; top: .7em; width: 10px; height: 2px; background: var(--red); }
+  .pol-sec b { color: var(--fg); font-weight: 600; }
+  .pol-sec a { color: var(--fg); border-bottom: 1px solid var(--red); }
+  @media (max-width: 980px) {
+    .pol-grid { grid-template-columns: minmax(0, 1fr); }
+    .pol-toc { position: static; }
+  }
+</style>

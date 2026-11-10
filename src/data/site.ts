@@ -19,6 +19,17 @@ export const site = {
   },
 };
 
+// Who runs the site and processes personal data (privacy policy). Fill in before launch.
+export const legal = {
+  owner: '[ПІБ ФОП або назва юрособи]',
+  code: '[РНОКПП / ЄДРПОУ]',
+  address: '[юридична адреса]',
+  storage: '[де зберігаються заявки: Telegram-бот, CRM або пошта]',
+  analytics: '[Google Analytics / Microsoft Clarity — уточнити, що буде підключено]',
+  retention: '12 місяців',
+  updated: '10.11.2026',
+};
+
 // The club's own Google Business profile (not the sports complex). Update the numbers from time to time.
 export const google = {
   rating: '4,8',
