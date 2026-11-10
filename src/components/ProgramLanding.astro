@@ -68,7 +68,15 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
         {seo && (
           <div class="pg-read">
             <h2 class="pg-read-h" data-punch>{seo.intro.h2}</h2>
-            <div class="pg-read-t">{seo.intro.text.map((t) => <p>{t}</p>)}</div>
+            <div class="pg-read-t">
+              {seo.intro.text.map((t) => <p>{t}</p>)}
+              {seo.more && (
+                <>
+                  <h3 class="pg-more-h">{seo.more.h3}</h3>
+                  {seo.more.text.map((t) => <p set:html={t.replace(/\[(.+?)\]/g, '<span class="todo">[$1]</span>')} />)}
+                </>
+              )}
+            </div>
           </div>
         )}
         <ol class="pg-ben">
@@ -86,7 +94,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
           <span class="mono">Чесна відповідь</span>
           {seo?.safety ? (
             <>
-              <h3>{seo.safety.h3}</h3>
+              {seo.safety.h3 && <h3>{seo.safety.h3}</h3>}
               {seo.safety.text.map((t) => <p>{t}</p>)}
             </>
           ) : <p>{p.fear.a}</p>}
@@ -116,7 +124,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
           <RoundLabel n="Клуб" label="Чому «Світ Боксу»" />
           <div class="pg-read">
             <h2 class="pg-read-h" data-punch>{seo.club.h2}</h2>
-            <div class="pg-read-t">{seo.club.text.map((t) => <p>{t}</p>)}</div>
+            <div class="pg-read-t">{seo.club.text.map((t) => <p set:html={t.replace(/\[(.+?)\]/g, '<span class="todo">[$1]</span>')} />)}</div>
           </div>
           {seo.advantages && (
             <>
@@ -245,6 +253,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
   .pg-read-h { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(40px, 4.6vw, 76px); line-height: .9; text-wrap: balance; }
   .pg-read-t p { margin: 0 0 16px; font-family: var(--serif); font-size: clamp(18px, 1.45vw, 21px); line-height: 1.6; color: #d9d9d4; max-width: 60ch; }
   .pg-read-t p:first-child::first-letter { font-family: var(--display); font-style: italic; font-weight: 900; color: var(--red); font-size: 3.4em; float: left; line-height: .8; margin: 6px 10px 0 0; }
+  .pg-more-h { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(24px, 2vw, 30px); line-height: 1; margin: 28px 0 14px; color: var(--fg); padding-left: 14px; border-left: 4px solid var(--red); max-width: 34ch; }
   .pg-a h3 { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(26px, 2.2vw, 34px); line-height: .95; margin: 0 0 14px; color: #050505; }
   .pg-a p + p { margin-top: 12px; }
   .pg-club .pg-read { margin-bottom: clamp(40px, 5vw, 72px); }
