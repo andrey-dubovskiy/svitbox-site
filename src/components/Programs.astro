@@ -1,7 +1,7 @@
 ---
 // Round 01: programs list. Hovering a row shows its photo next to the cursor.
 import RoundLabel from './RoundLabel.astro';
-import { programs } from '../data/programs';
+import { programs, programUrl } from '../data/programs';
 import { asset, link } from '../lib/util';
 ---
 <section class="blk" id="programs">
@@ -10,7 +10,7 @@ import { asset, link } from '../lib/util';
     <div class="progs" id="progs">
       <div class="follow ph photo" id="follow" aria-hidden="true"><img id="followImg" src={asset(programs[0].img)} alt="" /></div>
       {programs.map((p) => (
-        <a class="prog" href={link(`programy/${p.slug}/`)} data-img={asset(p.img)}>
+        <a class="prog" href={link(programUrl(p))} data-img={asset(p.img)}>
           <img class="prog-thumb" src={asset(p.img)} alt="" loading="lazy" />
           <span class="name" data-punch>{p.name}</span>
           <p>{p.short}</p>

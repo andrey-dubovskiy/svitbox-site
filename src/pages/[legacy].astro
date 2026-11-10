@@ -1,0 +1,10 @@
+---
+// Program landings kept at their old-site URLs (e.g. /boxing_kids) so Google rankings carry over.
+import ProgramLanding from '../components/ProgramLanding.astro';
+import { programs, type Program } from '../data/programs';
+export function getStaticPaths() {
+  return programs.filter((p) => p.path).map((p) => ({ params: { legacy: p.path!.replace(/\/$/, '') }, props: { p } }));
+}
+const { p } = Astro.props as { p: Program };
+---
+<ProgramLanding p={p} />

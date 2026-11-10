@@ -1,0 +1,334 @@
+---
+// Program landing page (ad traffic lands here). One template for all programs in
+// src/data/programs.ts. Structure: photo hero with an info card (when / age / price / where),
+// what it gives, the main fear and the answer, how a training goes (4 rounds),
+// this program's schedule and prices, FAQ, other programs, the sign-up form.
+import Base from '../layouts/Base.astro';
+import SiteHeader from './SiteHeader.astro';
+import MobileMenu from './MobileMenu.astro';
+import RoundLabel from './RoundLabel.astro';
+import Tape from './Tape.astro';
+import Signup from './Signup.astro';
+import MobileBar from './MobileBar.astro';
+import Footer from './Footer.astro';
+import { programs, programUrl, type Program } from '../data/programs';
+import { schedule, prices, daysFull } from '../data/schedule';
+import { halls, google } from '../data/site';
+import { asset, link, isTodo } from '../lib/util';
+
+interface Props { p: Program; }
+const { p } = Astro.props;
+const hall = halls[0];
+const allGroups = schedule.flatMap((t) => t.groups);
+const groups = p.groups.map((id) => allGroups.find((g) => g.id === id)!).filter(Boolean);
+const plans = p.prices ? prices.find((x) => x.id === p.prices)!.plans : [];
+const others = programs.filter((x) => x.slug !== p.slug);
+const longest = Math.max(...(p.seo?.h1 ?? p.name).split(/\s+/).map((w) => [...w].length));
+const seo = p.seo;
+const title = seo?.title ?? `${p.name} — бокс у Броварах, Світ Боксу`;
+const description = seo?.description ?? `${p.name} у клубі «Світ Боксу», Бровари. ${p.lead}`;
+const h1 = seo?.h1 ?? p.name;
+const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
+---
+<Base title={title} description={description}>
+  <SiteHeader current="programy/" />
+  <MobileMenu />
+
+  <main>
+    <section class="pg-hero page-head">
+      <img class="pg-photo" src={asset(p.img)} alt={seo?.imgAlt ?? ""} style={`object-position:${p.pos ?? '50% 50%'}`} />
+      <div class="wrap pg-hero-in">
+        <nav class="crumbs mono" aria-label="Ви тут"><a href={asset('')}>Головна</a><span aria-hidden="true">/</span><a href={link('programy/')}>Програми</a><span aria-hidden="true">/</span><span>{p.name}</span></nav>
+        <div class="pg-hero-grid">
+          <div>
+            <p class="pg-kicker mono">{p.kicker}</p>
+            <h1 class:list={["pg-h", { "pg-h-long": seo }]} data-punch style={`--w:${longest}`}>{h1}</h1>
+            <p class="pg-lead">{seo?.lead ?? p.lead}</p>
+            <div class="pg-cta">
+              <a class="btn" href="#signup" data-signup={p.signup}><span>Записатись</span><span class="arr">→</span></a>
+              <a class="link" href={link('rozklad/')}>Повний розклад</a>
+            </div>
+          </div>
+          <aside class="pg-card">
+            <dl>
+              <div><dt class="mono">Вік</dt><dd>{p.age}</dd></div>
+              <div><dt class="mono">Коли</dt><dd>{p.when}</dd></div>
+              <div><dt class="mono">Ціна</dt><dd class:list={[{ todo: isTodo(p.from) }]}>{p.from}</dd></div>
+              <div><dt class="mono">Де</dt><dd><a href={link('kontakty/')}>{hall.name}</a></dd></div>
+            </dl>
+            <a class="pg-rate mono" href={google.url} target="_blank" rel="noopener"><b>★ {google.rating}</b> · {google.count} відгуків у Google</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="wrap">
+        <RoundLabel n="Раунд 01" label="Що дає" />
+        {seo && (
+          <div class="pg-read">
+            <h2 class="pg-read-h" data-punch>{seo.intro.h2}</h2>
+            <div class="pg-read-t">{seo.intro.text.map((t) => <p>{t}</p>)}</div>
+          </div>
+        )}
+        <ol class="pg-ben">
+          {p.benefits.map((b, i) => (
+            <li><span class="mono">{String(i + 1).padStart(2, '0')}</span><b>{b.t}</b><p>{b.d}</p></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="pg-fear">
+      <div class="wrap pg-fear-in">
+        <p class="pg-q"><span aria-hidden="true">«</span>{p.fear.q}<span aria-hidden="true">»</span></p>
+        <div class="pg-a">
+          <span class="mono">Чесна відповідь</span>
+          {seo?.safety ? (
+            <>
+              <h3>{seo.safety.h3}</h3>
+              {seo.safety.text.map((t) => <p>{t}</p>)}
+            </>
+          ) : <p>{p.fear.a}</p>}
+        </div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="wrap">
+        <RoundLabel n="Раунд 02" label="Як проходить тренування" />
+        <h2 class="h2" data-punch>Чотири раунди</h2>
+        <ol class="pg-rounds">
+          {p.rounds.map((r, i) => (
+            <li>
+              <span class="pg-bell mono">Раунд {i + 1}</span>
+              <b>{r.t}</b>
+              <p>{r.d}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {seo?.club && (
+      <section class="blk pg-club">
+        <div class="wrap">
+          <RoundLabel n="Клуб" label="Чому «Світ Боксу»" />
+          <div class="pg-read">
+            <h2 class="pg-read-h" data-punch>{seo.club.h2}</h2>
+            <div class="pg-read-t">{seo.club.text.map((t) => <p>{t}</p>)}</div>
+          </div>
+          {seo.advantages && (
+            <>
+              <h2 class="pg-adv-h">{seo.advantages.h2}</h2>
+              <ol class="pg-adv">
+                {seo.advantages.items.map((t, i) => (
+                  <li><span class="pg-adv-n">{String(i + 1).padStart(2, '0')}</span><p set:html={t.replace(/\[(.+?)\]/g, '<span class="todo">[$1]</span>')} /></li>
+                ))}
+              </ol>
+            </>
+          )}
+        </div>
+      </section>
+    )}
+
+    <Tape tilt={1.2} reverse />
+
+    <section class="blk" id="when">
+      <div class="wrap pg-when">
+        <div>
+          <RoundLabel n="Раунд 03" label="Коли" />
+          <h2 class="h2" data-punch>Розклад</h2>
+          {groups.length > 0 && (
+            <ul class="pg-sched">
+              {groups.map((g) => (
+                <li>
+                  <span><b>{g.name}</b><span class="mono muted">{g.meta}{g.note ? ` · ${g.note}` : ''}</span></span>
+                  <span class="pg-time"><span class="mono">{dayList(g.days)}</span><b>{g.from}–{g.to}</b></span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {p.note && <p class:list={['pg-note', { todo: isTodo(p.note) }]}>{p.note}</p>}
+          <a class="link" href={link('rozklad/')}>Повний розклад →</a>
+        </div>
+        <div>
+          <RoundLabel n="Раунд 04" label="Скільки" />
+          <h2 class="h2" data-punch>Ціни</h2>
+          {plans.length > 0 ? (
+            <ul class="pg-prices">
+              {plans.map((pl) => (
+                <li class:list={[{ hot: pl.badge }]}>
+                  <span><b>{pl.title}</b><span class="mono muted">{pl.days}</span></span>
+                  <span class="pg-price"><b>{pl.price}</b><span class="mono">{pl.unit}</span></span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="pg-note todo">[уточнити: ціна індивідуального тренування і пакетів]</p>
+          )}
+          <a class="link" href={link('tsiny/')}>Усі ціни й умови →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="wrap pg-faq">
+        <div>
+          <RoundLabel n="Раунд 05" label="Питання" />
+          <h2 class="h2" data-punch>Перед стартом</h2>
+        </div>
+        <div class="faq-list">
+          {p.faq.map((f) => (
+            <details>
+              <summary>{f.q}<span aria-hidden="true">+</span></summary>
+              <p class:list={[{ todo: isTodo(f.a) }]}>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {seo?.closing && (
+      <section class="pg-closing">
+        <div class="wrap"><p>{seo.closing}</p></div>
+      </section>
+    )}
+    <Tape tilt={-1.2} />
+    <Signup n="Останній раунд" preset={p.signup} />
+
+    <section class="blk pg-others">
+      <div class="wrap">
+        <RoundLabel n="Ще" label="Інші програми" />
+        <div class="pg-other-list">
+          {others.map((o) => (
+            <a href={link(programUrl(o))}>
+              <img src={asset(o.img)} alt="" loading="lazy" style={`object-position:${o.pos ?? '50% 50%'}`} />
+              <span class="mono muted">{o.kicker}</span>
+              <b>{o.name} <span aria-hidden="true">→</span></b>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <MobileBar />
+  <Footer />
+</Base>
+
+<style is:global>
+  /* Hero: full-bleed photo, title left, info card right (store-info sidebar pattern) */
+  .pg-hero { position: relative; overflow: hidden; min-height: min(92svh, 900px); display: flex; align-items: flex-end; padding-block: 32px clamp(40px, 5vw, 72px) !important; border-bottom: 1px solid var(--line); }
+  .pg-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.08) brightness(.72); }
+  .pg-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,5,5,.75) 0%, rgba(5,5,5,.1) 35%, rgba(5,5,5,.55) 70%, var(--bg) 100%), linear-gradient(90deg, rgba(5,5,5,.75) 0%, transparent 60%); }
+  .pg-hero-in { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; justify-content: space-between; min-height: inherit; gap: 48px; }
+  .pg-hero .crumbs { margin: 0; }
+  .pg-hero .crumbs span:last-child { color: var(--red); }
+  .pg-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 360px); gap: 32px clamp(32px, 5vw, 80px); align-items: end; }
+  .pg-kicker { margin: 0 0 14px; color: var(--red); }
+  .pg-h { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(64px, 9vw, 160px); line-height: .84; text-wrap: balance; }
+  .pg-lead { margin: 24px 0 0; max-width: 46ch; font-family: var(--serif); font-size: clamp(18px, 1.5vw, 22px); line-height: 1.45; }
+  .pg-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 28px; }
+  .pg-card { background: rgba(10,10,9,.88); border: 1px solid var(--line); backdrop-filter: blur(6px); padding: 22px; position: relative; }
+  .pg-card::before { content: ""; position: absolute; left: -1px; top: -1px; right: -1px; height: 4px; background: var(--red); }
+  .pg-card dl { margin: 0; display: grid; gap: 14px; }
+  .pg-card dt { font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .pg-card dd { margin: 2px 0 0; font-size: 17px; font-weight: 500; }
+  .pg-card dd a { border-bottom: 1px solid var(--red); }
+  .pg-rate { display: block; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+  .pg-rate b { color: #f4b400; font-weight: 500; }
+
+  /* SEO long-read: old-site headings and text, set as an editorial spread */
+  .pg-h-long { font-size: clamp(56px, 7vw, 120px); }
+  .pg-read { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px clamp(32px, 6vw, 96px); align-items: start; margin-top: clamp(16px, 2vw, 24px); }
+  .pg-read-h { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(40px, 4.6vw, 76px); line-height: .9; text-wrap: balance; }
+  .pg-read-t p { margin: 0 0 16px; font-family: var(--serif); font-size: clamp(18px, 1.45vw, 21px); line-height: 1.6; color: #d9d9d4; max-width: 60ch; }
+  .pg-read-t p:first-child::first-letter { font-family: var(--display); font-style: italic; font-weight: 900; color: var(--red); font-size: 3.4em; float: left; line-height: .8; margin: 6px 10px 0 0; }
+  .pg-a h3 { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(26px, 2.2vw, 34px); line-height: .95; margin: 0 0 14px; color: #050505; }
+  .pg-a p + p { margin-top: 12px; }
+  .pg-club .pg-read { margin-bottom: clamp(40px, 5vw, 72px); }
+  .pg-adv-h { font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--red); margin: 0 0 16px; }
+  .pg-adv { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .pg-adv li { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; gap: 14px; transition: background .25s; }
+  .pg-adv li:hover { background: var(--surface); }
+  .pg-adv-n { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 56px; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--red); }
+  .pg-adv p { margin: 0; color: #cfcfca; line-height: 1.55; }
+  .pg-closing { padding-block: clamp(56px, 7vw, 104px) clamp(40px, 5vw, 64px); }
+  .pg-closing p { margin: 0; max-width: 28ch; font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(34px, 4vw, 64px); line-height: .95; text-wrap: balance; }
+  .pg-read + .pg-ben { margin-top: clamp(40px, 5vw, 64px); }
+  .pg-ben { list-style: none; margin: clamp(24px, 3vw, 40px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .pg-ben li { padding: 28px 24px 32px 0; display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--line); }
+  .pg-ben li + li { padding-left: 24px; }
+  .pg-ben li:last-child { border-right: 0; }
+  .pg-ben .mono { color: var(--red); }
+  .pg-ben b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(30px, 2.8vw, 44px); line-height: .95; }
+  .pg-ben p { margin: 0; color: var(--muted); }
+
+  /* The fear, said out loud */
+  .pg-fear { background: var(--red); color: var(--fg); padding-block: clamp(56px, 8vw, 120px); }
+  .pg-fear-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px clamp(32px, 6vw, 96px); align-items: center; }
+  .pg-q { margin: 0; font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(48px, 6.4vw, 108px); line-height: .88; text-wrap: balance; }
+  .pg-q span { color: #050505; }
+  .pg-a .mono { display: inline-block; background: #050505; color: var(--fg); padding: 6px 10px; font-size: 11px; margin-bottom: 16px; }
+  .pg-a p { margin: 0; font-family: var(--serif); font-size: clamp(18px, 1.5vw, 22px); line-height: 1.5; }
+
+  .pg-rounds { list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; counter-reset: r; }
+  .pg-rounds li { border: 1px solid var(--line); padding: 22px; display: flex; flex-direction: column; gap: 12px; position: relative; background: var(--surface); transition: border-color .25s, transform .3s var(--ease-out); }
+  .pg-rounds li:hover { border-color: var(--red); transform: translateY(-4px); }
+  .pg-bell { display: inline-flex; align-items: center; gap: 8px; color: var(--red); font-size: 12px; }
+  .pg-bell::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #d6a640; box-shadow: 0 0 0 3px rgba(214,166,64,.25); }
+  .pg-rounds b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.4vw, 38px); line-height: .95; }
+  .pg-rounds p { margin: 0; color: var(--muted); }
+
+  .pg-when { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px clamp(40px, 6vw, 96px); align-items: start; }
+  .pg-when .link { margin-top: 20px; }
+  .pg-sched, .pg-prices { list-style: none; margin: clamp(24px, 3vw, 40px) 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .pg-sched li, .pg-prices li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .pg-sched li > span:first-child, .pg-prices li > span:first-child { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .pg-sched b, .pg-prices li > span:first-child b { font-size: 19px; font-weight: 600; }
+  .pg-sched .mono, .pg-prices .mono { font-size: 12px; }
+  .pg-time { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+  .pg-time b { font-family: var(--mono); font-weight: 500; font-size: 17px; font-variant-numeric: tabular-nums; }
+  .pg-price { display: flex; flex-direction: column; align-items: flex-end; }
+  .pg-price b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(40px, 4vw, 60px); line-height: .9; }
+  .pg-prices li.hot .pg-price b { color: var(--red); }
+  .pg-note { margin: 16px 0 0; color: var(--muted); }
+
+  .pg-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px clamp(32px, 6vw, 96px); align-items: start; }
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; padding: 22px 0; font-size: 19px; font-weight: 500; }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary span { color: var(--red); font-family: var(--mono); transition: transform .3s; }
+  .faq-list details[open] summary span { transform: rotate(45deg); }
+  .faq-list details p { margin: 0 0 22px; color: var(--muted); max-width: 56ch; }
+
+  .pg-other-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
+  .pg-other-list a { display: flex; flex-direction: column; gap: 8px; }
+  .pg-other-list img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: grayscale(1) contrast(1.05); border: 1px solid var(--line); transition: filter .4s; }
+  .pg-other-list a:hover img { filter: grayscale(.2); }
+  .pg-other-list .mono { font-size: 11px; }
+  .pg-other-list b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(24px, 2vw, 32px); line-height: .95; transition: color .2s; }
+  .pg-other-list a:hover b { color: var(--red); }
+
+  @media (max-width: 980px) {
+    .pg-hero { min-height: 0; padding-top: 24px !important; }
+    .pg-hero-in { min-height: 0; gap: 120px; }
+    .pg-hero-grid, .pg-fear-in, .pg-when, .pg-faq, .pg-read { grid-template-columns: minmax(0, 1fr); }
+    .pg-adv { grid-template-columns: minmax(0, 1fr); }
+    .pg-h { font-size: min(96px, 15vw, calc((100vw - 2 * max(var(--gx), 4vw)) / (var(--w) * .56))); }
+    .pg-ben { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pg-ben li, .pg-ben li + li { padding: 22px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .pg-ben li:nth-child(odd) { border-right: 1px solid var(--line); }
+    .pg-rounds { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .pg-other-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .pg-ben { grid-template-columns: minmax(0, 1fr); }
+    .pg-ben li:nth-child(odd) { border-right: 0; }
+    .pg-rounds { grid-template-columns: minmax(0, 1fr); }
+    .pg-sched li { flex-direction: column; align-items: flex-start; }
+    .pg-time { align-items: flex-start; text-align: left; }
+  }
+</style>

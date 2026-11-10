@@ -1,6 +1,6 @@
 ---
 import Page from '../../layouts/Page.astro';
-import { programs } from '../../data/programs';
+import { programs, programUrl } from '../../data/programs';
 import { asset, link, isTodo } from '../../lib/util';
 ---
 <Page
@@ -16,7 +16,7 @@ import { asset, link, isTodo } from '../../lib/util';
       <ol class="pr-list">
         {programs.map((p, i) => (
           <li>
-            <a href={link(`programy/${p.slug}/`)}>
+            <a href={link(programUrl(p))}>
               <span class="pr-num mono">{String(i + 1).padStart(2, '0')}</span>
               <img src={asset(p.img)} alt="" loading={i < 2 ? 'eager' : 'lazy'} style={`object-position:${p.pos ?? '50% 50%'}`} />
               <span class="pr-body">
