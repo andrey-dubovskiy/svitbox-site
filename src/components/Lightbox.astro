@@ -1,0 +1,31 @@
+---
+// Full-screen photo viewer for any figure[data-full] on the page (slots without a photo are not clickable).
+---
+<dialog class="lb" id="lightbox" aria-label="Фото">
+  <img id="lbImg" alt="" />
+  <p class="lb-cap mono" id="lbCap"></p>
+  <button type="button" class="lb-close mono" id="lbClose">Закрити ✕</button>
+</dialog>
+
+<script>
+  const lb = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lbImg') as HTMLImageElement, cap = document.getElementById('lbCap')!;
+  const open = (f: HTMLElement) => {
+    const i = f.querySelector('img'); if (!i) return;
+    img.src = f.dataset.full!; img.alt = i.alt; cap.textContent = i.alt; lb.showModal();
+  };
+  document.querySelectorAll<HTMLElement>('figure[data-full]').forEach((f) => {
+    f.addEventListener('click', () => open(f));
+    f.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(f); });
+  });
+  document.getElementById('lbClose')!.addEventListener('click', () => lb.close());
+  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+</script>
+
+<style is:global>
+  .lb { max-width: min(1200px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--line); background: #050505; color: var(--fg); }
+  .lb::backdrop { background: rgba(0,0,0,.88); }
+  .lb img { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; }
+  .lb-cap { margin: 0; padding: 12px 16px; font-size: 12px; color: var(--muted); }
+  .lb-close { position: absolute; top: 10px; right: 10px; background: rgba(5,5,5,.8); color: var(--fg); border: 1px solid var(--line); height: 40px; padding: 0 14px; cursor: pointer; }
+</style>

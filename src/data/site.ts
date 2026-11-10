@@ -40,8 +40,7 @@ export const google = {
 
 export const mainNav = [
   { label: 'Програми', href: 'programy/' },
-  { label: 'Клуб', href: '#club' },
-  { label: 'Тренери', href: '#coach' },
+  { label: 'Тренери і зал', href: 'about_us/' },
   { label: 'Чемпіони', href: '#champions' },
   { label: 'Розклад', href: 'rozklad/' },
   { label: 'Ціни', href: 'tsiny/' },
@@ -52,6 +51,7 @@ export const mainNav = [
 export const pages = [
   { label: 'Розклад', href: 'rozklad/', text: 'Групи за віком, дні та час' },
   { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
+  { label: 'Тренери і зал', href: 'about_us/', text: 'Хто тренує і де: склад, ринг, мішки, інвентар' },
   { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },
 ];
 

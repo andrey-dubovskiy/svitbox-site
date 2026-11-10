@@ -8,6 +8,8 @@ import SiteHeader from './SiteHeader.astro';
 import MobileMenu from './MobileMenu.astro';
 import RoundLabel from './RoundLabel.astro';
 import Tape from './Tape.astro';
+import PhotoGrid from './PhotoGrid.astro';
+import Lightbox from './Lightbox.astro';
 import Signup from './Signup.astro';
 import MobileBar from './MobileBar.astro';
 import Footer from './Footer.astro';
@@ -136,14 +138,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
             <h2 class="h2" data-punch>У залі</h2>
             <p class="muted">Як тренуються {audience} «Світу Боксу». Натисніть на фото, щоб відкрити його на весь екран.</p>
           </div>
-          <div class="pg-gal-grid">
-            {photos.gallery.map((g: Shot) => (
-              <figure class:list={['ph', `g-${g.size ?? 'n'}`, { photo: g.src }]} data-full={g.src && asset(g.src)} tabindex={g.src ? 0 : undefined}>
-                {g.src && <img src={asset(g.src)} alt={`${g.cap}: ${g.brief}`} loading="lazy" />}
-                <figcaption class="cap"><b>{g.cap}</b>{!g.src && <><br />Фото: {g.brief}</>}</figcaption>
-              </figure>
-            ))}
-          </div>
+          <PhotoGrid shots={photos.gallery} />
         </div>
       </section>
     )}
@@ -251,31 +246,12 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
     </section>
   </main>
 
-  <dialog class="lb" id="lightbox" aria-label="Фото">
-    <img id="lbImg" alt="" />
-    <p class="lb-cap mono" id="lbCap"></p>
-    <button type="button" class="lb-close mono" id="lbClose">Закрити ✕</button>
-  </dialog>
+  <Lightbox />
 
   <MobileBar />
   <Footer />
 </Base>
 
-<script>
-  // Lightbox for real photos (slots with a brief only are not clickable)
-  const lb = document.getElementById('lightbox') as HTMLDialogElement;
-  const img = document.getElementById('lbImg') as HTMLImageElement, cap = document.getElementById('lbCap')!;
-  const open = (f: HTMLElement) => {
-    const i = f.querySelector('img'); if (!i) return;
-    img.src = f.dataset.full!; img.alt = i.alt; cap.textContent = i.alt; lb.showModal();
-  };
-  document.querySelectorAll<HTMLElement>('figure[data-full]').forEach((f) => {
-    f.addEventListener('click', () => open(f));
-    f.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(f); });
-  });
-  document.getElementById('lbClose')!.addEventListener('click', () => lb.close());
-  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
-</script>
 
 <style is:global>
   /* Photo slots: a photo on each round card + a bento gallery */
@@ -284,23 +260,6 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
   .pg-rounds li:hover .pg-round-ph img { filter: grayscale(0) contrast(1.05); transform: scale(1.04); }
   .pg-gal-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 48px; margin-bottom: clamp(28px, 3vw, 44px); }
   .pg-gal-head p { margin: 0; max-width: 40ch; }
-  .pg-gal-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: clamp(150px, 15vw, 230px); grid-auto-flow: dense; gap: 12px; }
-  .pg-gal-grid .ph { margin: 0; }
-  .pg-gal-grid .g-l { grid-column: span 2; grid-row: span 2; }
-  .pg-gal-grid .g-t { grid-row: span 2; }
-  .pg-gal-grid .g-w { grid-column: span 2; }
-  .pg-gal-grid .ph .cap b { color: var(--fg); font-weight: 500; }
-  .pg-gal-grid .ph.photo { cursor: zoom-in; }
-  .pg-gal-grid .ph.photo .cap { position: relative; z-index: 1; color: var(--fg); background: rgba(5,5,5,.6); padding: 4px 8px; }
-  .pg-gal-grid .ph.photo:hover img, .pg-gal-grid .ph.photo:focus-visible img { filter: grayscale(0) contrast(1.05); transform: scale(1.04); }
-  .lb { max-width: min(1200px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--line); background: #050505; color: var(--fg); }
-  .lb::backdrop { background: rgba(0,0,0,.88); }
-  .lb img { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; }
-  .lb-cap { margin: 0; padding: 12px 16px; font-size: 12px; color: var(--muted); }
-  .lb-close { position: absolute; top: 10px; right: 10px; background: rgba(5,5,5,.8); color: var(--fg); border: 1px solid var(--line); height: 40px; padding: 0 14px; cursor: pointer; }
-  @media (max-width: 980px) {
-    .pg-gal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 42vw; gap: 8px; }
-  }
   /* Hero: full-bleed photo, title left, info card right (store-info sidebar pattern) */
   .pg-hero { position: relative; overflow: hidden; min-height: min(92svh, 900px); display: flex; align-items: flex-end; padding-block: 32px clamp(40px, 5vw, 72px) !important; border-bottom: 1px solid var(--line); }
   .pg-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.08) brightness(.72); }

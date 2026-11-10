@@ -1,0 +1,213 @@
+---
+// Coaches + gym on one page. Keeps the old URL /about_us and its H1 «Тренери з боксу».
+import Page from '../../layouts/Page.astro';
+import Tape from '../../components/Tape.astro';
+import RoundLabel from '../../components/RoundLabel.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { team, honorary, hall } from '../../data/content';
+import { google, halls } from '../../data/site';
+import { asset, link, isTodo } from '../../lib/util';
+const gym = halls[0];
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+---
+<Page
+  title="Тренерський склад і зал — тренери з боксу «Світ Боксу», Бровари"
+  description="Тренерський склад боксерського клубу «Світ Боксу» у Броварах: майстри спорту з боксу, суддя міжнародної категорії AIBA. Зал у спорткомплексі «Манеж»: ринг, понад 10 мішків, груші, пневмогруші, інвентар для новачків."
+  current="about_us/"
+  kicker="Тренери і зал"
+  heading="Тренери з боксу"
+  lead="Хто вас тренуватиме і де: майстри спорту з боксу, суддя міжнародної категорії AIBA та зал у спорткомплексі «Манеж»."
+>
+  <div slot="head" class="tz-jump">
+    <a href="#team"><span class="mono muted">Раунд 01</span><b>Тренери <small>{team.length}</small></b></a>
+    <a href="#hall"><span class="mono muted">Раунд 02</span><b>Зал <small>«Манеж»</small></b></a>
+    <a class="trust mono" href={google.url} target="_blank" rel="noopener"><span><b>★ {google.rating}</b> у Google · {google.count} відгуків</span><span>З 2012 року · 120+ боксерів</span></a>
+  </div>
+
+  <section class="blk" id="team">
+    <div class="wrap">
+      <RoundLabel n="Раунд 01" label="Тренерський склад" />
+      <div class="sched-head">
+        <h2 class="h2 tz-h2" data-punch>Тренерський склад клубу «Світ Боксу»</h2>
+        <p class="muted">Кожен тренер — майстер спорту з боксу. Хтось ставить техніку з нуля, хтось готує до рингу на турнірі.</p>
+      </div>
+
+      <ol class="tz-team">
+        {team.map((c, i) => (
+          <li class:list={['tz-row', { flip: i % 2 === 1, lead: i === 0 }]}>
+            <figure class:list={['ph', 'tz-ph', { photo: c.img }]}>
+              {c.img
+                ? <img src={asset(c.img)} alt={`${c.name.join(' ')}, ${c.role.toLowerCase()} «Світу Боксу»`} style={`object-position:${c.pos}`} loading={i === 0 ? 'eager' : 'lazy'} />
+                : <figcaption class="cap">Фото 4:5: {c.brief}</figcaption>}
+              <span class:list={['tz-corner', 'mono', { blue: c.corner.startsWith('Синій') }]}>{c.corner}</span>
+            </figure>
+            <div class="tz-info">
+              <span class="mono muted"><span class="n">{pad(i)}</span> · {c.role}</span>
+              <h3 class="tz-name" data-punch>{c.name[0]}<br />{c.name[1]}</h3>
+              <p class="tz-bio">{c.bio}</p>
+              <dl class="tz-tape">
+                {c.tape.map(([k, v]) => (
+                  <div><dt class="mono">{k}</dt><dd class:list={[{ todo: isTodo(v) }]}>{v}</dd></div>
+                ))}
+                <div><dt class="mono">Групи</dt><dd class:list={[{ todo: isTodo(c.groups) }]}>{c.groups}</dd></div>
+              </dl>
+              {i === 0
+                ? <div><a class="btn" href="#signup"><span>Тренуватись з {c.name[0]}ом</span><span class="arr">→</span></a></div>
+                : <a class="link-inline mono" href="#signup">Записатися на тренування →</a>}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="tz-hon">
+        <span class="mono muted">Почесні президенти клубу</span>
+        <ul>
+          {honorary.map((h) => <li><b>{h.name}</b><span class="muted">{h.role}</span></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <Tape tilt={1.4} reverse />
+
+  <section class="blk" id="hall">
+    <div class="wrap">
+      <RoundLabel n="Раунд 02" label="Де тренуємось" />
+      <div class="tz-hall">
+        <div class="tz-hall-text">
+          <h2 class="h2 tz-h2" data-punch>Зал та обладнання</h2>
+          {hall.text.map((t) => <p class="tz-read">{t}</p>)}
+          <ul class="tz-facts mono">{hall.facts.map((f) => <li>{f}</li>)}</ul>
+          <a class="link-inline mono" href={link('kontakty/')}>{gym.name} · {gym.address} — як дістатися →</a>
+        </div>
+        <figure class="ph photo reveal tz-hall-ph">
+          <img src={asset('img/club.jpg')} alt="Ринг у залі клубу «Світ Боксу» в спорткомплексі «Манеж»" loading="lazy" />
+          <figcaption class="tz-tag mono">{gym.name}</figcaption>
+        </figure>
+      </div>
+
+      <ul class="tz-kit">
+        {hall.kit.map((k) => (
+          <li><b>{k.big}{k.plus && <sup>+</sup>}</b><span>{k.label}</span></li>
+        ))}
+      </ul>
+
+      <div class="tz-gal">
+        <div class="pg-gal-head">
+          <h3 class="tz-sub">У залі</h3>
+          <p class="muted">Ринг, мішки та груші «Світу Боксу». Натисніть на фото, щоб відкрити його на весь екран.</p>
+        </div>
+        <PhotoGrid shots={hall.photos} />
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="gear">
+    <div class="wrap tz-gear">
+      <div>
+        <RoundLabel n="Раунд 03" label="Інвентар для новачків" />
+        <h2 class="h2 tz-h2" data-punch>Можна прийти без рукавичок</h2>
+        <p class="tz-read">{hall.gear.text}</p>
+        <p class="todo mono tz-note">{hall.gear.note}</p>
+        <div><a class="btn" href="#signup"><span>Записатися на перше заняття</span><span class="arr">→</span></a></div>
+      </div>
+      <ol class="tz-gear-list">
+        {hall.gear.items.map((g, i) => <li><span class="mono n">{pad(i)}</span><b>{g}</b></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <Lightbox />
+</Page>
+
+<style is:global>
+  .tz-jump { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); }
+  .tz-jump a { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; transition: background .25s; }
+  .tz-jump a + a { border-left: 1px solid var(--line); }
+  .tz-jump a:not(.trust):hover { background: var(--surface); }
+  .tz-jump b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(32px, 3vw, 44px); line-height: .9; text-transform: uppercase; }
+  .tz-jump b small { font-size: .5em; color: var(--red); vertical-align: top; }
+  .tz-jump .trust { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; border-left: 0 !important; border-top: 1px solid var(--line); padding-block: 12px; color: var(--muted); font-size: 12px; }
+  .tz-jump .trust b { font: inherit; color: #f4b400; }
+
+  .tz-h2 { font-size: clamp(48px, 6.4vw, 104px); max-width: 14ch; }
+
+  /* Coaches: profile rows, photo and text alternate sides (team-page pattern) */
+  .tz-team { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .tz-row { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 80px); padding-block: clamp(36px, 5vw, 72px); border-bottom: 1px solid var(--line); align-items: center; }
+  .tz-row.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .tz-row.flip .tz-ph { order: 2; }
+  .tz-ph { aspect-ratio: 4 / 5; margin: 0; max-height: 640px; }
+  .tz-row:not(.lead) .tz-ph { max-width: 440px; width: 100%; justify-self: center; }
+  .tz-row.flip:not(.lead) .tz-ph { justify-self: end; }
+  .tz-ph img { filter: grayscale(1) contrast(1.1) brightness(.92); }
+  .tz-row:hover .tz-ph img { filter: grayscale(0) contrast(1.05); transform: scale(1.03); }
+  .tz-corner { position: absolute; left: 14px; top: 14px; z-index: 2; background: #d01f2b; color: #fff; padding: 6px 10px; font-size: 12px; }
+  .tz-corner.blue { background: #1f4fd0; }
+  .tz-ph .cap { position: relative; z-index: 1; }
+  .tz-info { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .tz-info .n { color: var(--red); }
+  .tz-name { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(56px, 7vw, 120px); line-height: .86; text-transform: uppercase; }
+  .tz-row:not(.lead) .tz-name { font-size: clamp(48px, 5.4vw, 92px); }
+  .tz-bio { font-family: var(--serif); font-size: clamp(18px, 1.5vw, 22px); line-height: 1.45; margin: 0; max-width: 38em; }
+  .tz-tape { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .tz-tape > div { border-bottom: 1px solid var(--line); padding: 14px 16px 14px 0; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .tz-tape > div:nth-child(odd) { border-right: 1px solid var(--line); }
+  .tz-tape > div:nth-child(even) { padding-left: 16px; }
+  .tz-tape dt { color: var(--muted); font-size: 11px; }
+  .tz-tape dd { margin: 0; font-size: 16px; font-weight: 500; }
+  .tz-tape dd.todo { color: var(--todo); font-weight: 400; }
+  .link-inline { color: var(--fg); border-bottom: 1px solid var(--red); padding-bottom: 3px; align-self: flex-start; font-size: 13px; }
+  .link-inline:hover { color: var(--red); }
+
+  .tz-hon { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 16px 48px; padding-top: clamp(28px, 4vw, 48px); align-items: baseline; }
+  .tz-hon ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .tz-hon li { display: flex; flex-direction: column; gap: 6px; border-left: 2px solid var(--red); padding-left: 16px; }
+  .tz-hon b { font-family: var(--display); font-style: italic; font-weight: 800; font-size: clamp(26px, 2.4vw, 36px); line-height: .95; text-transform: uppercase; }
+  .tz-hon span { font-size: 14px; }
+
+  /* Gym */
+  .tz-hall { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .tz-hall-text { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .tz-read { font-family: var(--serif); font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; margin: 0; max-width: 36em; }
+  .tz-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+  .tz-facts li { border: 1px solid var(--line); padding: 8px 12px; }
+  .tz-facts li::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--red); margin-right: 8px; vertical-align: 1px; }
+  .tz-hall-ph { aspect-ratio: 4 / 3; margin: 0; }
+  .tz-tag { position: relative; z-index: 1; background: var(--fg); color: var(--bg); padding: 6px 10px; font-size: 12px; }
+  .tz-kit { list-style: none; margin: clamp(40px, 5vw, 72px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .tz-kit li { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px 22px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .tz-kit b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(48px, 5.4vw, 88px); line-height: .9; text-transform: uppercase; }
+  .tz-kit b sup { color: var(--red); font-size: .45em; vertical-align: top; position: relative; top: .15em; }
+  .tz-kit span { color: var(--muted); font-size: 15px; }
+  .tz-gal { margin-top: clamp(56px, 7vw, 104px); }
+  .tz-sub { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(44px, 5vw, 80px); line-height: .9; text-transform: uppercase; }
+
+  /* Gear for beginners */
+  .tz-gear { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+  .tz-gear > div { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .tz-gear .round { margin-bottom: 8px; }
+  .tz-note { margin: -8px 0 0; font-size: 12px; }
+  .tz-gear-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .tz-gear-list li { display: flex; align-items: baseline; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .tz-gear-list .n { color: var(--red); font-size: 12px; }
+  .tz-gear-list b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(36px, 4vw, 64px); line-height: .9; text-transform: uppercase; }
+
+  @media (max-width: 980px) {
+    .tz-row, .tz-row.flip { grid-template-columns: minmax(0, 1fr); }
+    .tz-row.flip .tz-ph { order: 0; }
+    .tz-row .tz-ph, .tz-row:not(.lead) .tz-ph { max-width: none; justify-self: stretch; max-height: 72vh; }
+    .tz-row:not(.lead) .tz-ph { aspect-ratio: 4 / 4.4; }
+    .tz-hall, .tz-gear { grid-template-columns: minmax(0, 1fr); }
+    .tz-kit { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tz-hon { grid-template-columns: minmax(0, 1fr); }
+    .tz-info .btn, .tz-gear .btn { width: 100%; justify-content: space-between; }
+  }
+  @media (max-width: 560px) {
+    .tz-hon ul { grid-template-columns: minmax(0, 1fr); }
+    .tz-tape { grid-template-columns: minmax(0, 1fr); }
+    .tz-tape > div:nth-child(odd) { border-right: 0; }
+    .tz-tape > div:nth-child(even) { padding-left: 0; }
+  }
+</style>
