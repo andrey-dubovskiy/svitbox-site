@@ -15,7 +15,6 @@ export const site = {
   email: 'svitbox2012@gmail.com',
   messengers: {
     telegram: '#',
-    viber: '#',
   },
 };
 
