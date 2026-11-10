@@ -6,8 +6,8 @@ import RoundLabel from './RoundLabel.astro';
 import { signupOptions, signupDefault } from '../data/schedule';
 import { site } from '../data/site';
 import { link } from '../lib/util';
-interface Props { n?: string; }
-const { n = 'Раунд 08' } = Astro.props;
+interface Props { n?: string; preset?: string; }
+const { n = 'Раунд 08', preset = signupDefault } = Astro.props;
 ---
 <section class="blk" id="signup">
   <div class="wrap signup">
@@ -42,7 +42,7 @@ const { n = 'Раунд 08' } = Astro.props;
           <legend>Група</legend>
           <div class="chips">
             {signupOptions.map((p) => (
-              <label class="chip"><input type="radio" name="prog" id={`p-${p.id}`} value={p.id} checked={p.id === signupDefault} /><span>{p.chip}</span></label>
+              <label class="chip"><input type="radio" name="prog" id={`p-${p.id}`} value={p.id} checked={p.id === preset} /><span>{p.chip}</span></label>
             ))}
           </div>
         </fieldset>

@@ -1,16 +1,5 @@
-// Section content for the home page.
+// Section content for the home page. Programs live in src/data/programs.ts.
 // Values in [square brackets] are placeholders and render highlighted in pink.
-
-export const programs = [
-  { id: 'kids', signup: 'kids', name: 'Діти та юніори', chip: 'Діти та юніори', img: 'img/kids.jpg',
-    text: 'Самостійність, дисципліна і впевненість у собі. Перші турніри, коли дитина готова.' },
-  { id: 'girls', signup: 'adults', name: 'Бокс для дівчат', chip: 'Дівчата', img: 'img/girls.jpg',
-    text: 'Схуднення, тонус і контроль емоцій. Техніка без зайвої жорсткості.' },
-  { id: 'men', signup: 'adults', name: 'Бокс для чоловіків', chip: 'Чоловіки', img: 'img/men.jpg',
-    text: 'Сила, витривалість, спритність, точність і координація.' },
-  { id: 'solo', signup: 'solo', name: 'Індивідуально', chip: 'Індивідуально', img: 'img/solo.jpg',
-    text: 'Тренер виправляє техніку в реальному часі, тому прогрес швидший, ніж у групі.' },
-];
 
 export const marquee = ['Дисципліна', 'Сила', 'Витривалість', 'Точність', 'Команда', 'Характер'];
 
@@ -18,7 +7,7 @@ export const clubStats = [
   { value: 2012, label: 'рік заснування клубу' },
   { value: 120, plus: true, label: 'боксерів різного віку, статі та рівня' },
   { value: 4, label: 'рівні турнірів: місто, область, Україна, світ' },
-  { value: 4, label: 'програми: діти, дівчата, чоловіки, індивідуально' },
+  { value: 5, label: 'програм: діти, дівчата, чоловіки, індивідуально, функціональні' },
 ];
 
 export const headCoach = {

@@ -39,7 +39,7 @@ export const google = {
 };
 
 export const mainNav = [
-  { label: 'Програми', href: '#programs' },
+  { label: 'Програми', href: 'programy/' },
   { label: 'Клуб', href: '#club' },
   { label: 'Тренери', href: '#coach' },
   { label: 'Чемпіони', href: '#champions' },

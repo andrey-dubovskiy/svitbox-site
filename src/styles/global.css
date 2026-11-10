@@ -153,3 +153,7 @@ section.blk { border-bottom: 1px solid var(--line); padding-block: clamp(64px, 9
 .sched-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 48px; margin-bottom: clamp(32px, 4vw, 56px); }
 .sched-head > :first-child { min-width: 0; }
 .sched-head p { margin: 0; max-width: 40ch; }
+
+/* Breadcrumbs (inner pages and program landings) */
+.crumbs { display: flex; flex-wrap: wrap; gap: 8px 12px; color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.crumbs a:hover { color: var(--fg); }
