@@ -405,3 +405,10 @@ export const programs: Program[] = [
 ];
 
 export const programUrl = (p: Program) => p.path ?? `programy/${p.slug}/`;
+
+// Program links for the footer and mobile menu (anchor text as on the old site, for SEO)
+const linkNames: Record<string, string> = {
+  dity: 'Бокс для дітей і юніорів', divchata: 'Бокс для дівчат', choloviky: 'Бокс для чоловіків',
+  indyvidualno: 'Індивідуальні тренування', funktsionalni: 'Функціональні тренування',
+};
+export const programLinks = programs.map((p) => ({ label: linkNames[p.slug] ?? p.name, href: programUrl(p) }));

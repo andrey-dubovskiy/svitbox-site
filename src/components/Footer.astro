@@ -2,17 +2,21 @@
 // Footer: ring ropes, call to action, link columns, live clocks and a giant name that dodges the cursor.
 import { site, socials, halls } from '../data/site';
 import { isTodo, link } from '../lib/util';
+import { programLinks } from '../data/programs';
 const letters = [...site.name];
 ---
 <footer class="sf" id="contacts">
   <div class="sf-ropes" aria-hidden="true"><i></i><i></i><i></i></div>
 
   <div class="wrap sf-grid">
+    <nav aria-label="Програми"><h3 class="mono"><a href={link('programy/')}>Програми</a></h3><ul>
+      {programLinks.map((p) => <li><a href={link(p.href)}>{p.label}</a></li>)}
+    </ul></nav>
     <nav aria-label="Клуб"><h3 class="mono">Клуб</h3><ul>
-      <li><a href={link('programy/')}>Програми</a></li><li><a href={link('about_us/')}>Тренери і зал</a></li><li><a href={link('#champions')}>Чемпіони</a></li><li><a href={link('#life')}>Події</a></li>
+      <li><a href={link('about_us/')}>Тренери і зал</a></li><li><a href={link('#champions')}>Чемпіони</a></li><li><a href={link('#life')}>Події клубу</a></li><li><a href={link('#first')}>Перше тренування</a></li>
     </ul></nav>
     <nav aria-label="Сторінки"><h3 class="mono">Сторінки</h3><ul>
-      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('#first')}>Перше тренування</a></li><li><a href={link('polityka/')}>Політика конфіденційності</a></li>
+      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('polityka/')}>Політика конфіденційності</a></li>
     </ul></nav>
     <div><h3 class="mono">Зал</h3><ul>
       <li><a class="sf-tel" href={`tel:${site.phone.tel}`}>{site.phone.display}</a></li>
@@ -23,9 +27,9 @@ const letters = [...site.name];
     <nav aria-label="Соцмережі"><h3 class="mono">Соцмережі</h3><ul>
       {socials.map((s) => (
         <li>
-          <a href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener' : undefined}>
-            {s.label} {s.note ? <span class="todo">{s.note}</span> : <span aria-hidden="true">↗</span>}
-          </a>
+          {s.href === '#'
+            ? <span class="muted">{s.label} <span class="todo">{s.note}</span></span>
+            : <a href={s.href} target="_blank" rel="noopener">{s.label} <span aria-hidden="true">↗</span></a>}
         </li>
       ))}
     </ul></nav>
@@ -61,7 +65,9 @@ const letters = [...site.name];
   @keyframes sway { to { transform: translateY(3px) scaleX(1.002); } }
 
 
-  .sf-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px; padding-block: 48px; }
+  .sf-grid { display: grid; grid-template-columns: 1.3fr repeat(5, minmax(0, 1fr)); gap: 32px; padding-block: 48px; }
+  .sf-grid h3 a::after { display: none; }
+  @media (max-width: 1240px) { .sf-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .sf-grid h3 { font-size: 12px; color: var(--red); font-weight: 500; margin: 0 0 16px; }
   .sf-grid ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
   .sf-grid a { position: relative; }

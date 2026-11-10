@@ -1,6 +1,7 @@
 ---
 // Full-screen menu for phones and tablets, opened from the "Меню" button in the header.
-import { site, mainNav, pages } from '../data/site';
+import { site, mainNav } from '../data/site';
+import { programLinks } from '../data/programs';
 import { link } from '../lib/util';
 ---
 <div class="mmenu" id="mmenu" hidden role="dialog" aria-modal="true" aria-label="Меню">
@@ -14,13 +15,20 @@ import { link } from '../lib/util';
     ))}
   </nav>
   <div class="mmenu-pages wrap mono">
-    {pages.map((p) => <a href={link(p.href)}>{p.label} →</a>)}
+    {programLinks.map((p) => <a href={link(p.href)}>{p.label} →</a>)}
   </div>
   <div class="mmenu-bottom wrap">
-    <a class="btn" href="#signup"><span>Записатись на тренування</span><span class="arr">→</span></a>
+    <a class="btn" href="#signup" data-home-signup={link('#signup')}><span>Записатись на тренування</span><span class="arr">→</span></a>
     <a class="mmenu-phone" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
   </div>
 </div>
+
+<script>
+  // Pages without the sign-up form (thank-you, policy) send the button to the form on the home page
+  if (!document.getElementById('signup')) {
+    document.querySelectorAll<HTMLAnchorElement>('[data-home-signup]').forEach((a) => { a.href = a.dataset.homeSignup!; });
+  }
+</script>
 
 <style is:global>
   .mmenu {
