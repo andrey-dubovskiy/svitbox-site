@@ -6,13 +6,13 @@ import { asset } from '../lib/util';
 const letters = [...site.name];
 ---
 <div class="hero" id="top">
-  <div class="hero-bg" aria-hidden="true"><img id="heroImg" src={asset('img/hero.jpg')} alt="" fetchpriority="high" /></div>
+  <div class="hero-bg" aria-hidden="true"><img id="heroImg" src={asset('img/hero.webp')} srcset={`${asset('img/hero-960.webp')} 960w, ${asset('img/hero.webp')} 1920w`} sizes="100vw" alt="" fetchpriority="high" /></div>
   <canvas id="ring" aria-hidden="true"></canvas>
   <div class="flash" id="flash"></div>
   <div class="hero-inner">
     <SiteHeader home />
 
-    <div class="hero-center wrap">
+    <section class="hero-center wrap" aria-label="Світ Боксу — бокс у Броварах">
       <div class="tags mono"><span class="sq" aria-hidden="true"></span><span>[ Бровари ]</span><span>[ 120+ боксерів ]</span><span>[ since 2012 ]</span></div>
       <p class="word" id="word">
         <span class="sr-only">{site.name}</span>
@@ -23,9 +23,9 @@ const letters = [...site.name];
         <a class="btn" href="#signup"><span>Записатись на тренування</span><span class="arr">→</span></a>
         <a class="link" href="#programs">Обрати програму</a>
       </div>
-    </div>
+    </section>
 
-    <div class="hint wrap mono">
+    <div class="hint wrap mono" aria-hidden="true">
       <span>[ Торкнись канатів. Клікни — це удар ]</span>
       <span>Ударів: <span class="count" id="hits">000</span></span>
     </div>

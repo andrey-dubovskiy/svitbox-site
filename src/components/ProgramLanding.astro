@@ -31,7 +31,8 @@ const seo = p.seo;
 const photos = programPhotos[p.slug] ?? { rounds: [], gallery: [] };
 const audience = { dity: 'юні боксери', divchata: 'наші дівчата', choloviky: 'чоловіча група', indyvidualno: 'індивідуальні заняття', funktsionalni: 'функціональні' }[p.slug] ?? 'наші боксери';
 const title = seo?.title ?? `${p.name} — бокс у Броварах, Світ Боксу`;
-const description = seo?.description ?? `${p.name} у клубі «Світ Боксу», Бровари. ${p.lead}`;
+const fallback = `${p.name} у клубі «Світ Боксу», Бровари. ${p.lead}`;
+const description = seo?.description ?? (fallback.length > 160 ? fallback.slice(0, fallback.lastIndexOf(' ', 157)) + '…' : fallback);
 const h1 = seo?.h1 ?? p.name;
 const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
 ---
@@ -39,7 +40,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
   <SiteHeader current="programy/" />
   <MobileMenu />
 
-  <main>
+  <main id="main">
     <section class="pg-hero page-head">
       <img class="pg-photo" src={asset(p.img)} alt={seo?.imgAlt ?? ""} style={`object-position:${p.pos ?? '50% 50%'}`} />
       <div class="wrap pg-hero-in">
@@ -54,7 +55,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
               <a class="link" href={link('rozklad/')}>Повний розклад</a>
             </div>
           </div>
-          <aside class="pg-card">
+          <div class="pg-card">
             <dl>
               <div><dt class="mono">Вік</dt><dd>{p.age}</dd></div>
               <div><dt class="mono">Коли</dt><dd>{p.when}</dd></div>
@@ -62,7 +63,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
               <div><dt class="mono">Де</dt><dd><a href={link('kontakty/')}>{hall.name}</a></dd></div>
             </dl>
             <a class="pg-rate mono" href={google.url} target="_blank" rel="noopener"><b>★ {google.rating}</b> · {google.count} відгуків у Google</a>
-          </aside>
+          </div>
         </div>
       </div>
     </section>
@@ -309,7 +310,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
   .pg-ben p { margin: 0; color: var(--muted); }
 
   /* The fear, said out loud */
-  .pg-fear { background: var(--red); color: var(--fg); padding-block: clamp(56px, 8vw, 120px); }
+  .pg-fear { background: #d6202d; /* deeper red: white body text passes WCAG AA */ color: var(--fg); padding-block: clamp(56px, 8vw, 120px); }
   .pg-fear-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px clamp(32px, 6vw, 96px); align-items: center; }
   .pg-q { margin: 0; font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(48px, 6.4vw, 108px); line-height: .88; text-wrap: balance; }
   .pg-q span { color: #050505; }

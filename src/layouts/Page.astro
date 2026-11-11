@@ -17,18 +17,18 @@ const { title, description, current, kicker, heading, lead, signup = true, alway
 <Base title={title} description={description} alwaysNoindex={alwaysNoindex}>
   <SiteHeader current={current} />
   <MobileMenu />
-  <div class="page-head">
+  <section class="page-head" aria-labelledby="pageTitle">
     <div class="wrap">
       <nav class="crumbs mono" aria-label="Ви тут"><a href={asset('')}>Головна</a><span aria-hidden="true">/</span><span>{kicker}</span></nav>
-      <h1 class:list={['page-h', { 'page-h-long': [...heading].length > 14 }]} data-punch style={`--chars:${[...heading].length};--word:${Math.max(...heading.split(/\s+/).map((w) => [...w].length))}`}>{heading}</h1>
+      <h1 id="pageTitle" class:list={['page-h', { 'page-h-long': [...heading].length > 14 }]} data-punch style={`--chars:${[...heading].length};--word:${Math.max(...heading.split(/\s+/).map((w) => [...w].length))}`}>{heading}</h1>
       <div class="page-lead">
         <p id="pageLead">{lead}</p>
         <slot name="head" />
       </div>
     </div>
     <RingHead />
-  </div>
-  <main>
+  </section>
+  <main id="main">
     <slot />
     <Tape tilt={-1.2} />
     {signup && <Signup n="Останній раунд" />}

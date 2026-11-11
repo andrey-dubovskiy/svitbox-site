@@ -412,3 +412,6 @@ const linkNames: Record<string, string> = {
   indyvidualno: 'Індивідуальні тренування', funktsionalni: 'Функціональні тренування',
 };
 export const programLinks = programs.map((p) => ({ label: linkNames[p.slug] ?? p.name, href: programUrl(p) }));
+
+// Small WebP copy of a program photo for the home list (made by scripts/make-webp.py)
+export const thumbOf = (img: string) => `img/thumbs/${img.split('/').pop()!.replace(/\.[a-z]+$/, '')}.webp`;

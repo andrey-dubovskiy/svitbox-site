@@ -20,7 +20,7 @@ const insta = socials.find((s) => s.label === 'Instagram');
   <SiteHeader current="dyakuyemo/" />
   <MobileMenu />
 
-  <main class="ty" id="ty" data-sessions={JSON.stringify(sessions)}>
+  <main class="ty" id="main" data-ty data-sessions={JSON.stringify(sessions)}>
     <section class="ty-msg">
       <p class="ty-ok mono"><i aria-hidden="true"></i>Заявку прийнято</p>
       <h1 class="ty-h" aria-label="Дзінь! Ти в команді">
@@ -59,7 +59,7 @@ const insta = socials.find((s) => s.label === 'Instagram');
     </section>
   </main>
 
-  <section class="ty-next">
+  <section class="ty-next" aria-label="Що далі">
     <div class="wrap">
       <ol class="ty-steps">
         <li class="done"><span class="mono">01 · Готово</span><b>Заявка</b><p>Ви в нашому списку. Нічого більше робити не треба.</p></li>
@@ -81,7 +81,7 @@ const insta = socials.find((s) => s.label === 'Instagram');
   import { reduce } from '../../scripts/motion';
 
   type S = { signup: string; name: string; days: number[]; from: string; to: string };
-  const root = document.getElementById('ty')!;
+  const root = document.getElementById('main')!;
   const sessions: S[] = JSON.parse(root.dataset.sessions!);
   const dayShort = ['', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
   const $ = (id: string) => document.getElementById(id)!;
