@@ -13,11 +13,30 @@ const { home = false, current } = Astro.props;
   </nav>
   <div class="top-right">
     <a class="phone" href={`tel:${site.phone.tel}`}>{site.phone.short}</a>
-    <button type="button" class="menu-btn mono" id="menuBtn" aria-expanded="false" aria-controls="mmenu">
+    <button type="button" class="menu-btn mono" id="menuBtn" data-menu-open aria-expanded="false" aria-controls="mmenu">
       Меню <span class="menu-ico" aria-hidden="true"><i></i><i></i></span>
     </button>
   </div>
 </header>
+
+<!-- Phones: compact bar that slides in once the header scrolls away, so the menu is always one tap away -->
+<div class="mtop" id="mtop">
+  <a class="brand" href={home ? '#top' : asset('')}>СВІТ БОКСУ <b>©</b>2012</a>
+  <div class="mtop-r">
+    <a class="mtop-call" href={`tel:${site.phone.tel}`} aria-label={`Подзвонити ${site.phone.display}`}>
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+    </a>
+    <button type="button" class="menu-btn mono" data-menu-open aria-expanded="false" aria-controls="mmenu">
+      Меню <span class="menu-ico" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const mtop = document.getElementById('mtop')!;
+  const head = document.querySelector('header.top');
+  if (head) new IntersectionObserver(([e]) => mtop.classList.toggle('show', !e.isIntersecting)).observe(head);
+</script>
 
 <style is:global>
   header.top { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; }
@@ -37,7 +56,18 @@ const { home = false, current } = Astro.props;
   .menu-ico { display: inline-flex; flex-direction: column; gap: 5px; }
   .menu-ico i { display: block; width: 18px; height: 2px; background: currentColor; }
   .menu-ico i:last-child { width: 12px; background: var(--red); }
+  .mtop { display: none; }
   @media (max-width: 980px) {
+    .mtop {
+      display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40; align-items: center; justify-content: space-between; gap: 12px;
+      padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+      background: rgba(5,5,5,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+      transform: translateY(-110%); transition: transform .3s var(--ease-out); visibility: hidden;
+    }
+    .mtop.show { transform: none; visibility: visible; }
+    .mtop-r { display: flex; gap: 8px; align-items: center; }
+    .mtop-call { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid rgba(244,244,242,.4); }
+    .mtop .menu-btn { height: 44px; }
     nav.main { display: none; }
     .menu-btn { display: inline-flex; }
     header.top { padding-block: 14px; }

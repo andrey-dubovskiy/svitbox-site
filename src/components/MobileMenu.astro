@@ -54,17 +54,18 @@ import { link } from '../lib/util';
 
 <script>
   const menu = document.getElementById('mmenu')!;
-  const openBtn = document.getElementById('menuBtn');
+  const openers = [...document.querySelectorAll<HTMLElement>('[data-menu-open]')];
   const closeBtn = document.getElementById('mmenuClose')!;
+  let opener: HTMLElement | null = null;
 
   function setOpen(open: boolean) {
     menu.hidden = !open;
     document.documentElement.classList.toggle('menu-open', open);
-    openBtn?.setAttribute('aria-expanded', String(open));
-    if (open) closeBtn.focus(); else openBtn?.focus();
+    openers.forEach((b) => b.setAttribute('aria-expanded', String(open)));
+    if (open) closeBtn.focus(); else opener?.focus();
   }
 
-  openBtn?.addEventListener('click', () => setOpen(true));
+  openers.forEach((b) => b.addEventListener('click', () => { opener = b; setOpen(true); }));
   closeBtn.addEventListener('click', () => setOpen(false));
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) setOpen(false); });
