@@ -58,7 +58,7 @@ export const pages = [
 export const socials = [
   { label: 'Instagram', href: 'https://www.instagram.com/svit_boksu_' },
   { label: 'Facebook', href: 'https://www.facebook.com/groups/svitbox.com.ua' },
-  { label: 'YouTube', href: 'https://www.youtube.com/watch?v=Kr37cF81WvM' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@World_of_boxing' },
   { label: 'Telegram', href: '#', note: '[посилання]' },
 ];
 
