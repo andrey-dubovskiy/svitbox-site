@@ -79,13 +79,12 @@ export const hall = {
     items: ['Рукавички', 'Шоломи', 'Бинти', 'Скакалки', 'Інше спорядження'],
   },
   photos: [
-    { size: 'l', cap: 'Ринг', brief: 'Ринг з кута: канати, світло, порожній або з боксерами' },
-    { size: 't', cap: 'Ряд мішків', brief: 'Мішки в ряд углиб залу. Вертикальний кадр' },
-    { size: 'n', cap: 'Пневмогруша', brief: 'Пневмогруша в русі, крупно' },
-    { size: 'n', cap: 'Груші', brief: 'Груші на розтяжках. Деталь' },
-    { size: 'w', cap: 'Зал з порогу', brief: 'Що бачить новачок, коли заходить: увесь зал, широкий кадр' },
-    { size: 'n', cap: 'Інвентар', brief: 'Рукавички й шоломи клубу на полиці' },
-    { size: 'n', cap: 'Тренування', brief: 'Зал під час тренування: кілька груп одночасно' },
+    { size: 'l', cap: 'Команда в залі', brief: '', src: 'img/club/komanda-01-komanda-v-zali.jpg', alt: 'Велика команда клубу «Світ Боксу» в залі: діти, юніори, дорослі й тренери' },
+    { size: 'w', cap: 'Пояс WBC у залі', brief: '', src: 'img/club/komanda-03-dity-z-poiasom-wbc.jpg', alt: 'Діти в залі клубу з чемпіонським поясом WBC' },
+    { size: 'w', cap: 'Збірна', brief: '', src: 'img/club/turnir-10-zbirna-komanda.jpg', alt: 'Збірна команда з боксу в залі' },
+    { size: 'n', cap: 'Груша', brief: '', src: 'img/club/trenuvannia-03-divchynka-hrusha-trener.jpg', alt: 'Ряд важких мішків у залі, тренування біля груші' },
+    { size: 'n', cap: 'ЗФП', brief: '', src: 'img/club/trenuvannia-05-khlopchyk-shyna.jpg', alt: 'Шина для фізичної підготовки в залі' },
+    { size: 'w', cap: 'У рингу', brief: '', src: 'img/club/komanda-04-komanda-z-medaliamy.jpg', alt: 'Боксери клубу з медалями в рингу' },
   ] as { size: 'l' | 't' | 'w' | 'n'; cap: string; brief: string; src?: string }[],
 };
 
@@ -105,11 +104,11 @@ export const champions = [
 ];
 
 export const life = [
-  { img: 'img/hike.jpg', alt: 'Група з рюкзаками в горах', title: 'Карпати', text: 'Багатоденні походи всією командою' },
-  { img: 'img/bike.jpg', alt: 'Велосипедисти на лісовій стежці', title: 'Велопрогулянки', text: 'Кардіо без залу' },
-  { img: 'img/park.jpg', alt: 'Тренування на лапах просто неба', title: 'Тренування на природі', text: 'Виїзні заняття' },
-  { img: 'img/kidsclub.jpg', alt: 'Діти на тренуванні з тренером', title: 'Для дітей', text: 'Екскурсії та виїзди для юних боксерів' },
-  { img: 'img/spar.jpg', alt: 'Двоє боксерів у рингу', title: 'Товариські зустрічі', text: 'Спаринги з іншими клубами' },
+  { img: 'img/club/pohid-06-hory-komanda.jpg', alt: 'Команда клубу «Світ Боксу» у поході в Карпатах', title: 'Карпати', text: 'Походи в гори всією командою' },
+  { img: 'img/club/pohid-01-splav-baidarky.jpg', alt: 'Боксери клубу на сплаві на байдарках', title: 'Сплави', text: 'Байдарки й річка замість залу' },
+  { img: 'img/club/pohid-09-tabir-basein.jpg', alt: 'Діти клубу в басейні на літньому таборі', title: 'Табори', text: 'Літні збори для юних боксерів' },
+  { img: 'img/club/komanda-03-dity-z-poiasom-wbc.jpg', alt: 'Діти клубу з чемпіонським поясом WBC', title: 'Для дітей', text: 'Зустрічі з чемпіонами й свята клубу' },
+  { img: 'img/club/komanda-05-komanda-na-turniri.jpg', alt: 'Команда клубу на виїзному турнірі', title: 'Турніри', text: 'Виїзні змагання з іншими клубами' },
 ];
 
 export const reviews = [

@@ -117,7 +117,7 @@ const dayList = (d: number[]) => d.map((i) => daysFull[i - 1]).join(', ');
               {photos.rounds[i] && (
                 <figure class:list={['ph', 'pg-round-ph', { photo: photos.rounds[i].src }]} data-full={photos.rounds[i].src && asset(photos.rounds[i].src!)}>
                   {photos.rounds[i].src
-                    ? <img src={asset(photos.rounds[i].src!)} alt={`${r.t}: ${photos.rounds[i].brief}`} loading="lazy" />
+                    ? <img src={asset(photos.rounds[i].src!)} alt={photos.rounds[i].alt ?? `${r.t}: ${photos.rounds[i].brief}`} loading="lazy" />
                     : <figcaption class="cap">Фото: {photos.rounds[i].brief}</figcaption>}
                 </figure>
               )}
