@@ -2,12 +2,16 @@
 // Round 05: club life outside the gym.
 import RoundLabel from './RoundLabel.astro';
 import RailHint from './RailHint.astro';
-import { life } from '../data/content';
+import { life, lifeAbout } from '../data/content';
 import { asset } from '../lib/util';
 ---
 <section class="blk" id="life">
   <div class="wrap">
     <RoundLabel n="Раунд 05" label="Більше, ніж зал" />
+    <div class="club-read life-read">
+      <h2 class="read-h2" data-punch>{lifeAbout.h2}</h2>
+      <div>{lifeAbout.text.map((t) => <p class="read-p">{t}</p>)}</div>
+    </div>
     <div class="life m-rail">
       {life.map((l) => (
         <article class="reveal-parent">
@@ -21,6 +25,7 @@ import { asset } from '../lib/util';
 </section>
 
 <style is:global>
+  .life-read { margin: 0 0 clamp(40px, 5vw, 64px); padding-top: 0; border-top: 0; align-items: start; }
   .life { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .life article { background: var(--bg); display: flex; flex-direction: column; min-width: 0; }
   .life .ph { aspect-ratio: 3/4; border: 0; border-bottom: 1px solid var(--line); }

@@ -20,7 +20,7 @@ const { title, description, current, kicker, heading, lead, signup = true, alway
   <div class="page-head">
     <div class="wrap">
       <nav class="crumbs mono" aria-label="Ви тут"><a href={asset('')}>Головна</a><span aria-hidden="true">/</span><span>{kicker}</span></nav>
-      <h1 class="page-h" data-punch style={`--chars:${[...heading].length}`}>{heading}</h1>
+      <h1 class:list={['page-h', { 'page-h-long': [...heading].length > 14 }]} data-punch style={`--chars:${[...heading].length};--word:${Math.max(...heading.split(/\s+/).map((w) => [...w].length))}`}>{heading}</h1>
       <div class="page-lead">
         <p id="pageLead">{lead}</p>
         <slot name="head" />
@@ -47,6 +47,8 @@ const { title, description, current, kicker, heading, lead, signup = true, alway
     font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase;
     font-size: clamp(76px, 15vw, 240px); line-height: .82; letter-spacing: -.01em;
   }
+  /* Long titles (old-site H1 kept for search) wrap by words and get a smaller size */
+  .page-h-long { font-size: clamp(60px, 8vw, 136px); line-height: .86; max-width: 11em; }
   .page-lead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 48px; align-items: end; margin-top: clamp(28px, 4vw, 48px); }
   .page-lead > p { margin: 0; font-family: var(--serif); font-size: clamp(19px, 1.7vw, 24px); line-height: 1.4; max-width: 34ch; }
   @media (max-width: 980px) {
@@ -55,5 +57,6 @@ const { title, description, current, kicker, heading, lead, signup = true, alway
   /* Phones: long titles shrink so they never run under the hanging gloves */
   @media (max-width: 760px) {
     .page-h { font-size: min(19vw, calc((100vw - 2 * max(var(--gx), 4vw) - 96px) / (var(--chars) * .54))); }
+    .page-h-long { font-size: min(15vw, calc((100vw - 2 * max(var(--gx), 4vw) - 96px) / (var(--word) * .56))); }
   }
 </style>
