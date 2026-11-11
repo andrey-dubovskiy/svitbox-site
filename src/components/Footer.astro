@@ -22,7 +22,6 @@ const letters = [...site.name];
       <li><a class="sf-tel" href={`tel:${site.phone.tel}`}>{site.phone.display}</a></li>
       {halls.map((h) => <li><a href={link('kontakty/#' + h.id)}>{h.address}</a></li>)}
       <li class="muted">{site.hours[0]}</li>
-      <li class="muted">У Броварах зараз <b class="sf-live" id="sfTime">--:--</b></li>
     </ul></div>
     <nav aria-label="Соцмережі"><h3 class="mono">Соцмережі</h3><ul>
       {socials.map((s) => (
@@ -153,13 +152,11 @@ const letters = [...site.name];
     }
   }, { threshold: .15 }).observe(foot);
 
-  // Local time in Brovary and the visitor's "rounds" on the site
-  const sfTime = document.getElementById('sfTime')!, sfRound = document.getElementById('sfRound')!;
+  // The visitor's "rounds" on the site
+  const sfRound = document.getElementById('sfRound')!;
   const sfTick = document.getElementById('sfTick')!, sfTbar = document.getElementById('sfTbar')!;
-  const kyiv = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', hour: '2-digit', minute: '2-digit' });
   const t0 = Date.now();
   function tick() {
-    try { sfTime.textContent = kyiv.format(new Date()); } catch { /* no timezone data */ }
     const el = Math.floor((Date.now() - t0) / 1000), inR = el % 180;
     sfRound.textContent = String(Math.floor(el / 180) + 1);
     sfTick.textContent = String(Math.floor(inR / 60)).padStart(2, '0') + ':' + String(inR % 60).padStart(2, '0');
