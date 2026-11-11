@@ -1,0 +1,123 @@
+---
+// 404 «Нокдаун»: the referee counts to ten, the round card says 404, and every way back is one tap away.
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import MobileMenu from '../components/MobileMenu.astro';
+import Footer from '../components/Footer.astro';
+import RingCard from '../components/RingCard.astro';
+import { asset, link } from '../lib/util';
+import { programLinks } from '../data/programs';
+const ways = [
+  { n: '01', label: 'Програми', text: 'Діти, дівчата, чоловіки, індивідуально', href: 'programy/' },
+  { n: '02', label: 'Розклад', text: 'Коли тренування у вашої групи', href: 'rozklad/' },
+  { n: '03', label: 'Ціни', text: 'Абонементи і разові заняття', href: 'tsiny/' },
+  { n: '04', label: 'Тренери і зал', text: 'Хто тренує і де', href: 'about_us/' },
+  { n: '05', label: 'Контакти', text: 'Адреса, карта, як дістатися', href: 'kontakty/' },
+];
+---
+<Base title="Нокдаун: сторінку не знайдено — Світ Боксу" description="Такої сторінки на сайті «Світ Боксу» немає. Перейдіть на головну, до програм, розкладу або контактів." alwaysNoindex>
+  <SiteHeader />
+  <MobileMenu />
+  <main class="ko">
+    <section class="ko-hero wrap">
+      <div class="ko-text">
+        <span class="mono ko-kick"><span class="sq"></span> Помилка 404 · Нокдаун</span>
+        <h1 class="ko-h" data-punch>Цієї сторінки немає в&nbsp;ринзі</h1>
+        <p class="ko-lead">Можливо, посилання застаріло або в адресі помилка. Не здавайся: рефері ще рахує, а повернутися в бій можна одним кліком.</p>
+        <div class="ko-cta">
+          <a class="btn" href={asset('')}><span>Повернутися в ринг</span><span class="arr">→</span></a>
+          <a class="link" href={link('#signup')}>Записатися на тренування</a>
+        </div>
+      </div>
+
+      <div class="ko-stage">
+        <div class="ko-count" id="koCount" aria-live="polite">
+          <span class="mono muted">Рахунок рефері</span>
+          <b id="koNum">1</b>
+          <span class="ko-say mono" id="koSay">Рефері рахує…</span>
+        </div>
+        <div class="ko-card"><RingCard big="404" small="Сторінку не знайдено" /></div>
+      </div>
+    </section>
+
+    <div class="ko-ropes" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <section class="ko-ways wrap" aria-labelledby="koWays">
+      <h2 class="mono ko-ways-h" id="koWays"><span class="n">Наступний раунд</span> Куди далі</h2>
+      <ol class="ko-list">
+        {ways.map((w) => (
+          <li><a href={link(w.href)}><span class="mono n">{w.n}</span><b>{w.label}</b><span class="muted">{w.text}</span><span class="arr" aria-hidden="true">→</span></a></li>
+        ))}
+      </ol>
+      <p class="ko-progs mono"><span class="muted">Шукали програму?</span> {programLinks.map((p) => <a href={link(p.href)}>{p.label}</a>)}</p>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  // Referee count 1 → 10. With reduced motion, show the end state at once.
+  const num = document.getElementById('koNum')!, say = document.getElementById('koSay')!, box = document.getElementById('koCount')!;
+  const lines: Record<number, string> = { 1: 'Рефері рахує…', 4: 'Ще є час', 6: 'Підводься!', 8: 'Вставай!', 10: 'Нокаут цій сторінці. Але не тобі.' };
+  const set = (n: number) => {
+    num.textContent = String(n);
+    if (lines[n]) say.textContent = lines[n];
+    box.classList.toggle('done', n === 10);
+    num.classList.remove('hit'); void num.offsetWidth; num.classList.add('hit');
+  };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) set(10);
+  else { let n = 1; set(n); const t = setInterval(() => { n++; set(n); if (n >= 10) clearInterval(t); }, 950); }
+</script>
+
+<style is:global>
+  .ko-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: center; min-height: calc(100svh - 90px); padding-block: clamp(40px, 6vw, 80px); }
+  .ko-text { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+  .ko-kick { color: var(--red); display: inline-flex; align-items: center; gap: 12px; }
+  .ko-h { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(56px, 8.4vw, 136px); line-height: .86; text-transform: uppercase; }
+  .ko-lead { font-family: var(--serif); font-size: clamp(18px, 1.6vw, 22px); line-height: 1.45; margin: 0; max-width: 32em; color: var(--muted); }
+  .ko-cta { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; }
+
+  .ko-stage { display: flex; align-items: flex-end; justify-content: center; gap: clamp(16px, 3vw, 48px); min-width: 0; }
+  .ko-count { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+  .ko-count b {
+    font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(160px, 20vw, 320px); line-height: .8;
+    color: transparent; -webkit-text-stroke: 2px var(--fg); min-width: 1.1em; font-variant-numeric: tabular-nums;
+  }
+  .ko-count b.hit { animation: ko-hit .5s var(--ease-out); }
+  .ko-count.done b { color: var(--red); -webkit-text-stroke: 0; }
+  .ko-say { font-size: 13px; min-height: 2.8em; max-width: 18ch; }
+  .ko-count.done .ko-say { color: var(--fg); }
+  @keyframes ko-hit { 0% { transform: scale(1.35) rotate(-6deg); opacity: 0; } 60% { transform: scale(.96); opacity: 1; } 100% { transform: none; } }
+
+  .ko-ropes { display: flex; flex-direction: column; gap: 12px; }
+  .ko-ropes i { display: block; height: 5px; background: #e8e8e4; box-shadow: 0 5px 0 rgba(0,0,0,.6); }
+  .ko-ropes i:first-child { background: var(--red); }
+
+  .ko-ways { padding-block: clamp(48px, 7vw, 96px); }
+  .ko-ways-h { display: flex; gap: 18px; font-weight: 400; font-size: 13px; margin: 0 0 28px; }
+  .ko-ways-h .n { color: var(--red); }
+  .ko-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .ko-list li { display: flex; }
+  .ko-list a { flex: 1; position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px 20px 26px; min-height: 190px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .25s; }
+  .ko-list a:hover { background: var(--surface); }
+  .ko-list .n { color: var(--red); font-size: 12px; }
+  .ko-list b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(30px, 2.6vw, 42px); line-height: .9; text-transform: uppercase; margin-top: auto; }
+  .ko-list .muted { font-size: 14px; }
+  .ko-list .arr { position: absolute; top: 18px; right: 20px; transition: transform .3s; }
+  .ko-list a:hover .arr { transform: translateX(5px); color: var(--red); }
+  .ko-progs { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 28px 0 0; font-size: 12px; }
+  .ko-progs a { border-bottom: 1px solid var(--line); }
+  .ko-progs a:hover { border-color: var(--red); color: var(--red); }
+
+  @media (max-width: 980px) {
+    body:has(.ko) { padding-bottom: 0; }
+    .ko-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .ko-stage { order: -1; justify-content: space-between; }
+    .ko-count b { font-size: clamp(120px, 34vw, 200px); }
+    .ko-card .rcard { --w: clamp(150px, 40vw, 220px); }
+    .ko-cta .btn { width: 100%; justify-content: space-between; }
+    .ko-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ko-list li:last-child { grid-column: 1 / -1; }
+    .ko-list a { min-height: 150px; }
+  }
+</style>
