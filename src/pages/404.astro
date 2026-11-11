@@ -98,12 +98,12 @@ const ways = [
   .ko-ways-h .n { color: var(--red); }
   .ko-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
   .ko-list li { display: flex; }
-  .ko-list a { flex: 1; position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px 20px 26px; min-height: 190px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .25s; }
+  .ko-list a { flex: 1; position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px 20px 26px; min-height: 190px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background var(--t-fast) var(--ease-out); }
   .ko-list a:hover { background: var(--surface); }
   .ko-list .n { color: var(--red); font-size: 12px; }
   .ko-list b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(30px, 2.6vw, 42px); line-height: .9; text-transform: uppercase; margin-top: auto; }
   .ko-list .muted { font-size: 14px; }
-  .ko-list .arr { position: absolute; top: 18px; right: 20px; transition: transform .3s; }
+  .ko-list .arr { position: absolute; top: 18px; right: 20px; transition: transform var(--t) var(--ease-out); }
   .ko-list a:hover .arr { transform: translateX(5px); color: var(--red); }
   .ko-progs { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 28px 0 0; font-size: 12px; }
   .ko-progs a { border-bottom: 1px solid var(--line); }

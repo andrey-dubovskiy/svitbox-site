@@ -2,12 +2,17 @@
 import '../styles/global.css';
 import { asset } from '../lib/util';
 
-interface Props { title?: string; description?: string; alwaysNoindex?: boolean; }
+interface Props { title?: string; description?: string; alwaysNoindex?: boolean; og?: string; }
 const {
   alwaysNoindex = false,
+  og = 'home',
   title = 'Світ Боксу — бокс у Броварах',
   description = 'Боксерський клуб «Світ Боксу» у Броварах з 2012 року. Групи для дітей, дівчат і чоловіків, індивідуальні тренування. Запис на тренування.',
 } = Astro.props;
+// Social cards need absolute URLs (made by scripts/make-og.cjs, one per page)
+const abs = (p: string) => (Astro.site ? new URL(asset(p), Astro.site).href : asset(p));
+const ogImage = abs(`og/${og}.jpg`);
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="uk">
@@ -20,18 +25,43 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={asset('img/hero.jpg')} />
+    <meta property="og:site_name" content="Світ Боксу" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
     <!-- Draft: keep out of search engines. Remove both lines and public/robots.txt at launch. -->
     <meta name="robots" content="noindex, nofollow, noarchive" />
     <meta name="googlebot" content="noindex, nofollow" />
     {alwaysNoindex && <meta name="robots" content="noindex" data-keep="true" />}
     <!-- ^ stays after launch: service pages (thank-you) should never be in search -->
     <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
+    <link rel="icon" type="image/png" sizes="192x192" href={asset('icon-192.png')} />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
+    <link rel="manifest" href={asset('site.webmanifest')} />
+    <!-- Intro curtain: once per browser session, never with reduced motion -->
+    <script is:inline>
+      try {
+        if (!sessionStorage.getItem('sbx-intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('intro-on');
+          sessionStorage.setItem('sbx-intro', '1');
+        }
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:ital,wght@1,800;1,900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Lora:ital,wght@0,400;1,400&display=swap" />
   </head>
   <body>
+    <div class="intro" aria-hidden="true">
+      <div class="intro-ropes"><i></i><i></i><i></i></div>
+      <div class="intro-name"><span class="intro-sq"></span>Світ Боксу</div>
+      <div class="intro-sub">Бровари · з 2012</div>
+    </div>
     <a class="skip" href="#main">Перейти до змісту</a>
     <slot />
     <script>

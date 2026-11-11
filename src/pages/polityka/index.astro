@@ -112,7 +112,7 @@ const sections = [
   .pol-grid { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
   .pol-toc { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
   .pol-toc ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-  .pol-toc a { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 15px; transition: color .2s, padding .25s; }
+  .pol-toc a { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 15px; transition: color var(--t-fast) var(--ease-out), padding var(--t-fast) var(--ease-out); }
   .pol-toc a .mono { color: var(--muted); font-size: 11px; padding-top: 3px; }
   .pol-toc a:hover, .pol-toc a.on { color: var(--fg); }
   .pol-toc a.on { padding-left: 10px; box-shadow: inset 3px 0 0 var(--red); }

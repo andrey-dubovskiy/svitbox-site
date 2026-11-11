@@ -14,7 +14,7 @@ import { asset } from '../lib/util';
 interface Props { title: string; description: string; current: string; kicker: string; heading: string; lead: string; signup?: boolean; alwaysNoindex?: boolean; }
 const { title, description, current, kicker, heading, lead, signup = true, alwaysNoindex = false } = Astro.props;
 ---
-<Base title={title} description={description} alwaysNoindex={alwaysNoindex}>
+<Base title={title} description={description} alwaysNoindex={alwaysNoindex} og={current === 'about_us/' ? 'treneri' : current.replace(/\/$/, '')}>
   <SiteHeader current={current} />
   <MobileMenu />
   <section class="page-head" aria-labelledby="pageTitle">

@@ -11,7 +11,7 @@ import { asset, link } from '../lib/util';
       <div class="follow ph photo" id="follow" aria-hidden="true"><img id="followImg" src={asset(thumbOf(programs[0].img))} alt="" /></div>
       {programs.map((p) => (
         <a class="prog" href={link(programUrl(p))} data-img={asset(thumbOf(p.img))}>
-          <img class="prog-thumb" src={asset(thumbOf(p.img))} alt="" loading="lazy" />
+          <img class="prog-thumb" src={asset(thumbOf(p.img))} alt="" loading="lazy" style={`view-transition-name:photo-${p.slug}`} />
           <span class="name" data-punch>{p.name}</span>
           <p>{p.short}</p>
           <span class="go" aria-hidden="true">→</span>
@@ -26,17 +26,17 @@ import { asset, link } from '../lib/util';
   .prog {
     position: relative; z-index: 1; display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 24px; align-items: center;
-    padding-block: 28px; border-bottom: 1px solid var(--line); transition: color .25s;
+    padding-block: 28px; border-bottom: 1px solid var(--line); transition: color var(--t-fast) var(--ease-out);
   }
   .prog .name {
     font-family: var(--display); font-style: italic; font-weight: 800;
     font-size: clamp(40px, 5.6vw, 84px); line-height: .9; text-transform: uppercase;
-    transition: transform .35s var(--ease-io);
+    transition: transform var(--t) var(--ease-io);
   }
   .prog p { margin: 0; max-width: 44ch; color: var(--muted); }
   .prog .go {
     width: 56px; height: 56px; border: 1px solid var(--line); display: grid; place-items: center;
-    transition: background .25s, border-color .25s, transform .35s;
+    transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), transform var(--t) var(--ease-out);
   }
   @media (hover: hover) {
     .prog:hover .name { transform: translateX(18px); color: var(--red); }
@@ -47,17 +47,16 @@ import { asset, link } from '../lib/util';
   .progs .follow {
     position: absolute; left: 0; top: 0; width: 260px; aspect-ratio: 4/5; max-width: 100%;
     pointer-events: none; z-index: 3; opacity: 0;
-    transform: translate(-50%, -50%) scale(.85); transition: opacity .25s, transform .25s;
+    transform: translate(-50%, -50%) scale(.85); transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
   }
   .progs .follow.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  .progs .follow img { filter: grayscale(.2) contrast(1.05); }
   .prog-thumb { display: none; }
   @media (max-width: 980px) {
     /* No hover on phones: each row gets its own photo */
     .prog { grid-template-columns: 88px minmax(0, 1fr) auto; gap: 8px 16px; padding-block: 18px; align-items: start; }
     .prog-thumb {
       display: block; grid-row: 1 / span 2; width: 88px; height: 110px; object-fit: cover;
-      filter: grayscale(1) contrast(1.08); border: 1px solid var(--line);
+      filter: var(--grade); border: 1px solid var(--line);
     }
     .prog .name { font-size: clamp(30px, 8.6vw, 52px); align-self: end; }
     .prog p { grid-column: 2 / -1; grid-row: 2; font-size: 15px; }

@@ -38,7 +38,7 @@ const letters = [...site.name];
   .hero-bg img {
     position: absolute; inset: -4%; width: 108%; height: 108%; max-width: none;
     object-fit: cover; object-position: center 40%;
-    filter: grayscale(.85) contrast(1.15) brightness(.42);
+    filter: var(--grade) brightness(.48);
     transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(1.04);
     animation: breathe 24s ease-in-out infinite alternate;
   }

@@ -13,7 +13,7 @@ const list = pages.filter((p) => p.href !== Astro.props.current);
 
 <style is:global>
   .pages { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .pages a { padding: 36px clamp(16px, 2.5vw, 40px); display: flex; flex-direction: column; gap: 10px; border-right: 1px solid var(--line); transition: background .3s, color .3s; min-width: 0; }
+  .pages a { padding: 36px clamp(16px, 2.5vw, 40px); display: flex; flex-direction: column; gap: 10px; border-right: 1px solid var(--line); transition: background var(--t) var(--ease-out), color var(--t) var(--ease-out); min-width: 0; }
   .pages a:last-child { border-right: 0; }
   .pages a b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(36px, 4vw, 60px); line-height: .9; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .pages a > span { color: var(--muted); font-size: 15px; }

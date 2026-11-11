@@ -45,8 +45,7 @@ const firstName = headCoach.name[0];
 <style is:global>
   .coach { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: stretch; }
   .coach-ph { min-height: 560px; aspect-ratio: 4/5; max-height: 760px; }
-  .coach-ph img { object-position: 58% 30%; filter: grayscale(1) contrast(1.1) brightness(.92); }
-  .coach-ph:hover img { filter: grayscale(0) contrast(1.05) brightness(1); }
+  .coach-ph img { object-position: 58% 30%; }
   .coach-ph .tag { position: absolute; left: 14px; bottom: 14px; z-index: 1; background: #d01f2b; color: #fff; padding: 6px 10px; }
   .coach-info { display: flex; flex-direction: column; gap: 28px; min-width: 0; justify-content: center; }
   .coach-name { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(64px, 8.5vw, 140px); line-height: .86; text-transform: uppercase; }

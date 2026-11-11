@@ -18,7 +18,7 @@ import { asset, link, isTodo } from '../../lib/util';
           <li>
             <a href={link(programUrl(p))}>
               <span class="pr-num mono">{String(i + 1).padStart(2, '0')}</span>
-              <img src={asset(p.img)} alt="" loading={i < 2 ? 'eager' : 'lazy'} style={`object-position:${p.pos ?? '50% 50%'}`} />
+              <img src={asset(p.img)} alt="" loading={i < 2 ? 'eager' : 'lazy'} style={`object-position:${p.pos ?? '50% 50%'};view-transition-name:photo-${p.slug}`} />
               <span class="pr-body">
                 <span class="mono pr-kick">{p.kicker}</span>
                 <b>{p.name}</b>
@@ -39,17 +39,17 @@ import { asset, link, isTodo } from '../../lib/util';
 
 <style is:global>
   .pr-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-  .pr-list a { display: grid; grid-template-columns: 40px 200px minmax(0, 1fr) minmax(180px, auto) 56px; gap: 28px; align-items: center; padding-block: 22px; border-bottom: 1px solid var(--line); transition: background .25s; }
+  .pr-list a { display: grid; grid-template-columns: 40px 200px minmax(0, 1fr) minmax(180px, auto) 56px; gap: 28px; align-items: center; padding-block: 22px; border-bottom: 1px solid var(--line); transition: background var(--t-fast) var(--ease-out); }
   .pr-num { color: var(--red); align-self: start; padding-top: 6px; }
-  .pr-list img { width: 200px; aspect-ratio: 4 / 3; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter .4s; border: 1px solid var(--line); }
+  .pr-list img { width: 200px; aspect-ratio: 4 / 3; object-fit: cover; filter: var(--grade); transition: filter var(--t-slow) var(--ease-out); border: 1px solid var(--line); }
   .pr-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .pr-kick { color: var(--muted); font-size: 11px; }
-  .pr-body b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(36px, 4.4vw, 72px); line-height: .88; transition: color .2s, transform .35s var(--ease-io); }
+  .pr-body b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(36px, 4.4vw, 72px); line-height: .88; transition: color var(--t-fast) var(--ease-out), transform var(--t) var(--ease-io); }
   .pr-short { color: var(--muted); max-width: 52ch; }
   .pr-meta { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); text-align: right; }
-  .pr-go { width: 56px; height: 56px; border: 1px solid var(--line); display: grid; place-items: center; transition: background .25s, color .25s, transform .35s; }
+  .pr-go { width: 56px; height: 56px; border: 1px solid var(--line); display: grid; place-items: center; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), transform var(--t) var(--ease-out); }
   @media (hover: hover) {
-    .pr-list a:hover img { filter: grayscale(.1); }
+    .pr-list a:hover img { filter: var(--grade-hot); }
     .pr-list a:hover b { color: var(--red); transform: translateX(12px); }
     .pr-list a:hover .pr-go { background: var(--fg); color: var(--bg); transform: rotate(-45deg); }
   }

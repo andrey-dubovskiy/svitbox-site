@@ -79,7 +79,7 @@ const byDay = days.map((_, i) =>
   .tt td .t { font-family: var(--mono); font-size: clamp(14px, 1.15vw, 17px); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tt .t i { font-style: normal; color: var(--muted); margin-inline: 2px; }
   .tt td.off { color: rgba(244,244,242,.25); }
-  .tt tbody tr { transition: background .25s; }
+  .tt tbody tr { transition: background var(--t-fast) var(--ease-out); }
   .tt tbody tr:hover { background: var(--surface); }
   .tt tbody tr:hover th b { color: var(--red); }
   /* Today's column */
@@ -93,7 +93,7 @@ const byDay = days.map((_, i) =>
   .tt td.next, .tt-day li.next { box-shadow: inset 0 0 0 1px var(--red); }
   .tt td.next .t::after { content: "Наступне"; display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; color: var(--red); }
 
-  .tt-join { display: inline-flex; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--red); padding-bottom: 2px; transition: opacity .2s, color .2s; }
+  .tt-join { display: inline-flex; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--red); padding-bottom: 2px; transition: opacity var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
   .tt tbody tr:hover .tt-join, .tt-join:focus-visible { opacity: 1; }
   .tt-join:hover { color: var(--red); }
   .tt-note { display: block; margin-top: 8px; font-size: 11px; color: var(--red) !important; }
@@ -101,7 +101,7 @@ const byDay = days.map((_, i) =>
   .tt tr.dim, .tt-day li.dim { opacity: .28; }
   .tt tr.match th b, .tt-day li.match b { color: var(--red); }
   .tt tr.match { background: rgba(255,41,54,.06); }
-  .tt tr { transition: opacity .3s, background .3s; }
+  .tt tr { transition: opacity var(--t) var(--ease-out), background var(--t) var(--ease-out); }
   .tt-m { display: none; }
   @media (max-width: 980px) {
     .tt { display: none; }

@@ -54,7 +54,7 @@ import { google } from '../../data/site';
 
 <style is:global>
   .price-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); }
-  .price-summary a { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; transition: background .25s; }
+  .price-summary a { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; transition: background var(--t-fast) var(--ease-out); }
   .price-summary a + a { border-left: 1px solid var(--line); }
   .price-summary .trust { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; border-left: 0 !important; border-top: 1px solid var(--line); padding-block: 12px; color: var(--muted); font-size: 12px; }
   .price-summary .trust b { color: #f4b400; font-weight: 500; }

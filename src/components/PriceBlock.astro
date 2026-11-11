@@ -45,13 +45,13 @@ const { n, title, plans, anchor } = Astro.props;
 
 <style is:global>
   .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
-  .plan { position: relative; padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 10px; min-width: 0; transition: background .3s; }
+  .plan { position: relative; padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 10px; min-width: 0; transition: background var(--t) var(--ease-out); }
   .plan + .plan { border-left: 1px solid var(--line); }
   .plan:hover { background: var(--surface); }
   .plan header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
   .plan h3 { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 2.8vw, 44px); line-height: .95; }
   .belt { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: none; }
-  .belt svg { width: 120px; height: auto; transition: transform .4s var(--ease-out); }
+  .belt svg { width: 120px; height: auto; transition: transform var(--t) var(--ease-out); }
   .belt .mono { font-size: 11px; color: #d6a640; }
   .plan:hover .belt svg { transform: rotate(-4deg) scale(1.06); }
   /* Single session looks like a fight-night ticket: notches and a torn-off stub */

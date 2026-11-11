@@ -21,7 +21,7 @@
     position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     z-index: 25; width: 290px; background: rgba(5,5,5,.88); border: 1px solid var(--line); padding: 12px 14px;
     display: flex; flex-direction: column; gap: 8px;
-    transform: translateY(calc(100% + 40px)); transition: transform .45s var(--ease-out);
+    transform: translateY(calc(100% + 40px)); transition: transform var(--t) var(--ease-out);
   }
   .board.on { transform: none; }
   .board.off, .board.on.off { transform: translateY(calc(100% + 40px)); }

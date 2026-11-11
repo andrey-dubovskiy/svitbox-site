@@ -31,7 +31,7 @@ const icons: Record<string, string> = {
   .rules li:last-child { border-right: 0; }
   .rules .mono { color: var(--red); }
   .rule-top { display: flex; justify-content: space-between; align-items: flex-start; }
-  .rule-ico { width: 48px; height: 48px; fill: none; stroke: var(--fg); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .35s var(--ease-out); }
+  .rule-ico { width: 48px; height: 48px; fill: none; stroke: var(--fg); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--t) var(--ease-out); }
   .rules li:hover .rule-ico { transform: rotate(-8deg) scale(1.08); }
   .rules b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(26px, 2.4vw, 36px); line-height: .95; }
   .rules p { margin: 0; }

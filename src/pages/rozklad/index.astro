@@ -77,8 +77,8 @@ import { link } from '../../lib/util';
   @media (max-width: 980px) { .other-groups article, .other-groups article + article { padding: 22px; } }
   .to-prices { padding-block: 0; }
   .big-link { display: flex; flex-direction: column; gap: 8px; padding-block: clamp(40px, 6vw, 80px); }
-  .big-link b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(56px, 9vw, 150px); line-height: .85; transition: color .25s; }
-  .big-link b span { display: inline-block; transition: transform .35s var(--ease-out); }
+  .big-link b { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(56px, 9vw, 150px); line-height: .85; transition: color var(--t-fast) var(--ease-out); }
+  .big-link b span { display: inline-block; transition: transform var(--t) var(--ease-out); }
   .big-link:hover b { color: var(--red); }
   .big-link:hover b span { transform: translateX(16px); }
 </style>

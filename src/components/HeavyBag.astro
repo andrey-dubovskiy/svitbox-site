@@ -39,7 +39,7 @@ import { asset } from '../lib/util';
   .kg span { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(88px, 9vw, 140px); line-height: .85; font-variant-numeric: tabular-nums; }
   .kg small { font-family: var(--mono); font-size: 16px; color: var(--muted); }
   .bar { height: 6px; background: var(--surface); position: relative; overflow: hidden; }
-  .bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--red); transition: width .5s var(--ease-out); }
+  .bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--red); transition: width var(--t-slow) var(--ease-out); }
   .meter-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .meter-row b { font-weight: 500; color: var(--fg); }
   #rank { color: var(--fg); }

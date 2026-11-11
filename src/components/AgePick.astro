@@ -20,7 +20,7 @@
   .age-pick { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 16px 40px; align-items: center; border: 1px solid var(--line); background: var(--surface); padding: 18px 22px; margin-bottom: clamp(28px, 4vw, 48px); }
   .ap-l p { margin: 4px 0 0; font-size: 18px; font-weight: 500; }
   .ap-ctrl { display: flex; align-items: center; gap: 8px; }
-  .ap-btn { width: 52px; height: 52px; border: 1px solid var(--line); background: none; color: var(--fg); font-size: 24px; cursor: pointer; transition: background .2s, color .2s; }
+  .ap-btn { width: 52px; height: 52px; border: 1px solid var(--line); background: none; color: var(--fg); font-size: 24px; cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
   .ap-btn:hover { background: var(--fg); color: var(--bg); }
   #apAge {
     width: 96px; height: 52px; text-align: center; background: var(--bg); color: var(--fg); border: 1px solid var(--line);
