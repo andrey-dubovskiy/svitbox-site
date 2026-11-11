@@ -103,6 +103,18 @@ export const champions = [
     tape: [['Зріст', '[— см]'], ['Вага', '[— кг]'], ['Боїв', '[—]'], ['Медалей', '[—]']] },
 ];
 
+// Photos from professional fight nights under the champions cards (home). Club's own photos.
+export const proFights = [
+  { size: 't', cap: 'Три пояси', brief: '', src: 'img/club/profi-01-chempion-try-poiasy-trener.jpg', alt: 'Вихованець «Світу Боксу» з трьома чемпіонськими поясами і тренер клубу' },
+  { size: 'l', cap: 'Оголошення перемоги', brief: '', src: 'img/club/profi-07-oholoshennia-peremohy.jpg', alt: 'Рефері піднімає руку боксера клубу після професійного бою' },
+  { size: 't', cap: 'Пояс у рингу', brief: '', src: 'img/club/profi-03-chempion-poias-trener.jpg', alt: 'Чемпіон з поясом і тренер «Світу Боксу» в рингу' },
+  { size: 'w', pos: '50% 25%', cap: 'Вихід на ринг', brief: '', src: 'img/club/profi-12-vykhid-na-ryng-2.jpg', alt: 'Боксер клубу виходить на професійний бій разом із тренером' },
+  { size: 'w', pos: '50% 15%', cap: 'Гладіатор', brief: '', src: 'img/club/profi-13-vykhid-hladiator.jpg', alt: 'Вихід боксера клубу на бій у шоломі гладіатора' },
+  { size: 'n', cap: 'Перемога', brief: '', src: 'img/club/profi-06-peremoha-ruky-vhoru.jpg', alt: 'Боксер підняв руки після перемоги, зал аплодує' },
+  { size: 'n', cap: 'Зважування', brief: '', src: 'img/club/profi-14-zvazhuvannia.jpg', alt: 'Зважування перед професійним вечором боксу' },
+  { size: 'w', pos: '50% 20%', cap: 'Два пояси', brief: '', src: 'img/club/profi-02-chempion-dva-poiasy-trener.jpg', alt: 'Чемпіон з двома поясами і тренер «Світу Боксу» після бою' },
+] as { size: 'l' | 't' | 'w' | 'n'; pos?: string; cap: string; brief: string; src: string; alt: string }[];
+
 export const life = [
   { img: 'img/club/pohid-06-hory-komanda.jpg', alt: 'Команда клубу «Світ Боксу» у поході в Карпатах', title: 'Карпати', text: 'Походи в гори всією командою' },
   { img: 'img/club/pohid-01-splav-baidarky.jpg', alt: 'Боксери клубу на сплаві на байдарках', title: 'Сплави', text: 'Байдарки й річка замість залу' },

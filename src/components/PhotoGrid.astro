@@ -9,7 +9,7 @@ const { shots } = Astro.props;
 <div class="pg-gal-grid">
   {shots.map((g) => (
     <figure class:list={['ph', `g-${g.size ?? 'n'}`, { photo: g.src }]} data-full={g.src && asset(g.src)} tabindex={g.src ? 0 : undefined}>
-      {g.src && <img src={asset(g.src)} alt={g.alt ?? `${g.cap}: ${g.brief}`} loading="lazy" />}
+      {g.src && <img src={asset(g.src)} alt={g.alt ?? `${g.cap}: ${g.brief}`} loading="lazy" style={g.pos && `object-position:${g.pos}`} />}
       <figcaption class="cap"><b>{g.cap}</b>{!g.src && <><br />Фото: {g.brief}</>}</figcaption>
     </figure>
   ))}

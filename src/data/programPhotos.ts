@@ -3,7 +3,7 @@
 // of what still needs shooting. Files: public/img/club/. Gallery sizes: l = big square (2x2),
 // t = tall (1x2), w = wide (2x1), n = normal. Keep the cells adding up to a multiple of 4.
 
-export interface Shot { cap: string; brief: string; src?: string; alt?: string; size?: 'l' | 't' | 'w' | 'n' }
+export interface Shot { cap: string; brief: string; src?: string; alt?: string; pos?: string; size?: 'l' | 't' | 'w' | 'n' }
 const c = (f: string) => `img/club/${f}.jpg`;
 
 export const programPhotos: Record<string, { rounds: Shot[]; gallery: Shot[] }> = {
