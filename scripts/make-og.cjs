@@ -27,8 +27,8 @@ const html = ([title, sub, img, pos]) => `<!doctype html><html><head><meta chars
 @font-face { font-family: M; font-weight: 500; src: ${font('ibm-plex-mono', 'ibm-plex-mono-latin-500-normal.woff2')}; }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; background: #050505; color: #f4f4f2; position: relative; overflow: hidden; font-family: M; }
-.ph { position: absolute; right: 0; top: 0; width: 520px; height: 630px; background: #d6202d; isolation: isolate; }
-.ph img { width: 100%; height: 100%; object-fit: cover; object-position: ${pos}; mix-blend-mode: luminosity; filter: grayscale(1) contrast(1.25) brightness(.95); }
+.ph { position: absolute; right: 0; top: 0; width: 520px; height: 630px; background: #0a0a0a; }
+.ph img { width: 100%; height: 100%; object-fit: cover; object-position: ${pos}; filter: grayscale(1) contrast(1.18) brightness(.92); }
 .ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #050505 0%, rgba(5,5,5,0) 38%); }
 .t { position: absolute; left: 64px; top: 56px; width: 700px; height: 470px; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; }
 .brand { font-size: 22px; letter-spacing: .02em; display: flex; align-items: center; gap: 14px; }
