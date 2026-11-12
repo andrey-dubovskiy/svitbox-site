@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { asset } from '../lib/util';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props { title?: string; description?: string; alwaysNoindex?: boolean; og?: string; }
 const {
@@ -43,6 +44,12 @@ const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astr
     <link rel="icon" type="image/png" sizes="192x192" href={asset('icon-192.png')} />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
+    <!-- Google Consent Mode v2: everything denied until the visitor chooses (see CookieConsent.astro) -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+    </script>
     <!-- Intro curtain: once per browser session, never with reduced motion -->
     <script is:inline>
       try {
@@ -67,5 +74,6 @@ const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astr
     <script>
       import '../scripts/headlines';
     </script>
+    <CookieConsent />
   </body>
 </html>

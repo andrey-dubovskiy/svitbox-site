@@ -1,0 +1,137 @@
+---
+// Cookie consent: banner on the first visit, settings dialog any time (footer link or [data-cookie-settings]).
+// The choice is kept in localStorage `sbx-consent` for 12 months. Other code reads it through
+// window.sbxConsent.get() and listens for the `sbx:consent` event. Google Consent Mode v2 defaults
+// to "denied" in Base.astro and is updated here, so GA4 / Google Ads respect the choice once added.
+import { link } from '../lib/util';
+---
+<div class="cc" id="cc" role="region" aria-label="Згода на cookie" hidden>
+  <p class="cc-h mono"><span class="sq"></span> Cookie</p>
+  <p class="cc-t">
+    Сайт працює й без cookie. З вашої згоди ми покажемо карту Google, а згодом — знеособлену аналітику відвідувань.
+    <a href={link('polityka-cookies/')}>Детальніше</a>
+  </p>
+  <div class="cc-b">
+    <button type="button" class="cc-btn cc-main" data-cc="all">Прийняти всі</button>
+    <button type="button" class="cc-btn" data-cc="none">Лише необхідні</button>
+    <button type="button" class="cc-link mono" data-cookie-settings>Налаштувати</button>
+  </div>
+</div>
+
+<dialog class="cc-dlg" id="ccDlg" aria-labelledby="ccDlgH">
+  <form method="dialog" class="cc-form">
+    <h2 id="ccDlgH" class="cc-dh">Налаштування cookie</h2>
+    <p class="cc-t muted">Оберіть, що дозволити. Змінити вибір можна будь-коли за посиланням «Налаштування cookie» внизу сайту.</p>
+    <ul class="cc-list">
+      <li>
+        <label><input type="checkbox" checked disabled /> <b>Необхідні</b></label>
+        <span>Робота сайту: показ заставки один раз, сторінка подяки після заявки, ваш вибір щодо cookie. Завжди увімкнені.</span>
+      </li>
+      <li>
+        <label><input type="checkbox" name="maps" /> <b>Карти</b></label>
+        <span>Карта Google на сторінці «Контакти». Google може встановити свої cookie.</span>
+      </li>
+      <li>
+        <label><input type="checkbox" name="analytics" /> <b>Аналітика</b></label>
+        <span>Знеособлена статистика відвідувань (Google Analytics / Microsoft Clarity). Поки не підключена.</span>
+      </li>
+      <li>
+        <label><input type="checkbox" name="marketing" /> <b>Реклама</b></label>
+        <span>Оцінка реклами в Google і Meta (Facebook, Instagram). Поки не підключена.</span>
+      </li>
+    </ul>
+    <div class="cc-b">
+      <button type="submit" class="cc-btn cc-main" value="save">Зберегти вибір</button>
+      <button type="submit" class="cc-btn" value="all">Прийняти всі</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  type Consent = { v: 1; maps: boolean; analytics: boolean; marketing: boolean; ts: number };
+  const KEY = 'sbx-consent', YEAR = 365 * 24 * 3600 * 1000;
+  const banner = document.getElementById('cc')!, dlg = document.getElementById('ccDlg') as HTMLDialogElement;
+  const form = dlg.querySelector('form')!;
+
+  const read = (): Consent | null => {
+    try { const c = JSON.parse(localStorage.getItem(KEY) || 'null'); return c && Date.now() - c.ts < YEAR ? c : null; } catch { return null; }
+  };
+  function apply(c: Consent) {
+    const g = (window as any).gtag;
+    if (g) g('consent', 'update', {
+      analytics_storage: c.analytics ? 'granted' : 'denied',
+      ad_storage: c.marketing ? 'granted' : 'denied',
+      ad_user_data: c.marketing ? 'granted' : 'denied',
+      ad_personalization: c.marketing ? 'granted' : 'denied',
+    });
+    document.dispatchEvent(new CustomEvent('sbx:consent', { detail: c }));
+  }
+  function save(p: Partial<Consent>) {
+    const c: Consent = { v: 1, maps: !!p.maps, analytics: !!p.analytics, marketing: !!p.marketing, ts: Date.now() };
+    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch {}
+    banner.hidden = true; apply(c);
+  }
+  (window as any).sbxConsent = { get: read, set: (p: Partial<Consent>) => save({ ...(read() || {}), ...p }) };
+
+  const now = read();
+  if (now) apply(now); else banner.hidden = false;
+
+  banner.addEventListener('click', (e) => {
+    const v = (e.target as HTMLElement).closest<HTMLElement>('[data-cc]')?.dataset.cc;
+    if (v === 'all') save({ maps: true, analytics: true, marketing: true });
+    if (v === 'none') save({});
+  });
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('[data-cookie-settings]')) return;
+    e.preventDefault();
+    const c = read();
+    (['maps', 'analytics', 'marketing'] as const).forEach((k) => { (form.elements.namedItem(k) as HTMLInputElement).checked = !!c?.[k]; });
+    dlg.showModal();
+  });
+  dlg.addEventListener('close', () => {
+    if (dlg.returnValue === 'all') save({ maps: true, analytics: true, marketing: true });
+    else if (dlg.returnValue === 'save') {
+      const f = (k: string) => (form.elements.namedItem(k) as HTMLInputElement).checked;
+      save({ maps: f('maps'), analytics: f('analytics'), marketing: f('marketing') });
+    }
+  });
+</script>
+
+<style is:global>
+  .cc {
+    position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: 16px; z-index: 85; width: min(440px, calc(100vw - 32px));
+    background: #0e0e0d; border: 1px solid rgba(244,244,242,.24); box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
+    animation: cc-in var(--t-slow) var(--ease-out) 1.6s both;
+  }
+  .cc[hidden] { display: none; }
+  .cc-h { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--red); font-size: 12px; }
+  .cc-t { margin: 0; font-size: 14px; line-height: 1.5; }
+  .cc-t a { border-bottom: 1px solid var(--red); }
+  .cc-b { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .cc-btn {
+    height: 44px; padding: 0 16px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; cursor: pointer;
+    background: none; color: var(--fg); border: 1px solid rgba(244,244,242,.5);
+    transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+  }
+  .cc-btn:hover { border-color: var(--fg); }
+  .cc-main { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .cc-main:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .cc-link { background: none; border: 0; color: var(--muted); padding: 0 6px; height: 44px; cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+  .cc-link:hover { color: var(--fg); }
+  @keyframes cc-in { from { opacity: 0; transform: translateY(16px); } }
+
+  .cc-dlg { width: min(560px, calc(100vw - 32px)); max-width: none; padding: 0; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+  .cc-dlg::backdrop { background: rgba(0,0,0,.8); }
+  .cc-form { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .cc-dh { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 40px; line-height: .9; text-transform: uppercase; }
+  .cc-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .cc-list li { display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .cc-list label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .cc-list input { width: 18px; height: 18px; accent-color: var(--red); }
+  .cc-list span { color: var(--muted); font-size: 13px; padding-left: 28px; }
+  @media (max-width: 980px) {
+    .cc { left: 8px; right: 8px; width: auto; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); padding: 16px; }
+    .cc-b .cc-btn { flex: 1 1 auto; }
+  }
+</style>

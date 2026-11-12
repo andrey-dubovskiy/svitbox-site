@@ -22,6 +22,7 @@ const cards = {
   vidhuky: ['Відгуки', '4,8 у Google · 46 відгуків', 'img/club/komanda-01-komanda-v-zali.jpg', '50% 45%'],
   events: ['Події клубу', 'Турніри, профі-бої, походи', 'img/club/profi-07-oholoshennia-peremohy.jpg', '50% 30%'],
   galereya: ['Галерея', 'Фото і відео клубу', 'img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', '50% 45%'],
+  'polityka-cookies': ['Політика cookie', 'Що зберігаємо в браузері', 'img/hero.jpg', '50% 40%'],
   polityka: ['Політика конфіденційності', 'Як ми бережемо ваші дані', 'img/hero.jpg', '50% 40%'],
 };
 const html = ([title, sub, img, pos]) => `<!doctype html><html><head><meta charset="utf-8"><style>

@@ -16,7 +16,7 @@ const letters = [...site.name];
       <li><a href={link('about_us/')}>Тренери і зал</a></li><li><a href={link('chempiony/')}>Чемпіони</a></li><li><a href={link('galereya/')}>Галерея</a></li><li><a href={link('vidhuky/')}>Відгуки</a></li><li><a href={link('events/')}>Події клубу</a></li><li><a href={link('#first')}>Перше тренування</a></li>
     </ul></nav>
     <nav aria-label="Сторінки"><h2 class="mono">Сторінки</h2><ul>
-      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('polityka/')}>Політика конфіденційності</a></li>
+      <li><a href={link('rozklad/')}>Розклад</a></li><li><a href={link('tsiny/')}>Ціни</a></li><li><a href={link('kontakty/')}>Контакти</a></li><li><a href={link('polityka/')}>Політика конфіденційності</a></li><li><a href={link('polityka-cookies/')}>Політика cookie</a></li><li><button type="button" class="sf-cc" data-cookie-settings>Налаштування cookie</button></li>
     </ul></nav>
     <div><h2 class="mono">Зал</h2><ul>
       <li><a class="sf-tel" href={`tel:${site.phone.tel}`}>{site.phone.display}</a></li>
@@ -51,6 +51,8 @@ const letters = [...site.name];
 </footer>
 
 <style is:global>
+  .sf-cc { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+  .sf-cc:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 4px; }
   .sf-tel { font-family: var(--display); font-style: italic; font-weight: 800; font-size: 26px; line-height: 1; }
   .sf-tel:hover { color: var(--red); }
   .sf-ropes + .sf-grid { border-top: 0; }

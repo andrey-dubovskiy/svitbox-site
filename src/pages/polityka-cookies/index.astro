@@ -1,0 +1,76 @@
+---
+// Cookie policy: what the site keeps in the browser, which third parties it loads, how to change the choice.
+// Keep the table in sync with the code (search for localStorage / sessionStorage) and add analytics/ads rows when connected.
+import Page from '../../layouts/Page.astro';
+import { site, legal } from '../../data/site';
+import { link, isTodo } from '../../lib/util';
+const updated = '12.11.2026';
+const rows = [
+  { name: 'sbx-consent', who: 'Світ Боксу · localStorage', why: 'Запамʼятати ваш вибір щодо cookie', term: '12 місяців', cat: 'Необхідні' },
+  { name: 'sbx-intro', who: 'Світ Боксу · sessionStorage', why: 'Показати заставку лише раз за відвідування', term: 'До закриття вкладки', cat: 'Необхідні' },
+  { name: 'sbx-lead', who: 'Світ Боксу · sessionStorage', why: 'Передати імʼя й групу із заявки на сторінку подяки', term: 'Видаляється одразу після показу', cat: 'Необхідні' },
+  { name: 'sbx-best', who: 'Світ Боксу · localStorage', why: 'Ваш найкращий удар по груші на головній', term: 'Доки не очистите браузер', cat: 'Необхідні' },
+  { name: 'NID, AEC та інші', who: 'Google', why: 'Карта Google на сторінці «Контакти»', term: 'За правилами Google', cat: 'Карти · лише за згодою' },
+];
+---
+<Page
+  title="Політика cookie — Світ Боксу, Бровари"
+  description="Які cookie і дані браузера використовує сайт боксерського клубу «Світ Боксу», навіщо, як довго їх зберігаємо і як змінити свій вибір."
+  current="polityka-cookies/"
+  kicker="Документи"
+  heading="Політика cookie"
+  lead="Сайт працює й без cookie. Тут — що саме ми зберігаємо у вашому браузері, які сторонні сервіси підключені і як змінити свій вибір."
+  signup={false}
+>
+  <section class="blk ck">
+    <div class="wrap ck-in">
+      <p class="mono muted">Оновлено {updated}</p>
+
+      <h2>Що таке cookie</h2>
+      <p>Cookie та сховище браузера (localStorage, sessionStorage) — невеликі записи, які сайт залишає на вашому пристрої, щоб памʼятати налаштування між сторінками. Вони не містять вашого імені чи телефону, якщо ви самі їх не ввели у форму.</p>
+
+      <h2>Що використовує сайт</h2>
+      <div class="ck-table" role="region" aria-label="Перелік cookie" tabindex="0">
+        <table>
+          <thead><tr><th>Назва</th><th>Хто встановлює</th><th>Навіщо</th><th>Термін</th><th>Категорія</th></tr></thead>
+          <tbody>
+            {rows.map((r) => <tr><td class="mono">{r.name}</td><td>{r.who}</td><td>{r.why}</td><td>{r.term}</td><td>{r.cat}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p>Записи «Світ Боксу» не залишають ваш пристрій і нікуди не передаються.</p>
+
+      <h2>Сторонні сервіси без cookie</h2>
+      <ul>
+        <li><b>Google Fonts</b> — шрифти сайту. Під час завантаження Google бачить вашу IP-адресу.</li>
+        <li><b>Хостинг сайту</b> — <span class:list={[{ todo: true }]}>[уточнити при запуску: де розміщено сайт]</span>. Сервер веде технічні журнали з IP-адресами для безпеки.</li>
+      </ul>
+
+      <h2>Аналітика і реклама</h2>
+      <p>Зараз на сайті немає аналітики та рекламних пікселів. Коли ми їх підключимо (<span class:list={[{ todo: isTodo(legal.analytics) }]}>{legal.analytics}</span>, а також оцінку реклами в Google і Meta), вони працюватимуть лише після вашої згоди в категоріях «Аналітика» і «Реклама». Ми оновимо цю сторінку й таблицю вище.</p>
+
+      <h2>Як змінити вибір</h2>
+      <p>Відкрийте <button type="button" class="ck-btn" data-cookie-settings>налаштування cookie</button> — посилання є й унизу кожної сторінки. Також можна видалити дані сайту в налаштуваннях браузера; тоді ми запитаємо згоду знову.</p>
+
+      <h2>Контакти</h2>
+      <p>Питання щодо даних — на <a href={`mailto:${site.email}`}>{site.email}</a>. Як ми обробляємо дані з форми запису, описано в <a href={link('polityka/')}>політиці конфіденційності</a>.</p>
+    </div>
+  </section>
+</Page>
+
+<style is:global>
+  .ck { padding-top: clamp(32px, 4vw, 56px); }
+  .ck-in { max-width: 920px; }
+  .ck-in h2 { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(30px, 3vw, 44px); line-height: .95; text-transform: uppercase; margin: clamp(32px, 4vw, 48px) 0 14px; }
+  .ck-in p, .ck-in li { font-family: var(--serif); font-size: 18px; line-height: 1.6; }
+  .ck-in p { margin: 0 0 14px; }
+  .ck-in a { border-bottom: 1px solid var(--red); }
+  .ck-in ul { padding-left: 20px; margin: 0; }
+  .ck-table { overflow-x: auto; border: 1px solid var(--line); margin: 8px 0 14px; }
+  .ck-table table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 14px; }
+  .ck-table th, .ck-table td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .ck-table th { font-family: var(--mono); font-weight: 400; font-size: 11px; text-transform: uppercase; color: var(--muted); }
+  .ck-table tr:last-child td { border-bottom: 0; }
+  .ck-btn { background: none; border: 0; padding: 0; color: var(--fg); font: inherit; border-bottom: 1px solid var(--red); cursor: pointer; }
+  .ck-btn:hover { color: var(--red); }
+</style>
