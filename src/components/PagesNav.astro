@@ -4,24 +4,32 @@ import { pages } from '../data/site';
 import { link } from '../lib/util';
 interface Props { current?: string; }
 const list = pages.filter((p) => p.href !== Astro.props.current);
+// Stretch the last card over the empty cells so every row is full (3 columns desktop, 2 tablet)
+const r3 = list.length % 3, r2 = list.length % 2;
+const lastClass = [r3 ? `l3-${4 - r3}` : '', r2 ? 'l2-2' : ''].join(' ');
 ---
 <nav class="pages" aria-label="Корисні сторінки">
-  {list.map((p) => (
-    <a href={link(p.href)}><b>{p.label} <span aria-hidden="true">→</span></b><span>{p.text}</span></a>
+  {list.map((p, i) => (
+    <a href={link(p.href)} class={i === list.length - 1 ? lastClass : undefined}><b>{p.label} <span aria-hidden="true">→</span></b><span>{p.text}</span></a>
   ))}
 </nav>
 
 <style is:global>
-  .pages { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .pages a { padding: 36px clamp(16px, 2.5vw, 40px); display: flex; flex-direction: column; gap: 10px; border-right: 1px solid var(--line); transition: background var(--t) var(--ease-out), color var(--t) var(--ease-out); min-width: 0; }
-  .pages a:last-child { border-right: 0; }
-  .pages a b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(36px, 4vw, 60px); line-height: .9; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .pages a > span { color: var(--muted); font-size: 15px; }
-  .pages a:hover { background: var(--fg); color: var(--bg); }
-  .pages a:hover > span { color: #3a3a37; }
-  @media (max-width: 980px) {
-    .pages { grid-template-columns: minmax(0, 1fr); }
-    .pages a { border-right: 0; border-bottom: 1px solid var(--line); }
-    .pages a:last-child { border-bottom: 0; }
+  /* Grid of page links: 3 per row on desktop, 2 on tablets, 1 on phones; hairlines drawn by each cell */
+  .pages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .pages a {
+    padding: clamp(24px, 2.6vw, 36px) clamp(16px, 2.2vw, 32px); display: flex; flex-direction: column; gap: 10px; min-width: 0;
+    border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    transition: background var(--t) var(--ease-out), color var(--t) var(--ease-out);
   }
+  .pages a b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(30px, 3vw, 48px); line-height: .9; text-transform: uppercase; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .pages a b span { font-size: .7em; transition: transform var(--t) var(--ease-out); }
+  .pages a > span { color: var(--muted); font-size: 15px; max-width: 32ch; }
+  .pages a:hover { background: var(--fg); color: var(--bg); }
+  .pages a:hover b span { transform: translateX(6px); }
+  .pages a:hover > span { color: #3a3a37; }
+  @media (min-width: 981px) { .pages .l3-2 { grid-column: span 2; } .pages .l3-3 { grid-column: span 3; } }
+  @media (max-width: 980px) { .pages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 601px) and (max-width: 980px) { .pages .l2-2 { grid-column: span 2; } }
+  @media (max-width: 600px) { .pages { grid-template-columns: minmax(0, 1fr); } }
 </style>

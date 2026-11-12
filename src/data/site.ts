@@ -60,12 +60,12 @@ export const mainNav: NavItem[] = [
 export const pages = [
   { label: 'Розклад', href: 'rozklad/', text: 'Групи за віком, дні та час' },
   { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
+  { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },
   { label: 'Тренери і зал', href: 'about_us/', text: 'Хто тренує і де: склад, ринг, мішки, інвентар' },
   { label: 'Чемпіони', href: 'chempiony/', text: 'Пояси, титули й медалі вихованців клубу' },
-  { label: 'Відгуки', href: 'vidhuky/', text: 'Що кажуть батьки й учні: 4,8 у Google' },
   { label: 'Події клубу', href: 'events/', text: 'Турніри, профі-бої, гості-чемпіони, походи й табори' },
   { label: 'Галерея', href: 'galereya/', text: 'Фото і відео: тренування, турніри, профі-бої, походи' },
-  { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },
+  { label: 'Відгуки', href: 'vidhuky/', text: 'Що кажуть батьки й учні: 4,8 у Google' },
 ];
 
 export const socials = [
