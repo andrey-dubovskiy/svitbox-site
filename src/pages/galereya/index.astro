@@ -1,0 +1,122 @@
+---
+// Gallery: every club photo and short video, filterable by topic, opens in the shared viewer.
+import Page from '../../layouts/Page.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { gallery, galleryCats } from '../../data/gallery';
+import { socials } from '../../data/site';
+import { asset } from '../../lib/util';
+const photos = gallery.filter((g) => !g.video).length, videos = gallery.length - photos;
+const youtube = socials.find((s) => /youtube/i.test(s.href));
+const count = (id: string) => gallery.filter((g) => g.cat === id).length;
+---
+<Page
+  title="Галерея: фото і відео боксерського клубу «Світ Боксу», Бровари"
+  description="Фото і відео клубу «Світ Боксу» у Броварах: тренування дітей і дорослих, турніри, професійні бої, походи в Карпати й табори."
+  current="galereya/"
+  kicker="Фото і відео"
+  heading="Галерея"
+  lead="Тренування, турніри, професійні бої та життя клубу — без постановки, як є."
+>
+  <div slot="head" class="gl-stats mono">
+    <span><b>{photos}</b> фото</span>
+    <span><b>{videos}</b> відео</span>
+    {youtube && <a href={youtube.href} target="_blank" rel="noopener">Ще більше на YouTube ↗</a>}
+  </div>
+
+  <section class="blk gl" aria-label="Фото і відео">
+    <div class="wrap">
+      <div class="gl-chips" role="group" aria-label="Фільтр за темою">
+        <button type="button" class="gl-chip mono" data-cat="all" aria-pressed="true">Усі <sup>{gallery.length}</sup></button>
+        {galleryCats.map((c) => <button type="button" class="gl-chip mono" data-cat={c.id} aria-pressed="false">{c.label} <sup>{count(c.id)}</sup></button>)}
+        <button type="button" class="gl-chip mono" data-cat="video" aria-pressed="false">▶ Відео <sup>{videos}</sup></button>
+      </div>
+
+      <div class="gl-grid" id="glGrid">
+        {gallery.map((g, i) => (
+          <figure
+            class="gl-item ph photo"
+            data-cat={g.cat}
+            data-kind={g.video ? 'video' : 'photo'}
+            data-full={g.video ? undefined : asset(`img/club/${g.file}.jpg`)}
+            data-video={g.video ? asset(`video/${g.file}.mp4`) : undefined}
+            data-cap={g.cap}
+            tabindex="0"
+          >
+            <img
+              src={asset(g.video ? `video/${g.file}.webp` : `img/club/thumb/${g.file}.webp`)}
+              alt={g.cap}
+              loading={i < 8 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+            {g.video && <span class="gl-play" aria-hidden="true">▶</span>}
+            <figcaption class="cap">{g.cap}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="gl-empty muted" id="glEmpty" hidden>Тут поки порожньо.</p>
+    </div>
+  </section>
+  <Lightbox />
+</Page>
+
+<script>
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.gl-chip')];
+  const items = [...document.querySelectorAll<HTMLElement>('.gl-item')];
+  const empty = document.getElementById('glEmpty')!;
+  function apply(cat: string) {
+    let n = 0;
+    items.forEach((it) => {
+      const on = cat === 'all' || (cat === 'video' ? it.dataset.kind === 'video' : it.dataset.cat === cat);
+      it.hidden = !on; if (on) n++;
+    });
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.cat === cat)));
+    empty.hidden = n > 0;
+    try { history.replaceState(null, '', cat === 'all' ? location.pathname : `#${cat}`); } catch {}
+  }
+  chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.cat!)));
+  const start = location.hash.slice(1);
+  if (start && chips.some((c) => c.dataset.cat === start)) apply(start);
+</script>
+
+<style is:global>
+  .gl-stats { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: baseline; font-size: 13px; color: var(--muted); }
+  .gl-stats b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 40px; color: var(--fg); margin-right: 4px; }
+  .gl-stats a { color: var(--fg); border-bottom: 1px solid var(--red); padding-bottom: 2px; }
+  .gl-stats a:hover { color: var(--red); }
+
+  .gl { padding-top: clamp(32px, 4vw, 56px); }
+  .gl-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(24px, 3vw, 40px); }
+  .gl-chip {
+    height: 40px; padding: 0 14px; border: 1px solid var(--line); background: none; color: var(--muted); cursor: pointer; font-size: 12px;
+    transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+  }
+  .gl-chip sup { color: var(--red); font-size: 10px; margin-left: 2px; }
+  .gl-chip:hover { color: var(--fg); border-color: rgba(244,244,242,.4); }
+  .gl-chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .gl-chip[aria-pressed="true"] sup { color: #b3121d; }
+
+  /* Masonry by columns: keeps each photo's own shape */
+  .gl-grid { columns: 4 260px; column-gap: 12px; }
+  .gl-item { break-inside: avoid; margin: 0 0 12px; padding: 0; display: block; cursor: zoom-in; }
+  .gl-item[hidden] { display: none; }
+  .gl-item img { position: static; display: block; width: 100%; height: auto; }
+  .gl-item .cap {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 28px 12px 10px; max-width: none;
+    background: linear-gradient(0deg, rgba(5,5,5,.85), rgba(5,5,5,0)); color: var(--fg);
+    opacity: 0; transform: translateY(6px); transition: opacity var(--t) var(--ease-out), transform var(--t) var(--ease-out);
+  }
+  .gl-item:hover .cap, .gl-item:focus-visible .cap { opacity: 1; transform: none; }
+  .gl-item:hover img, .gl-item:focus-visible img { filter: var(--grade-hot); }
+  .gl-play {
+    position: absolute; left: 50%; top: 50%; z-index: 1; width: 64px; height: 64px; margin: -32px 0 0 -32px; display: grid; place-items: center;
+    background: var(--red); color: #fff; font-size: 20px; padding-left: 4px; transition: transform var(--t) var(--ease-out);
+  }
+  .gl-item:hover .gl-play { transform: scale(1.1); }
+  .gl-item[data-kind="video"] { cursor: pointer; }
+  @media (max-width: 980px) {
+    .gl-grid { columns: 2; column-gap: 8px; }
+    .gl-item { margin-bottom: 8px; }
+    .gl-item .cap { display: none; }
+    .gl-play { width: 48px; height: 48px; margin: -24px 0 0 -24px; font-size: 16px; }
+  }
+</style>

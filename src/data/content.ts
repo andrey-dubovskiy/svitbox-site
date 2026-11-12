@@ -141,7 +141,7 @@ export const life = [
   { img: 'img/club/pohid-06-hory-komanda.jpg', alt: 'Команда клубу «Світ Боксу» у поході в Карпатах', title: 'Карпати', text: 'Походи в гори всією командою' },
   { img: 'img/club/pohid-01-splav-baidarky.jpg', alt: 'Боксери клубу на сплаві на байдарках', title: 'Сплави', text: 'Байдарки й річка замість залу' },
   { img: 'img/club/pohid-10-tabir-basein-trenery.jpg', alt: 'Тренери й діти клубу біля басейну на літніх зборах', title: 'Табори', text: 'Літні збори для юних боксерів' },
-  { img: 'img/club/podiia-08-dity-z-praporom-i-poiasamy.jpg', alt: 'Діти клубу з прапором «Світу Боксу» і чемпіонськими поясами в рингу', title: 'Для дітей', text: 'Зустрічі з чемпіонами й свята клубу' },
+  { img: 'img/club/podiia-13-dity-z-praporom-i-poiasamy.jpg', alt: 'Діти клубу з прапором «Світу Боксу» і чемпіонськими поясами в рингу', title: 'Для дітей', text: 'Зустрічі з чемпіонами й свята клубу' },
   { img: 'img/club/komanda-05-komanda-na-turniri.jpg', alt: 'Команда клубу на виїзному турнірі', title: 'Турніри', text: 'Виїзні змагання з іншими клубами' },
 ];
 

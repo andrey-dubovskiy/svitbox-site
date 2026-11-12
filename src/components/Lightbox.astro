@@ -1,31 +1,87 @@
 ---
-// Full-screen photo viewer for any figure[data-full] on the page (slots without a photo are not clickable).
+// Full-screen viewer for any figure[data-full] (photo) or figure[data-video] (video) on the page.
+// Arrows / swipe / ← → keys go through the visible items in page order; Esc closes.
 ---
-<dialog class="lb" id="lightbox" aria-label="Фото">
-  <img id="lbImg" alt="" />
-  <p class="lb-cap mono" id="lbCap"></p>
+<dialog class="lb" id="lightbox" aria-label="Перегляд фото і відео">
+  <div class="lb-stage">
+    <img id="lbImg" alt="" />
+    <video id="lbVideo" controls playsinline preload="none" hidden></video>
+  </div>
+  <div class="lb-bar mono">
+    <span class="lb-count" id="lbCount"></span>
+    <p class="lb-cap" id="lbCap"></p>
+  </div>
+  <button type="button" class="lb-nav lb-prev" id="lbPrev" aria-label="Попереднє">←</button>
+  <button type="button" class="lb-nav lb-next" id="lbNext" aria-label="Наступне">→</button>
   <button type="button" class="lb-close mono" id="lbClose">Закрити ✕</button>
 </dialog>
 
 <script>
   const lb = document.getElementById('lightbox') as HTMLDialogElement;
-  const img = document.getElementById('lbImg') as HTMLImageElement, cap = document.getElementById('lbCap')!;
-  const open = (f: HTMLElement) => {
-    const i = f.querySelector('img'); if (!i) return;
-    img.src = f.dataset.full!; img.alt = i.alt; cap.textContent = i.alt; lb.showModal();
-  };
-  document.querySelectorAll<HTMLElement>('figure[data-full]').forEach((f) => {
-    f.addEventListener('click', () => open(f));
-    f.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(f); });
+  const img = document.getElementById('lbImg') as HTMLImageElement;
+  const vid = document.getElementById('lbVideo') as HTMLVideoElement;
+  const cap = document.getElementById('lbCap')!, count = document.getElementById('lbCount')!;
+  const SEL = 'figure[data-full], figure[data-video]';
+  let list: HTMLElement[] = [], i = 0;
+
+  const visible = () => [...document.querySelectorAll<HTMLElement>(SEL)].filter((f) => f.offsetParent !== null && !f.closest('[hidden]'));
+  function show(n: number) {
+    i = (n + list.length) % list.length;
+    const f = list[i], text = f.dataset.cap || f.querySelector('img')?.alt || '';
+    vid.pause();
+    if (f.dataset.video) {
+      img.hidden = true; vid.hidden = false;
+      vid.poster = f.querySelector('img')?.src || ''; vid.src = f.dataset.video; vid.play().catch(() => {});
+    } else {
+      vid.hidden = true; vid.removeAttribute('src'); vid.load();
+      img.hidden = false; img.src = f.dataset.full!; img.alt = text;
+    }
+    cap.textContent = text;
+    count.textContent = list.length > 1 ? `${i + 1} / ${list.length}` : '';
+    lb.classList.toggle('single', list.length < 2);
+  }
+  function open(f: HTMLElement) { list = visible(); show(Math.max(0, list.indexOf(f))); if (!lb.open) lb.showModal(); }
+  function close() { vid.pause(); vid.removeAttribute('src'); vid.load(); lb.close(); }
+
+  document.addEventListener('click', (e) => {
+    const f = (e.target as HTMLElement).closest<HTMLElement>(SEL);
+    if (f && !lb.contains(f)) { e.preventDefault(); open(f); }
   });
-  document.getElementById('lbClose')!.addEventListener('click', () => lb.close());
-  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+  document.addEventListener('keydown', (e) => {
+    const f = (e.target as HTMLElement).closest?.<HTMLElement>(SEL);
+    if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); open(f); }
+  });
+  lb.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') show(i + 1);
+    if (e.key === 'ArrowLeft') show(i - 1);
+  });
+  document.getElementById('lbPrev')!.addEventListener('click', () => show(i - 1));
+  document.getElementById('lbNext')!.addEventListener('click', () => show(i + 1));
+  document.getElementById('lbClose')!.addEventListener('click', close);
+  lb.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+  // Swipe on phones
+  let x0 = 0;
+  lb.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); });
 </script>
 
 <style is:global>
-  .lb { max-width: min(1200px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--line); background: #050505; color: var(--fg); }
-  .lb::backdrop { background: rgba(0,0,0,.88); }
-  .lb img { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; }
-  .lb-cap { margin: 0; padding: 12px 16px; font-size: 12px; color: var(--muted); }
-  .lb-close { position: absolute; top: 10px; right: 10px; background: rgba(5,5,5,.8); color: var(--fg); border: 1px solid var(--line); height: 40px; padding: 0 14px; cursor: pointer; }
+  .lb { width: min(1200px, 96vw); max-width: none; max-height: 94vh; padding: 0; border: 1px solid var(--line); background: #050505; color: var(--fg); overflow: hidden; }
+  .lb::backdrop { background: rgba(0,0,0,.9); }
+  .lb-stage { display: grid; place-items: center; background: #000; min-height: 40vh; }
+  .lb img, .lb video { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; }
+  .lb-bar { display: flex; gap: 16px; align-items: baseline; padding: 12px 16px; font-size: 12px; }
+  .lb-count { color: var(--red); white-space: nowrap; }
+  .lb-cap { margin: 0; color: var(--muted); }
+  .lb-close { position: absolute; top: 10px; right: 10px; background: rgba(5,5,5,.8); color: var(--fg); border: 1px solid var(--line); height: 40px; padding: 0 14px; cursor: pointer; z-index: 2; }
+  .lb-nav {
+    position: absolute; top: calc(50% - 40px); width: 52px; height: 52px; display: grid; place-items: center;
+    background: rgba(5,5,5,.7); color: var(--fg); border: 1px solid var(--line); font-size: 22px; cursor: pointer; z-index: 2;
+    transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+  }
+  .lb-nav:hover { background: var(--red); border-color: var(--red); }
+  .lb-prev { left: 10px; } .lb-next { right: 10px; }
+  .lb.single .lb-nav { display: none; }
+  @media (max-width: 560px) { .lb-nav { width: 44px; height: 44px; top: auto; bottom: 52px; } }
 </style>

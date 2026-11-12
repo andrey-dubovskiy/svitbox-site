@@ -27,3 +27,7 @@ save('img/hero.jpg', 'img/hero-960.webp', 960, 72)
 save('img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', 'img/club/komanda-08-dity-z-medaliamy-v-zali.webp', 1200)
 # Logo printed on the heavy bag (canvas texture, keeps transparency)
 save('img/logo-bag.png', 'img/logo-bag.webp', 575, 85)
+
+# Gallery: small copies of every club photo for the grid (full JPG opens in the viewer)
+for f in sorted((pub / 'img/club').glob('*.jpg')):
+    save('img/club/' + f.name, 'img/club/thumb/' + f.stem + '.webp', 720, 74)
