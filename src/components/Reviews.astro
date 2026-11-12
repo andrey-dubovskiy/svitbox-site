@@ -1,10 +1,10 @@
 ---
-// Round 06: reviews (placeholders until real ones are collected).
+// Round 06: reviews (real Google reviews; long ones are clamped, full text on /vidhuky/).
 import RoundLabel from './RoundLabel.astro';
 import RailHint from './RailHint.astro';
 import { reviews } from '../data/content';
 import { google } from '../data/site';
-import { isTodo } from '../lib/util';
+import { isTodo, link } from '../lib/util';
 ---
 <section class="blk" id="reviews">
   <div class="wrap">
@@ -25,7 +25,7 @@ import { isTodo } from '../lib/util';
     <RailHint total={reviews.length} />
     <div class="rating mono">
       <span class="g-rate"><b>{google.rating}</b><span class="stars" aria-hidden="true">★★★★★</span>Google · {google.count} відгуків</span>
-      <a class="link" href={google.url} target="_blank" rel="noopener">Усі відгуки в Google ↗</a>
+      <a class="link" href={link('vidhuky/')}>Усі відгуки →</a>
     </div>
   </div>
 </section>
@@ -37,6 +37,7 @@ import { isTodo } from '../lib/util';
   .reviews-title { margin-bottom: clamp(32px, 4vw, 56px); }
   .reviews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .review { margin: 0; border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .reviews .review blockquote { display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
   .review .q { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 72px; line-height: .6; color: var(--red); height: 32px; }
   .review blockquote { margin: 0; font-family: var(--serif); font-size: 20px; line-height: 1.45; flex: 1; }
   .review figcaption { display: flex; gap: 14px; align-items: center; }

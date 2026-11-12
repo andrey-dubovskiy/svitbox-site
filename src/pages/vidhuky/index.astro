@@ -1,0 +1,92 @@
+---
+// Reviews: Google rating and split, a featured quote, all collected reviews, and a call to leave one.
+import Page from '../../layouts/Page.astro';
+import { reviews } from '../../data/content';
+import { google } from '../../data/site';
+const featured = reviews.reduce((a, b) => (b.text.length > a.text.length ? b : a));
+const rest = reviews.filter((r) => r !== featured);
+const max = Math.max(...google.split.map(([, n]) => n));
+const stars = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n);
+---
+<Page
+  title="Відгуки про боксерський клуб «Світ Боксу» у Броварах — 4,8 у Google"
+  description="Відгуки батьків і учнів про клуб «Світ Боксу» в Броварах: тренери, зал у СК «Манеж», тренування для дітей і дорослих. Рейтинг 4,8 у Google, 46 відгуків."
+  current="vidhuky/"
+  kicker="Що кажуть у залі"
+  heading="Відгуки"
+  lead="Що пишуть про клуб батьки, юні й дорослі боксери. Цитуємо з Google так, як написали автори."
+>
+  <div slot="head" class="rv-score">
+    <div class="rv-big">
+      <b>{google.rating}</b>
+      <span class="rv-stars" aria-label={`${google.rating} з 5`}>★★★★★</span>
+      <span class="mono muted">{google.count} відгуків у Google</span>
+    </div>
+    <ul class="rv-split" aria-label="Розподіл оцінок">
+      {google.split.map(([s, n]) => (
+        <li><span class="mono">{s} ★</span><i><em style={`width:${(n / max) * 100}%`}></em></i><span class="mono muted">{n}</span></li>
+      ))}
+    </ul>
+  </div>
+
+  <section class="blk rv" aria-label="Відгуки з Google">
+    <div class="wrap">
+      <figure class="rv-feat">
+        <span class="rv-q" aria-hidden="true">“</span>
+        <blockquote>{featured.text}</blockquote>
+        <figcaption class="mono"><b>{featured.name}</b> · <span class="rv-st" aria-label={`${featured.stars} з 5`}>{stars(featured.stars)}</span> · {featured.who} · {featured.tag}</figcaption>
+      </figure>
+
+      <div class="rv-grid">
+        {rest.map((r) => (
+          <figure class="rv-card">
+            <span class="rv-st" aria-label={`${r.stars} з 5`}>{stars(r.stars)}</span>
+            <blockquote>{r.text}</blockquote>
+            <figcaption class="mono"><b>{r.name}</b><span class="muted">{r.who} · {r.tag}</span></figcaption>
+          </figure>
+        ))}
+        <a class="rv-card rv-cta" href={google.url} target="_blank" rel="noopener">
+          <span class="mono muted">Тренуєтесь у нас?</span>
+          <b>Залиште відгук у Google</b>
+          <span class="arr" aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <p class="rv-note mono muted">Джерело: Google Карти. Відгуки не редагуємо; […] — скорочено. Імена авторів скорочені.</p>
+    </div>
+  </section>
+</Page>
+
+<style is:global>
+  .rv-score { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px 48px; align-items: center; border-top: 1px solid var(--line); padding-top: 20px; }
+  .rv-big { display: flex; flex-direction: column; gap: 6px; }
+  .rv-big b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(72px, 7vw, 112px); line-height: .82; }
+  .rv-stars { color: #f4b400; letter-spacing: 3px; font-size: 18px; }
+  .rv-big .mono { font-size: 12px; }
+  .rv-split { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-width: 360px; }
+  .rv-split li { display: grid; grid-template-columns: 36px minmax(0, 1fr) 28px; gap: 10px; align-items: center; font-size: 12px; }
+  .rv-split i { display: block; height: 6px; background: var(--line); }
+  .rv-split em { display: block; height: 100%; background: #f4b400; }
+
+  .rv { padding-top: clamp(40px, 5vw, 72px); }
+  .rv-feat { margin: 0 0 clamp(40px, 5vw, 72px); max-width: 60em; }
+  .rv-q { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 140px; line-height: .5; color: var(--red); display: block; height: 56px; }
+  .rv-feat blockquote { margin: 0 0 20px; font-family: var(--serif); font-size: clamp(22px, 2.2vw, 32px); line-height: 1.4; }
+  .rv-feat figcaption { font-size: 12px; color: var(--muted); }
+  .rv-feat figcaption b { color: var(--fg); font-weight: 500; }
+  .rv-st { color: #f4b400; letter-spacing: 2px; }
+  .rv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .rv-card { margin: 0; border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; gap: 16px; min-height: 220px; min-width: 0; }
+  .rv-card blockquote { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1.5; flex: 1; }
+  .rv-card figcaption { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+  .rv-card figcaption b { font-weight: 500; }
+  .rv-cta { position: relative; justify-content: flex-end; background: var(--surface); transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out); }
+  .rv-cta b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(32px, 3vw, 44px); line-height: .9; text-transform: uppercase; }
+  .rv-cta .arr { position: absolute; top: 20px; right: 22px; font-size: 22px; transition: transform var(--t) var(--ease-out); }
+  .rv-cta:hover { border-color: var(--red); }
+  .rv-cta:hover .arr { transform: translate(4px, -4px); color: var(--red); }
+  .rv-note { margin: 24px 0 0; font-size: 11px; }
+  @media (max-width: 980px) {
+    .rv-score { grid-template-columns: minmax(0, 1fr); }
+    .rv-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

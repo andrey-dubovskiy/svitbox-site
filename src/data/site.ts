@@ -33,6 +33,8 @@ export const legal = {
 export const google = {
   rating: '4,8',
   count: 46,
+  // Star split as shown in Google Maps on 12.11.2026
+  split: [[5, 43], [4, 1], [3, 0], [2, 0], [1, 2]] as [number, number][],
   asOf: '09.11.2026',
   name: 'Секція боксу в Броварах - "Світ Боксу"',
   url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Секція боксу в Броварах "Світ Боксу" Героїв України'),
@@ -53,6 +55,7 @@ export const pages = [
   { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
   { label: 'Тренери і зал', href: 'about_us/', text: 'Хто тренує і де: склад, ринг, мішки, інвентар' },
   { label: 'Чемпіони', href: 'chempiony/', text: 'Пояси, титули й медалі вихованців клубу' },
+  { label: 'Відгуки', href: 'vidhuky/', text: 'Що кажуть батьки й учні: 4,8 у Google' },
   { label: 'Події клубу', href: 'events/', text: 'Турніри, профі-бої, гості-чемпіони, походи й табори' },
   { label: 'Галерея', href: 'galereya/', text: 'Фото і відео: тренування, турніри, профі-бої, походи' },
   { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },
