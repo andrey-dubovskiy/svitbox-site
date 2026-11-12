@@ -156,7 +156,7 @@ section.blk { border-bottom: 1px solid var(--line); padding-block: clamp(64px, 9
 .ph img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
 }
-.ph.photo.reveal:hover img,
+.ph.photo:hover img, .ph.photo:focus-visible img,
 .reveal-parent:hover .ph img { transform: scale(1.04); }
 
 /* One grade for every photo on the site: black-and-white with deep blacks;
@@ -166,7 +166,7 @@ section.blk { border-bottom: 1px solid var(--line); padding-block: clamp(64px, 9
   filter: var(--grade);
   transition: filter var(--t-slow) var(--ease-out), transform .8s var(--ease-out);
 }
-.ph.photo.reveal:hover img, .reveal-parent:hover .ph.photo img, .coach-ph:hover img, .follow img,
+.ph.photo:hover img, .ph.photo:focus-visible img, .reveal-parent:hover .ph.photo img, .coach-ph:hover img, .follow img,
 .pg-gal-grid .ph.photo:hover img, .pg-gal-grid .ph.photo:focus-visible img,
 .pg-rounds li:hover .pg-round-ph img, .tz-row:hover .tz-ph img { filter: var(--grade-hot); }
 
