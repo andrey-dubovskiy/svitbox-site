@@ -20,8 +20,8 @@ export const programPhotos: Record<string, { rounds: Shot[]; gallery: Shot[] }> 
       { size: 'n', cap: 'Перший бій', brief: '', src: c('turnir-01-dity-bii'), alt: 'Діти в шоломах боксують на турнірі' },
       { size: 'n', cap: 'У кутку', brief: '', src: c('turnir-04-yunior-shlem-u-kuti'), alt: 'Юніор у синьому шоломі в кутку рингу, поруч тренер' },
       { size: 'w', cap: 'Дитяча група', brief: '', src: c('komanda-03-dity-z-poiasom-wbc'), alt: 'Діти клубу «Світ Боксу» в залі з чемпіонським поясом WBC' },
-      { size: 'n', cap: 'Медалі', brief: '', src: c('turnir-05-yunory-z-medaliamy'), alt: 'Юніори клубу з медалями після турніру' },
-      { size: 'n', cap: 'Турнір', brief: '', src: c('turnir-02-yunior-bii-chervonyi-kut'), alt: 'Бій юніорів на змаганнях: червоний кут атакує' },
+      { size: 'n', cap: 'Медалі', brief: '', src: c('komanda-08-dity-z-medaliamy-v-zali'), alt: 'Діти клубу «Світ Боксу» з медалями в рингу свого залу' },
+      { size: 'n', cap: 'Кубок', brief: '', src: c('turnir-11-yunior-z-kubkom'), alt: 'Юніор клубу з кубком турніру, поруч тренер — школа боксу для дітей у Броварах' },
     ],
   },
   divchata: {
