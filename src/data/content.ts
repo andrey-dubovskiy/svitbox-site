@@ -103,7 +103,7 @@ export const hall = {
   photos: [
     { size: 'l', cap: 'Команда в залі', brief: '', src: 'img/club/komanda-01-komanda-v-zali.jpg', alt: 'Велика команда клубу «Світ Боксу» в залі: діти, юніори, дорослі й тренери' },
     { size: 'w', cap: 'Пояс WBC у залі', brief: '', src: 'img/club/komanda-03-dity-z-poiasom-wbc.jpg', alt: 'Діти в залі клубу з чемпіонським поясом WBC' },
-    { size: 'w', cap: 'Ринг клубу', brief: '', src: 'img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', alt: 'Ринг залу «Світ Боксу» з логотипом клубу: діти з медалями', pos: '50% 35%' },
+    { size: 'w', cap: 'Після турніру', brief: '', src: 'img/club/turnir-05-yunory-z-medaliamy.jpg', alt: 'Юніори клубу з медалями біля рингу' },
     { size: 'n', cap: 'Груша', brief: '', src: 'img/club/trenuvannia-03-divchynka-hrusha-trener.jpg', alt: 'Ряд важких мішків у залі, тренування біля груші' },
     { size: 'n', cap: 'ЗФП', brief: '', src: 'img/club/trenuvannia-05-khlopchyk-shyna.jpg', alt: 'Шина для фізичної підготовки в залі' },
     { size: 'w', cap: 'У рингу', brief: '', src: 'img/club/komanda-04-komanda-z-medaliamy.jpg', alt: 'Боксери клубу з медалями в рингу' },

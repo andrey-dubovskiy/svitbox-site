@@ -24,6 +24,6 @@ for img in sorted(set(re.findall(r"img: '([^']+)'", progs.read_text()))):
 # Hero background and the club photo on the home page
 save('img/hero.jpg', 'img/hero.webp', 1920, 72)
 save('img/hero.jpg', 'img/hero-960.webp', 960, 72)
-save('img/club/turnir-05-yunory-z-medaliamy.jpg', 'img/club/turnir-05-yunory-z-medaliamy.webp', 1200)
+save('img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', 'img/club/komanda-08-dity-z-medaliamy-v-zali.webp', 1200)
 # Logo printed on the heavy bag (canvas texture, keeps transparency)
 save('img/logo-bag.png', 'img/logo-bag.webp', 575, 85)
