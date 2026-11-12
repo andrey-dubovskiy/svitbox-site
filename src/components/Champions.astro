@@ -5,14 +5,17 @@ import RailHint from './RailHint.astro';
 import PhotoGrid from './PhotoGrid.astro';
 import Lightbox from './Lightbox.astro';
 import { champions, proFights } from '../data/content';
-import { asset, isTodo } from '../lib/util';
+import { asset, isTodo, link } from '../lib/util';
 ---
 <section class="blk" id="champions">
   <div class="wrap">
     <RoundLabel n="Раунд 04" label="Чемпіони клубу" />
     <div class="champ-head">
       <h2 class="h2" data-punch>Чемпіони світу виросли тут</h2>
-      <p>Вихованці клубу неодноразово ставали чемпіонами світу серед професіоналів і привозили нагороди з міських, обласних, всеукраїнських і міжнародних турнірів.</p>
+      <div class="champ-side">
+        <p>Вихованці клубу неодноразово ставали чемпіонами світу серед професіоналів і привозили нагороди з міських, обласних, всеукраїнських і міжнародних турнірів.</p>
+        <a class="link" href={link('chempiony/')}>Усі чемпіони →</a>
+      </div>
     </div>
     <div class="champs m-rail">
       {champions.map((c) => (
@@ -49,6 +52,7 @@ import { asset, isTodo } from '../lib/util';
 <style is:global>
   .champ-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: clamp(32px, 4vw, 56px); }
   .champ-head p { margin: 0; max-width: 40ch; color: var(--muted); }
+  .champ-side { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .champs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .champ { background: var(--bg); display: flex; flex-direction: column; min-width: 0; }
   .champ .ph { aspect-ratio: 3/4; border: 0; border-bottom: 1px solid var(--line); }

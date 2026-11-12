@@ -18,6 +18,7 @@ const cards = {
   tsiny: ['Ціни', 'Абонементи від 1800 грн', 'img/club/fotosesiia-07-bokser-kapiushon.jpg', '50% 35%'],
   kontakty: ['Контакти', 'СК «Манеж» · вул. Героїв України, 30', 'img/club/komanda-01-komanda-v-zali.jpg', '50% 45%'],
   treneri: ['Тренери і зал', 'Майстри спорту з боксу', 'img/coach.jpg', '58% 30%'],
+  chempiony: ['Чемпіони', 'Пояси, титули й медалі', 'img/club/profi-01-chempion-try-poiasy-trener.jpg', '50% 25%'],
   events: ['Події клубу', 'Турніри, профі-бої, походи', 'img/club/profi-07-oholoshennia-peremohy.jpg', '50% 30%'],
   galereya: ['Галерея', 'Фото і відео клубу', 'img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', '50% 45%'],
   polityka: ['Політика конфіденційності', 'Як ми бережемо ваші дані', 'img/hero.jpg', '50% 40%'],

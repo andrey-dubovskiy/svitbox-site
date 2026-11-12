@@ -125,6 +125,19 @@ export const champions = [
     tape: [['Зріст', '[— см]'], ['Вага', '[— кг]'], ['Боїв', '[—]'], ['Медалей', '[—]']] },
 ];
 
+// Champions page (/chempiony/): a short story per champion (shown under the tale of the tape)
+export const champStory = '[2–3 речення: з якого віку в клубі, головні бої й титули, чим пишається тренер]';
+
+// Amateur wins on the champions page
+export const amateurWins = [
+  { size: 'l', cap: 'Чемпіонат України', brief: '', src: 'img/club/turnir-06-chempionat-ukrainy-bokserka-medal.jpg', alt: 'Спортсменка «Світу Боксу» з медаллю чемпіонату України з боксу' },
+  { size: 't', cap: 'Пояси', brief: '', src: 'img/club/turnir-08-bokserka-z-poiasamy.jpg', alt: 'Юна боксерка клубу з чемпіонськими поясами' },
+  { size: 't', cap: 'Кубок', brief: '', src: 'img/club/turnir-12-yunior-z-kubkom.jpg', alt: 'Юніор клубу з кубком турніру' },
+  { size: 'w', cap: 'Медалі', brief: '', src: 'img/club/komanda-08-dity-z-medaliamy-v-zali.jpg', alt: 'Діти клубу з медалями в рингу залу «Світ Боксу»', pos: '50% 40%' },
+  { size: 'n', cap: 'Нагорода', brief: '', src: 'img/club/turnir-07-bokserka-z-trenerom-nagoroda.jpg', alt: 'Боксерка з тренером і нагородою' },
+  { size: 'n', cap: 'Юніори', brief: '', src: 'img/club/turnir-05-yunory-z-medaliamy.jpg', alt: 'Юніори клубу з медалями' },
+] as { size: 'l' | 't' | 'w' | 'n'; pos?: string; cap: string; brief: string; src: string; alt: string }[];
+
 // Photos from professional fight nights under the champions cards (home). Club's own photos.
 export const proFights = [
   { size: 't', cap: 'Три пояси', brief: '', src: 'img/club/profi-01-chempion-try-poiasy-trener.jpg', alt: 'Вихованець «Світу Боксу» з трьома чемпіонськими поясами і тренер клубу' },

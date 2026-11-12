@@ -41,7 +41,7 @@ export const google = {
 export const mainNav = [
   { label: 'Програми', href: 'programy/' },
   { label: 'Тренери і зал', href: 'about_us/' },
-  { label: 'Чемпіони', href: '#champions' },
+  { label: 'Чемпіони', href: 'chempiony/' },
   { label: 'Розклад', href: 'rozklad/' },
   { label: 'Ціни', href: 'tsiny/' },
   { label: 'Контакти', href: 'kontakty/' },
@@ -52,6 +52,7 @@ export const pages = [
   { label: 'Розклад', href: 'rozklad/', text: 'Групи за віком, дні та час' },
   { label: 'Ціни', href: 'tsiny/', text: 'Абонементи на бокс і функціональні' },
   { label: 'Тренери і зал', href: 'about_us/', text: 'Хто тренує і де: склад, ринг, мішки, інвентар' },
+  { label: 'Чемпіони', href: 'chempiony/', text: 'Пояси, титули й медалі вихованців клубу' },
   { label: 'Події клубу', href: 'events/', text: 'Турніри, профі-бої, гості-чемпіони, походи й табори' },
   { label: 'Галерея', href: 'galereya/', text: 'Фото і відео: тренування, турніри, профі-бої, походи' },
   { label: 'Контакти', href: 'kontakty/', text: 'Адреса залу в Броварах, карта і месенджери' },

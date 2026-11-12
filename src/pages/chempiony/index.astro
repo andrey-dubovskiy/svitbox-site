@@ -1,0 +1,115 @@
+---
+// Champions: a fight-poster card per champion (tale of the tape), then photos from pro fight nights and amateur wins.
+import Page from '../../layouts/Page.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import Tape from '../../components/Tape.astro';
+import RoundLabel from '../../components/RoundLabel.astro';
+import { champions, champStory, proFights, amateurWins } from '../../data/content';
+import { asset, link, isTodo } from '../../lib/util';
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+---
+<Page
+  title="Чемпіони клубу «Світ Боксу»: пояси, титули й медалі — Бровари"
+  description="Вихованці боксерського клубу «Світ Боксу» з Броварів — чемпіони світу серед професіоналів, призери чемпіонатів України й міжнародних турнірів."
+  current="chempiony/"
+  kicker="Зала слави"
+  heading="Чемпіони"
+  lead="Вихованці клубу неодноразово ставали чемпіонами світу серед професіоналів і привозили нагороди з міських, обласних, всеукраїнських і міжнародних турнірів."
+>
+  <div slot="head" class="ch-stats">
+    <div><b>з 2012</b><span class="mono muted">готуємо чемпіонів</span></div>
+    <div><b>120+</b><span class="mono muted">боксерів у клубі</span></div>
+    <div><b>Світ</b><span class="mono muted">рівень професійних титулів</span></div>
+  </div>
+
+  <section class="blk ch" aria-label="Чемпіони клубу">
+    <div class="wrap">
+      <ol class="ch-list">
+        {champions.map((c, i) => (
+          <li class:list={['ch-card', { flip: i % 2 === 1 }]}>
+            <figure class="ph photo ch-ph reveal-parent">
+              <img src={asset(c.img)} alt={c.alt} loading={i === 0 ? 'eager' : 'lazy'} style={`object-position:${c.pos}`} />
+              <span class="ch-no mono">№ {pad(i)}</span>
+            </figure>
+            <div class="ch-info">
+              <span class:list={['ch-belt', 'mono', { todo: isTodo(c.belt) }]}>{c.belt}{c.beltNote && <span class="todo"> {c.beltNote}</span>}</span>
+              <h2 class:list={['ch-name', { todo: isTodo(c.name) }]} data-punch>{c.name}</h2>
+              <p class:list={['mono', 'ch-meta', { todo: isTodo(c.meta) }]}>{c.meta}</p>
+              <dl class="ch-tape">
+                {c.tape.map(([k, v]) => <div><dt class="mono">{k}</dt><dd class:list={[{ todo: isTodo(v) }]}>{v}</dd></div>)}
+              </dl>
+              <p class="ch-story todo">{champStory}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Tape tilt={-1.2} />
+
+  <section class="blk" aria-labelledby="chPro">
+    <div class="wrap">
+      <RoundLabel n="Раунд 02" label="Професійний ринг" />
+      <div class="sched-head">
+        <h2 class="read-h2" id="chPro">З професійного рингу</h2>
+        <p class="muted">Вечори професійного боксу, де виступали вихованці клубу: зважування, вихід, бій і пояс.</p>
+      </div>
+      <PhotoGrid shots={proFights} />
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="chAm">
+    <div class="wrap">
+      <RoundLabel n="Раунд 03" label="Аматорський бокс" />
+      <div class="sched-head">
+        <h2 class="read-h2" id="chAm">Медалі й кубки</h2>
+        <p class="muted">Діти й юніори привозять нагороди з міських, обласних, всеукраїнських і міжнародних турнірів. <a class="link-inline mono" href={link('galereya/#turnir')}>Усі фото з турнірів →</a></p>
+      </div>
+      <PhotoGrid shots={amateurWins} />
+    </div>
+  </section>
+  <Lightbox />
+</Page>
+
+<style is:global>
+  .ch-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .ch-stats > div { padding: 18px 20px 4px 0; display: flex; flex-direction: column; gap: 6px; }
+  .ch-stats > div + div { padding-left: 20px; border-left: 1px solid var(--line); }
+  .ch-stats b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(32px, 3vw, 48px); line-height: .9; text-transform: uppercase; }
+  .ch-stats span { font-size: 11px; }
+
+  .ch { padding-top: clamp(32px, 4vw, 56px); }
+  .ch-list { list-style: none; margin: 0; padding: 0; }
+  .ch-card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 80px); align-items: center; padding-block: clamp(36px, 5vw, 72px); border-top: 1px solid var(--line); }
+  .ch-card.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .ch-card.flip .ch-ph { order: 2; }
+  .ch-ph { aspect-ratio: 4 / 5; margin: 0; padding: 0; max-height: 620px; }
+  .ch-no { position: absolute; left: 14px; top: 14px; z-index: 2; background: var(--fg); color: var(--bg); padding: 6px 10px; font-size: 12px; }
+  .ch-info { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .ch-belt { align-self: flex-start; background: #d6202d; color: #fff; padding: 8px 12px; font-size: 12px; }
+  .ch-belt .todo { color: #fff; text-decoration: underline dotted; }
+  .ch-belt.todo { background: none; border: 1px dashed var(--todo); }
+  .ch-name { font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(48px, 6vw, 104px); line-height: .86; text-transform: uppercase; }
+  .ch-meta { margin: 0; font-size: 13px; color: var(--muted); }
+  .ch-tape { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .ch-tape > div { padding: 14px 12px 14px 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .ch-tape > div + div { padding-left: 12px; border-left: 1px solid var(--line); }
+  .ch-tape dt { font-size: 11px; color: var(--muted); }
+  .ch-tape dd { margin: 0; font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(26px, 2.4vw, 38px); line-height: .9; }
+  .ch-tape dd.todo { font-family: var(--mono); font-style: normal; font-weight: 400; font-size: 14px; }
+  .ch-story { font-family: var(--serif); font-size: clamp(17px, 1.4vw, 20px); line-height: 1.5; margin: 0; max-width: 36em; }
+  @media (max-width: 980px) {
+    .ch-card, .ch-card.flip { grid-template-columns: minmax(0, 1fr); }
+    .ch-card.flip .ch-ph { order: 0; }
+    .ch-ph { aspect-ratio: 4 / 4.4; }
+    .ch-tape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ch-tape > div:nth-child(3) { padding-left: 0; border-left: 0; }
+    .ch-tape > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 560px) {
+    .ch-stats { grid-template-columns: minmax(0, 1fr); }
+    .ch-stats > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>
