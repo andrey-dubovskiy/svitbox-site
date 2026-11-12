@@ -72,7 +72,7 @@ header.top-page { view-transition-name: site-header; }
 }
 .intro-name {
   font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase;
-  font-size: clamp(56px, 12vw, 168px); line-height: .85; display: flex; align-items: center; gap: .12em;
+  font-size: clamp(36px, 12vw, 168px); line-height: .85; display: flex; align-items: center; gap: .12em; white-space: nowrap;
   animation: intro-punch .5s var(--ease-out) .25s both;
 }
 .intro-sq { width: .22em; height: .22em; background: var(--red); display: inline-block; }

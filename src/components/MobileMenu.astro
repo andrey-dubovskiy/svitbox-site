@@ -10,7 +10,7 @@ import { link } from '../lib/util';
     <button type="button" class="mmenu-close mono" id="mmenuClose">Закрити <span aria-hidden="true">✕</span></button>
   </div>
   <nav class="mmenu-nav wrap" aria-label="Меню сайту">
-    {mainNav.filter((n) => n.href !== '#signup').map((n, i) => (
+    {mainNav.flatMap((n) => n.children ?? [n]).map((n, i) => (
       <a href={link(n.href)}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
     ))}
   </nav>
@@ -40,8 +40,8 @@ import { link } from '../lib/util';
   .mmenu-close { background: none; border: 1px solid var(--line); color: var(--fg); height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
   .mmenu-nav { display: flex; flex-direction: column; padding-block: 12px; }
   .mmenu-nav a {
-    display: flex; align-items: baseline; gap: 16px; padding-block: 12px; border-bottom: 1px solid var(--line);
-    font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(40px, 11vw, 64px);
+    display: flex; align-items: baseline; gap: 16px; padding-block: 9px; border-bottom: 1px solid var(--line);
+    font-family: var(--display); font-style: italic; font-weight: 900; font-size: clamp(32px, 8.6vw, 56px);
     line-height: .95; text-transform: uppercase;
   }
   .mmenu-nav a .mono { color: var(--red); font-style: normal; font-size: 12px; }

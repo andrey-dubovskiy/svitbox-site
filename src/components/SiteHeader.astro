@@ -9,7 +9,16 @@ const { home = false, current } = Astro.props;
 <header class:list={['top', 'wrap', { 'top-page': !home }]} id={home ? undefined : 'top'}>
   <a class="brand" href={home ? '#top' : asset('')}>СВІТ БОКСУ <b>©</b>2012</a>
   <nav class="main" aria-label="Головне меню">
-    {mainNav.map((n) => <a href={home && n.href.startsWith('#') ? n.href : link(n.href)} aria-current={n.href === current ? 'page' : undefined}>{n.label}</a>)}
+    {mainNav.map((n) => n.children ? (
+      <div class:list={['dd-wrap', { on: n.children.some((c) => c.href === current) }]}>
+        <button type="button" class="dd-btn" aria-expanded="false" aria-controls="ddClub">{n.label} <span aria-hidden="true">▾</span></button>
+        <div class="dd" id="ddClub">
+          {n.children.map((c) => <a href={link(c.href)} aria-current={c.href === current ? 'page' : undefined}>{c.label}</a>)}
+        </div>
+      </div>
+    ) : (
+      <a href={home && n.href.startsWith('#') ? n.href : link(n.href)} aria-current={n.href === current ? 'page' : undefined}>{n.label}</a>
+    ))}
   </nav>
   <div class="top-right">
     <a class="phone" href={`tel:${site.phone.tel}`}>{site.phone.short}</a>
@@ -33,13 +42,21 @@ const { home = false, current } = Astro.props;
 </div>
 
 <script>
+  // "Клуб" dropdown: opens on hover (CSS) and on click/Enter; closes on Esc or a click outside
+  document.querySelectorAll<HTMLElement>('.dd-wrap').forEach((w) => {
+    const b = w.querySelector<HTMLButtonElement>('.dd-btn')!;
+    const set = (o: boolean) => { b.setAttribute('aria-expanded', String(o)); w.classList.toggle('open', o); };
+    b.addEventListener('click', () => set(b.getAttribute('aria-expanded') !== 'true'));
+    w.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); b.focus(); } });
+    document.addEventListener('click', (e) => { if (!w.contains(e.target as Node)) set(false); });
+  });
   const mtop = document.getElementById('mtop')!;
   const head = document.querySelector('header.top');
   if (head) new IntersectionObserver(([e]) => mtop.classList.toggle('show', !e.isIntersecting)).observe(head);
 </script>
 
 <style is:global>
-  header.top { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; position: relative; z-index: 35; }
   header.top-page { border-bottom: 1px solid var(--line); }
   .brand { font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .01em; }
   .brand b { color: var(--red); font-weight: 500; }
@@ -47,6 +64,23 @@ const { home = false, current } = Astro.props;
   nav.main a { opacity: .85; transition: opacity var(--t-fast) var(--ease-out); }
   nav.main a:hover, nav.main a[aria-current] { opacity: 1; text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
   nav.main a[aria-current] { text-decoration-color: var(--red); text-decoration-thickness: 2px; }
+  .dd-wrap { position: relative; }
+  .dd-btn { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; opacity: .85; transition: opacity var(--t-fast) var(--ease-out); }
+  .dd-btn span { font-size: .7em; display: inline-block; transition: transform var(--t) var(--ease-out); }
+  .dd-wrap:hover .dd-btn, .dd-wrap.open .dd-btn, .dd-wrap.on .dd-btn { opacity: 1; }
+  .dd-wrap.on .dd-btn { text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--red); text-decoration-thickness: 2px; }
+  .dd-wrap:hover .dd-btn span, .dd-wrap.open .dd-btn span { transform: rotate(180deg); }
+  .dd {
+    position: absolute; left: -18px; top: 100%; z-index: 30; min-width: 220px; padding: 14px 0 8px; margin-top: 0;
+    display: flex; flex-direction: column; background: var(--bg); border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0,0,0,.6);
+    opacity: 0; visibility: hidden; transform: translateY(6px);
+    transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out), visibility var(--t-fast);
+  }
+  .dd::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+  .dd-wrap:hover .dd, .dd-wrap:focus-within .dd, .dd-wrap.open .dd { opacity: 1; visibility: visible; transform: none; }
+  nav.main .dd a { padding: 8px 18px; opacity: .85; white-space: nowrap; }
+  nav.main .dd a:hover { opacity: 1; background: var(--surface); text-decoration: none; }
+  nav.main .dd a[aria-current] { opacity: 1; color: var(--red); text-decoration: none; }
   .top-right { display: flex; gap: 20px; align-items: center; }
   .lang { font-family: var(--mono); font-size: 13px; color: var(--muted); }
   .menu-btn {

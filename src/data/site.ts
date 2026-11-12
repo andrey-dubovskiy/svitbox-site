@@ -40,10 +40,17 @@ export const google = {
   url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Секція боксу в Броварах "Світ Боксу" Героїв України'),
 };
 
-export const mainNav = [
+// Main menu. An item with `children` is a dropdown on desktop; the phone menu lists every page flat.
+export interface NavItem { label: string; href: string; children?: { label: string; href: string }[] }
+export const mainNav: NavItem[] = [
   { label: 'Програми', href: 'programy/' },
-  { label: 'Тренери і зал', href: 'about_us/' },
-  { label: 'Чемпіони', href: 'chempiony/' },
+  { label: 'Клуб', href: 'about_us/', children: [
+    { label: 'Тренери і зал', href: 'about_us/' },
+    { label: 'Чемпіони', href: 'chempiony/' },
+    { label: 'Події клубу', href: 'events/' },
+    { label: 'Галерея', href: 'galereya/' },
+    { label: 'Відгуки', href: 'vidhuky/' },
+  ] },
   { label: 'Розклад', href: 'rozklad/' },
   { label: 'Ціни', href: 'tsiny/' },
   { label: 'Контакти', href: 'kontakty/' },
