@@ -4,7 +4,6 @@ import Base from './Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import MobileMenu from '../components/MobileMenu.astro';
 import Signup from '../components/Signup.astro';
-import PagesNav from '../components/PagesNav.astro';
 import MobileBar from '../components/MobileBar.astro';
 import Footer from '../components/Footer.astro';
 import RingHead from '../components/RingHead.astro';
@@ -33,7 +32,6 @@ const { title, description, current, kicker, heading, lead, signup = true, alway
     <Tape tilt={-1.2} />
     {signup && <Signup n="Останній раунд" />}
   </main>
-  <PagesNav current={current} />
   <MobileBar />
   <Footer />
 </Base>
