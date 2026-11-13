@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Світ Боксу — брендбук</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#050505;--surface:#0e0e0d;--surface-raised:#121211;--line:rgba(244,244,242,.16);--fg:#f4f4f2;--muted:#a3a39e;--red:#ff2936;--red-deep:#d6202d;--rope:#e8e8e4;--gold:#d6a640;--star:#f4b400;--live:#3ddc84;--todo:#ff8a92;--font-display:"Fira Sans Extra Condensed", "Arial Narrow", Impact, sans-serif;--font-serif:Lora, Georgia, "Times New Roman", serif;--font-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;--font-sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;color-scheme:dark}
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:ital,wght@1,800;1,900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Lora:ital,wght@0,400;1,400&display=swap");
+
+/* Світ Боксу — component styles. Values come from tokens.css; fallbacks only keep a preview readable before tokens load. */
+html, body { margin: 0; }
+body { background: var(--bg, #050505); color: var(--fg, #f4f4f2); font-family: var(--font-sans); font-size: 16px; line-height: 1.55; }
+/* If an image ever fails to load, never print its alt text on the layout (screen readers still get it) */
+.sb-frame img, .sb-photo img { color: transparent; font-size: 0; }
+.sb-pad { padding: 24px; }
+.sb-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.sb-col { display: flex; flex-direction: column; gap: 16px; }
+.sb-mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+.sb-muted { color: var(--muted, #a3a39e); }
+.sb-sq { display: inline-block; width: 10px; height: 10px; background: var(--red, #ff2936); }
+.sb-display { font-family: var(--font-display); font-style: italic; font-weight: 900; text-transform: uppercase; line-height: .88; margin: 0; }
+
+/* Button: white slab, red fill rises on hover */
+.sb-btn { font-family: var(--font-mono); font-size: 14px; letter-spacing: .04em; text-transform: uppercase; height: 58px; padding: 0 30px;
+  display: inline-flex; align-items: center; gap: 14px; background: var(--fg, #f4f4f2); color: var(--bg, #050505); border: 0; cursor: pointer;
+  position: relative; overflow: hidden; transition: color .22s cubic-bezier(.2,.8,.2,1); }
+.sb-btn::before { content: ""; position: absolute; inset: 0; background: var(--red-deep, #d6202d); transform: translateY(101%); transition: transform .35s cubic-bezier(.7,0,.2,1); }
+.sb-btn:hover::before, .sb-btn.is-hover::before { transform: none; }
+.sb-btn:hover, .sb-btn.is-hover { color: var(--fg, #f4f4f2); }
+.sb-btn span { position: relative; }
+.sb-btn:focus-visible { outline: 2px solid var(--red, #ff2936); outline-offset: 3px; }
+.sb-link { font-family: var(--font-mono); font-size: 14px; letter-spacing: .04em; text-transform: uppercase; height: 58px; display: inline-flex; align-items: center;
+  color: var(--fg, #f4f4f2); border-bottom: 1px solid var(--fg, #f4f4f2); text-decoration: none; }
+.sb-link:hover { color: var(--red, #ff2936); border-color: var(--red, #ff2936); }
+
+/* Round label */
+.sb-round { display: flex; gap: 18px; align-items: baseline; }
+.sb-round .n { color: var(--red, #ff2936); }
+.sb-tag { display: inline-block; background: var(--bg, #050505); color: var(--fg, #f4f4f2); padding: 6px 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.sb-tag.light { background: var(--fg, #f4f4f2); color: var(--bg, #050505); }
+.sb-tag.red { background: var(--red-deep, #d6202d); color: var(--fg, #f4f4f2); }
+
+/* Ropes: red on top, two white below */
+.sb-ropes { display: flex; flex-direction: column; gap: 14px; }
+.sb-ropes i { display: block; height: 5px; background: var(--rope, #e8e8e4); box-shadow: 0 5px 0 rgba(0,0,0,.6); }
+.sb-ropes i:first-child { background: var(--red, #ff2936); }
+
+/* Hand-wrap tape */
+.sb-tape { background: var(--fg, #f4f4f2); color: var(--bg, #050505); border-block: 4px solid var(--red, #ff2936); box-shadow: 0 12px 30px rgba(0,0,0,.55);
+  background-image: repeating-linear-gradient(90deg, rgba(0,0,0,.035) 0 2px, transparent 2px 7px); overflow: hidden; white-space: nowrap; }
+.sb-tape span { display: inline-flex; align-items: center; gap: 28px; padding: 12px 0 10px 28px; font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 34px; text-transform: uppercase; line-height: 1; }
+.sb-tape i { width: 12px; height: 12px; background: var(--red, #ff2936); transform: rotate(45deg); display: inline-block; }
+
+/* Marquee words, every second one outlined */
+.sb-marq { font-family: var(--font-display); font-style: italic; font-weight: 800; font-size: 64px; line-height: 1; text-transform: uppercase; white-space: nowrap; overflow: hidden; display: flex; gap: 42px; align-items: center; }
+.sb-marq .out { color: transparent; -webkit-text-stroke: 1px var(--fg, #f4f4f2); }
+.sb-marq .dot { width: 18px; height: 18px; background: var(--red, #ff2936); flex: none; }
+
+/* Ring card */
+.sb-rcard { --w: 220px; width: var(--w); display: flex; flex-direction: column; align-items: center; }
+.sb-rcard-board { width: 100%; aspect-ratio: 4/3; box-sizing: border-box; background: var(--fg, #f4f4f2); color: var(--bg, #050505); border: 6px solid var(--red, #ff2936);
+  box-shadow: 0 0 0 3px var(--fg, #f4f4f2), 0 24px 60px rgba(0,0,0,.6); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 10px; }
+.sb-rcard-top { font-family: var(--font-mono); font-size: calc(var(--w) * .065); letter-spacing: .2em; text-transform: uppercase; }
+.sb-rcard-big { font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: calc(var(--w) * .42); line-height: .85; color: var(--red-deep, #d6202d); }
+.sb-rcard-small { font-family: var(--font-mono); font-size: calc(var(--w) * .05); letter-spacing: .1em; text-transform: uppercase; color: #555; }
+.sb-rcard-pole { width: 10px; height: calc(var(--w) * .55); background: linear-gradient(90deg, #8a8a86, #e8e8e4 45%, #8a8a86); }
+
+/* Photo: black-and-white grade, colour returns on hover */
+.sb-photo { position: relative; overflow: hidden; margin: 0; background: var(--surface-raised, #121211); }
+.sb-photo img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.18) brightness(.88); transition: filter .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1); }
+.sb-photo:hover img, .sb-photo.is-hot img { filter: grayscale(0) contrast(1.05) brightness(1); transform: scale(1.03); }
+.sb-photo figcaption { position: absolute; left: 12px; bottom: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg, #f4f4f2); text-shadow: 0 1px 8px rgba(0,0,0,.8); }
+.sb-grain { position: relative; }
+.sb-grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .14; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* Red block */
+.sb-red { background: var(--red-deep, #d6202d); color: var(--fg, #f4f4f2); padding: 48px 40px; display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); gap: 32px 48px; align-items: center; }
+.sb-red .q { font-family: var(--font-display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: 64px; line-height: .88; margin: 0; }
+.sb-red .q b { color: var(--bg, #050505); font-weight: 900; }
+.sb-red p { margin: 0 0 12px; font-family: var(--font-serif); font-size: 18px; line-height: 1.5; }
+.sb-red .more { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; border-bottom: 1px solid var(--bg, #050505); padding-bottom: 3px; color: var(--fg, #f4f4f2); text-decoration: none; }
+
+/* Program row */
+.sb-prog { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr) auto; gap: 24px; align-items: center; padding-block: 24px; border-bottom: 1px solid var(--line, rgba(244,244,242,.16)); }
+.sb-prog:first-child { border-top: 1px solid var(--line, rgba(244,244,242,.16)); }
+.sb-prog .name { font-family: var(--font-display); font-style: italic; font-weight: 800; font-size: 56px; line-height: .9; text-transform: uppercase; transition: transform .35s cubic-bezier(.7,0,.2,1), color .22s; }
+.sb-prog p { margin: 0; color: var(--muted, #a3a39e); }
+.sb-prog .go { width: 56px; height: 56px; border: 1px solid var(--line, rgba(244,244,242,.16)); display: grid; place-items: center; transition: all .35s cubic-bezier(.2,.8,.2,1); }
+.sb-prog:hover .name, .sb-prog.is-hover .name { transform: translateX(18px); color: var(--red, #ff2936); }
+.sb-prog:hover .go, .sb-prog.is-hover .go { background: var(--fg, #f4f4f2); color: var(--bg, #050505); transform: rotate(-45deg); }
+.sb-prog:hover p, .sb-prog.is-hover p { color: var(--fg, #f4f4f2); }
+
+/* Review quote */
+.sb-review { border-top: 1px solid var(--line, rgba(244,244,242,.16)); padding-top: 20px; max-width: 520px; }
+.sb-review .stars { color: var(--star, #f4b400); letter-spacing: .1em; font-size: 15px; }
+.sb-review blockquote { margin: 12px 0 14px; font-family: var(--font-serif); font-size: 22px; line-height: 1.4; }
+
+/* ===== Social & print templates =====
+   Built at a fixed design size. Export: post 1080×1080 / 1080×1350, story 1080×1920, poster A4/A3.
+   Inner sizes use the frame width (--u = 1% of it) so the same template scales cleanly. */
+.sb-frame { position: relative; overflow: hidden; background: var(--bg, #050505); color: var(--fg, #f4f4f2); flex: none; container-type: inline-size; }
+.sb-frame .ph { position: absolute; inset: 0; }
+.sb-frame .ph img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.18) brightness(.62); display: block; }
+.sb-frame .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,0) 35%, rgba(5,5,5,.88) 78%, #050505 100%); }
+.sb-frame .in { position: absolute; inset: 6.6cqw; display: flex; flex-direction: column; }
+.sb-frame .top { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 3cqw; letter-spacing: .06em; text-transform: uppercase; }
+.sb-frame .top .n { color: var(--red, #ff2936); }
+.sb-frame .mark { width: 9cqw; height: 9cqw; display: block; }
+.sb-frame .h { font-family: var(--font-display); font-style: italic; font-weight: 900; text-transform: uppercase; line-height: .86; margin: 0; letter-spacing: -.005em; }
+.sb-frame .sub { font-family: var(--font-serif); line-height: 1.3; margin: 0; }
+.sb-frame .meta { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.sb-frame .ropes { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; gap: 1.3cqw; }
+.sb-frame .ropes i { display: block; height: .55cqw; background: var(--rope, #e8e8e4); }
+.sb-frame .ropes i:first-child { background: var(--red, #ff2936); }
+.sb-frame .cta { align-self: flex-start; background: var(--fg, #f4f4f2); color: var(--bg, #050505); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.sb-frame.red { background: var(--red-deep, #d6202d); }
+.sb-frame.red .top .n { color: var(--bg, #050505); }
+.sb-cap { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted, #a3a39e); margin-top: 8px; }
+
+.wrap{display:flex;gap:24px;padding:24px;align-items:flex-start;flex-wrap:wrap}.wrap{display:flex;gap:24px;padding:24px;align-items:flex-start;flex-wrap:wrap}.wrap{display:flex;gap:24px;padding:24px;align-items:flex-start;flex-wrap:wrap}
+body{overflow-x:hidden}
+.bb{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+.bb-nav{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:28px 20px;display:flex;flex-direction:column;gap:4px}
+.bb-nav .logo{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.bb-nav .logo span{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:28px;text-transform:uppercase;line-height:.9}
+.bb-nav a{display:flex;gap:12px;padding:8px 0;color:var(--muted);text-decoration:none;font-size:15px;border-bottom:1px solid var(--line)}
+.bb-nav a .sb-mono{font-size:11px;padding-top:3px;color:var(--red)}
+.bb-nav a:hover{color:var(--fg)}
+.bb-main{min-width:0}
+.bb-hero{padding:72px clamp(16px,5vw,72px) 56px;border-bottom:1px solid var(--line);position:relative}
+.bb-hero h1{font-family:var(--font-display);font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(64px,10vw,168px);line-height:.85;margin:16px 0 20px}
+.bb-hero p{font-family:var(--font-serif);font-size:clamp(18px,1.6vw,22px);max-width:46ch;margin:0}
+.bb-hero .sb-ropes{margin-top:48px}
+.bb-sec{padding:64px clamp(16px,5vw,72px);border-bottom:1px solid var(--line)}
+.bb-round{display:flex;gap:18px;margin-bottom:20px} .bb-round .n{color:var(--red)}
+.bb-h{font-family:var(--font-display);font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(44px,6vw,96px);line-height:.88;margin:0 0 28px}
+.bb-h3{font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;font-size:40px;line-height:.9;margin:0 0 16px}
+.bb-lead{font-family:var(--font-serif);font-size:19px;max-width:60ch;color:#d4d4cf}
+.bb-md{max-width:72ch;font-size:16px;line-height:1.6;color:#d4d4cf}
+.bb-md strong{color:var(--fg)} .bb-md code{font-family:var(--font-mono);font-size:13px;color:var(--fg);background:var(--surface-raised);padding:1px 6px}
+.bb-md ul,.bb-md ol{padding-left:20px} .bb-md li{margin-bottom:6px}
+.bb-md table{border-collapse:collapse;width:100%;margin:12px 0} .bb-md th,.bb-md td{text-align:left;border-bottom:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top} .bb-md th{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;color:var(--muted);font-weight:400}
+.bb-sws{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:32px}
+.bb-sw{border:1px solid var(--line);display:flex;flex-direction:column} .bb-sw i{display:block;height:96px;border-bottom:1px solid var(--line)}
+.bb-sw b{padding:12px 14px 0;font-family:var(--font-mono);font-size:13px;font-weight:500} .bb-sw code{padding:2px 14px;font-family:var(--font-mono);font-size:12px;color:var(--muted)} .bb-sw p{padding:6px 14px 14px;margin:0;font-size:13px;color:var(--muted);line-height:1.45}
+.bb-tys{margin-top:32px;border-top:1px solid var(--line)} .bb-ty{padding:22px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px} .bb-ty p{margin:0;font-size:14px} .bb-ty>div:nth-child(2){overflow-wrap:anywhere}
+.bb-comp{padding:40px 0;border-top:1px solid var(--line)}
+.bb-prev{border:1px solid var(--line);margin-bottom:20px;background:var(--bg);overflow:hidden}
+.bb-scroll{overflow-x:auto}
+.bb-foot{padding:40px clamp(16px,5vw,72px) 64px;color:var(--muted);font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+@media (max-width:980px){.bb{grid-template-columns:minmax(0,1fr)}.bb-nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.sb-red{grid-template-columns:minmax(0,1fr)}.sb-prog{grid-template-columns:minmax(0,1fr) auto}.sb-prog p{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="bb">
+<nav class="bb-nav" aria-label="Розділи"><div class="logo"><img src="../favicon.svg" width="40" height="40" alt=""><span>Світ<br>Боксу</span></div><a href="#r561780"><span class="sb-mono">01</span>Пʼять правил</a><a href="#r652258"><span class="sb-mono">02</span>Тон голосу</a><a href="#r648047"><span class="sb-mono">03</span>Колір</a><a href="#r907662"><span class="sb-mono">04</span>Шрифти</a><a href="#r298391"><span class="sb-mono">05</span>Логотип</a><a href="#r376799"><span class="sb-mono">06</span>Фото</a><a href="#r198507"><span class="sb-mono">07</span>Сітка і відступи</a><a href="#r478862"><span class="sb-mono">08</span>Рух</a><a href="#r327337"><span class="sb-mono">09</span>Доступність</a><a href="#components"><span class="sb-mono">10</span>Компоненти</a><a href="#social"><span class="sb-mono">11</span>Соцмережі і друк</a></nav>
+<main class="bb-main">
+<header class="bb-hero"><div class="sb-mono"><span style="color:var(--red)">Брендбук</span> <span class="sb-muted">· версія 1 · листопад 2026</span></div>
+<h1>Світ Боксу</h1><p>Світ Боксу — боксерський клуб у Броварах з 2012 року: діти від 6 років, дівчата, чоловіки, індивідуальні тренування, професійні бійці. Стиль — чорний ринг, білі канати, один червоний удар. Система однакова для сайту, соцмереж, афіш і відео: хто б не робив макет, він має виглядати так, ніби його зробив клуб.</p><div class="sb-ropes"><i></i><i></i><i></i></div></header>
+<section class="bb-sec" id="r561780"><div class="bb-round sb-mono"><span class="n">Раунд 01</span><span class="sb-muted">Пʼять правил</span></div><h2 class="bb-h">Пʼять правил</h2><div class="bb-md"><ol>
+<li><strong>Колір живе у фото і в червоному.</strong> Інтерфейс — <code>bg</code>, <code>fg</code>, <code>muted</code>, <code>line</code>. Червоний — лише для дії, номера раунду, верхнього каната, одного акценту на кадр.</li>
+<li><strong>Заголовок — як удар.</strong> <code>display</code> 900 курсивом, великими літерами, щільно (міжрядковий .85–.9), без розрядки. Коротко: до 6 слів.</li>
+<li><strong>Ринг квадратний.</strong> <code>radius-0</code> скрізь. Межі 1px <code>line</code> замість тіней; тінь — лише для речей, що «висять» (<code>shadow-lift</code>).</li>
+<li><strong>Рахуємо раундами.</strong> Секції, кроки, слайди — «Раунд 01, 02…». Табличка раунду і канати — фірмові знаки.</li>
+<li><strong>Тільки справжнє.</strong> Свої фото, справжні відгуки дослівно, справжні імена й титули. Немає даних — не публікуємо.</li>
+</ol></div></section><section class="bb-sec" id="r652258"><div class="bb-round sb-mono"><span class="n">Раунд 02</span><span class="sb-muted">Тон голосу</span></div><h2 class="bb-h">Тон голосу</h2><div class="bb-md"><ul>
+<li>Мова — українська. Сайт, документи й відповіді батькам — на «ви» («вас тренуватиме…», «ваш графік»). У соцмережах можна на «ти» («Твій перший раунд»). В одному тексті не змішувати.</li>
+<li>Пишемо як тренер: коротко, прямо, по-доброму. Факт замість епітета: «Перші місяці без спарингів» замість «Максимально безпечно!».</li>
+<li>Боксерські слова доречні: раунд, ринг, кут, гонг, лапи, спаринг. Не більше одного «бойового» образу в тексті.</li>
+<li>Без знаків оклику в заголовках, без капслоку в абзацах, без емодзі в макетах (у підписах до постів — 1–2 максимум).</li>
+<li>Приклади з сайту: «Бокс у Броварах — <em>характер гартується в рингу</em>», «Дисципліна · Праця · Результат», «Стань кращою версією себе».</li>
+<li>Дати й контакти — моно, великими: «БРОВАРИ · +38 073 721 71 71».</li>
+</ul></div></section><section class="bb-sec" id="r648047"><div class="bb-round sb-mono"><span class="n">Раунд 03</span><span class="sb-muted">Колір</span></div><h2 class="bb-h">Колір</h2><div class="bb-md"><ul>
+<li>Тло завжди <code>bg</code> (#050505), панелі — <code>surface</code>, <code>surface-raised</code>.</li>
+<li>Текст <code>fg</code>, другорядний <code>muted</code>. Обидва проходять 4.5:1 на всіх темних тлах.</li>
+<li><code>red</code> — акцент і текст на чорному. Під білим текстом дрібніше 24px — тільки <code>red-deep</code>.</li>
+<li><code>gold</code> — лише пояси й медалі, <code>star</code> — лише зірки Google, <code>live</code> — лише «зараз тренування». Ці три ніколи не стають кнопками.</li>
+<li>Друк: <code>red</code> ≈ C0 M90 Y75 K0, <code>bg</code> — насичений чорний C60 M40 Y40 K100. Перед тиражем — проба.</li>
+</ul></div><div class="bb-sws"><div class="bb-sw"><i style="background:#050505"></i><b>bg</b><code>#050505</code><p>Тло всього: сайт, пости, сторіс, афіші. Майже чорний, не чистий #000.</p></div><div class="bb-sw"><i style="background:#0e0e0d"></i><b>surface</b><code>#0e0e0d</code><p>Панелі поверх тла: банер cookie, картки, поля форми.</p></div><div class="bb-sw"><i style="background:#121211"></i><b>surface-raised</b><code>#121211</code><p>Друга сходинка панелей: таблиця розкладу, підкладка під фото.</p></div><div class="bb-sw"><i style="background:rgba(244,244,242,.16)"></i><b>line</b><code>rgba(244,244,242,.16)</code><p>Тонкі лінії 1px між рядками і секціями. Межі замість тіней.</p></div><div class="bb-sw"><i style="background:#f4f4f2"></i><b>fg</b><code>#f4f4f2</code><p>Основний текст і заголовки на bg, surface, red-deep (4.6:1). Також заливка головної кнопки.</p></div><div class="bb-sw"><i style="background:#a3a39e"></i><b>muted</b><code>#a3a39e</code><p>Другорядний текст на bg і surface (8:1): описи, підписи, примітки.</p></div><div class="bb-sw"><i style="background:#ff2936"></i><b>red</b><code>#ff2936</code><p>Фірмовий червоний: верхній канат, номер раунду, квадрат-маркер, наведення. Текстом — лише на bg (5.5:1). Білий текст на ньому дрібніше 24px не ставити (3.4:1): для заливок з текстом — red-deep.</p></div><div class="bb-sw"><i style="background:#d6202d"></i><b>red-deep</b><code>#d6202d</code><p>Червоні блоки з текстом: «чесна відповідь», цитата з відгуку, тло посту-цитати. fg на ньому 4.6:1, bg на ньому — для акцентних лапок.</p></div><div class="bb-sw"><i style="background:#e8e8e4"></i><b>rope</b><code>#e8e8e4</code><p>Білі канати рингу (2-й і 3-й), стрічка-бинт. Під першим канатом завжди red.</p></div><div class="bb-sw"><i style="background:#d6a640"></i><b>gold</b><code>#d6a640</code><p>Лише чемпіонський пояс, медаль, дзвін раунду. Не для кнопок і тексту.</p></div><div class="bb-sw"><i style="background:#f4b400"></i><b>star</b><code>#f4b400</code><p>Лише зірки рейтингу Google біля відгуків.</p></div><div class="bb-sw"><i style="background:#3ddc84"></i><b>live</b><code>#3ddc84</code><p>Лише індикатор «зараз тренування» (крапка, що пульсує). Завжди з підписом словами.</p></div><div class="bb-sw"><i style="background:#ff8a92"></i><b>todo</b><code>#ff8a92</code><p>Службовий: позначає незаповнені дані в чернетках. На публікаціях не буває.</p></div></div></section><section class="bb-sec" id="r907662"><div class="bb-round sb-mono"><span class="n">Раунд 04</span><span class="sb-muted">Шрифти</span></div><h2 class="bb-h">Шрифти</h2><div class="bb-md"><p>Усі чотири — Google Fonts, безкоштовні й з кирилицею.</p>
+<table>
+<thead>
+<tr>
+<th>Роль</th>
+<th>Шрифт</th>
+<th>Де</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>display</code></td>
+<td>Fira Sans Extra Condensed 800/900 Italic</td>
+<td>заголовки, цифри, стрічка</td>
+</tr>
+<tr>
+<td><code>serif</code></td>
+<td>Lora 400 / Italic</td>
+<td>підзаголовки, відповіді, цитати</td>
+</tr>
+<tr>
+<td><code>sans</code></td>
+<td>IBM Plex Sans 400–600</td>
+<td>основний текст</td>
+</tr>
+<tr>
+<td><code>mono</code></td>
+<td>IBM Plex Mono 400/500</td>
+<td>мітки, кнопки, дати, телефон — завжди великими</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Курсив <code>serif</code> — для другої, емоційної половини фрази: «Бокс у Броварах — <em>характер гартується в рингу</em>».</li>
+<li>Не змішувати з іншими шрифтами. Не використовувати <code>display</code> для абзаців.</li>
+</ul></div><div class="bb-tys"><div class="bb-ty"><div class="sb-mono sb-muted">display-hero · 168px/0.85 · 900</div><div style="font-family:var(--font-display);font-size:72px;line-height:0.85;font-weight:900;letter-spacing:normal;font-style:italic;text-transform:uppercase;">СВІТ БОКСУ</div><p class="sb-muted">Назва клубу на заставці, обкладинці, афіші. Завжди великими літерами.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">display-h2 · 128px/0.88 · 900</div><div style="font-family:var(--font-display);font-size:72px;line-height:0.88;font-weight:900;letter-spacing:normal;font-style:italic;text-transform:uppercase;">ПРОГРАМИ</div><p class="sb-muted">Заголовок секції сайту (clamp 52–128px), головне слово посту.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">display-statement · 108px/0.88 · 900</div><div style="font-family:var(--font-display);font-size:72px;line-height:0.88;font-weight:900;letter-spacing:normal;font-style:italic;text-transform:uppercase;">«БОКС — ЦЕ НЕБЕЗПЕЧНО?»</div><p class="sb-muted">Питання або цитата в червоному блоці (clamp 48–108px).</p></div><div class="bb-ty"><div class="sb-mono sb-muted">display-row · 84px/0.9 · 800</div><div style="font-family:var(--font-display);font-size:72px;line-height:0.9;font-weight:800;letter-spacing:normal;font-style:italic;text-transform:uppercase;">ДІТИ 6–12</div><p class="sb-muted">Назва програми в рядку списку (clamp 40–84px).</p></div><div class="bb-ty"><div class="sb-mono sb-muted">display-num · 52px/0.9 · 900</div><div style="font-family:var(--font-display);font-size:52px;line-height:0.9;font-weight:900;letter-spacing:normal;font-style:italic;text-transform:uppercase;">02:47</div><p class="sb-muted">Цифри: таймер раунду, ціна, рахунок. Табличні цифри.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">display-tape · 34px/1 · 900</div><div style="font-family:var(--font-display);font-size:34px;line-height:1;font-weight:900;letter-spacing:normal;font-style:italic;text-transform:uppercase;">ДИСЦИПЛІНА · ПРАЦЯ · РЕЗУЛЬТАТ</div><p class="sb-muted">Стрічка-бинт і біжучий рядок (clamp 22–34px).</p></div><div class="bb-ty"><div class="sb-mono sb-muted">serif-sub · 34px/1.25 · 400</div><div style="font-family:var(--font-serif);font-size:34px;line-height:1.25;font-weight:400;letter-spacing:normal;">Бокс у Броварах — характер гартується в рингу</div><p class="sb-muted">Підзаголовок під великим заголовком (clamp 22–34px); друга частина фрази — курсивом.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">serif-lead · 22px/1.5 · 400</div><div style="font-family:var(--font-serif);font-size:22px;line-height:1.5;font-weight:400;letter-spacing:normal;">Ми навчаємо боксу без травм на першому місці.</div><p class="sb-muted">Відповідь у червоному блоці, лід статті (clamp 18–22px).</p></div><div class="bb-ty"><div class="sb-mono sb-muted">body-l · 17px/1.6 · 400</div><div style="font-family:var(--font-sans);font-size:17px;line-height:1.6;font-weight:400;letter-spacing:normal;">Перше тренування — знайомство з тренером і залом.</div><p class="sb-muted">Довгі тексти: політики, статті, FAQ.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">body · 16px/1.55 · 400</div><div style="font-family:var(--font-sans);font-size:16px;line-height:1.55;font-weight:400;letter-spacing:normal;">Групи для дітей від 6 років, дорослих і дівчат.</div><p class="sb-muted">Основний текст сайту, описи в картках.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">mono-btn · 14px/1 · 400</div><div style="font-family:var(--font-mono);font-size:14px;line-height:1;font-weight:400;letter-spacing:0.04em;text-transform:uppercase;">ЗАПИСАТИСЬ →</div><p class="sb-muted">Кнопки й посилання-дії. Великими літерами.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">mono-label · 13px/1.4 · 400</div><div style="font-family:var(--font-mono);font-size:13px;line-height:1.4;font-weight:400;letter-spacing:0.02em;text-transform:uppercase;">РАУНД 01 · ПРОГРАМИ</div><p class="sb-muted">Мітки секцій, телефон, дата, підписи до фото. Великими літерами.</p></div><div class="bb-ty"><div class="sb-mono sb-muted">mono-micro · 11px/1.3 · 400</div><div style="font-family:var(--font-mono);font-size:11px;line-height:1.3;font-weight:400;letter-spacing:0.06em;text-transform:uppercase;">ЧЕСНА ВІДПОВІДЬ</div><p class="sb-muted">Тег на плашці, дрібні примітки по краях макета.</p></div></div></section><section class="bb-sec" id="r298391"><div class="bb-round sb-mono"><span class="n">Раунд 05</span><span class="sb-muted">Логотип</span></div><h2 class="bb-h">Логотип</h2><div class="bb-md"><ul>
+<li>Знак — монограма «СБ» на чорному квадраті з двома канатами внизу (<code>assets/Logos/svitbox-mark.svg</code>). Ставиться в кут макета, 8–12% ширини.</li>
+<li>Назва «СВІТ БОКСУ» набирається шрифтом <code>display</code> 900 курсивом — окремого файлу словесного знака поки немає.</li>
+<li>Охоронне поле — половина ширини знака. Не перефарбовувати, не обводити, не класти на строкатий фон без чорної підкладки.</li>
+</ul></div><div class="sb-row" style="gap:32px;margin-top:24px"><img src="../favicon.svg" width="128" height="128" alt="Знак Світ Боксу"><img src="../favicon.svg" width="64" height="64" alt=""><img src="../favicon.svg" width="32" height="32" alt=""><span class="sb-display" style="font-size:72px">Світ Боксу</span></div></section><section class="bb-sec" id="r376799"><div class="bb-round sb-mono"><span class="n">Раунд 06</span><span class="sb-muted">Фото</span></div><h2 class="bb-h">Фото</h2><div class="bb-md"><ul>
+<li>Тільки фото клубу. Обробка одна для всього: чорно-біле, контраст +18%, яскравість −12%, зерно. Колір — лише як реакція (наведення на сайті, відео).</li>
+<li>Під текстом фото темніше (яскравість .5–.6) і йде градієнтом у <code>bg</code>.</li>
+<li>Сюжети: емоція крупно (обличчя, рукавиця, піт), рух (удар, лапи), команда й нагороди. Діти — тільки з дозволу батьків.</li>
+<li>Не можна: червоний дуотон (люди виходять «демонами»), кольорові фільтри, сток, якщо є свій кадр.</li>
+</ul></div></section><section class="bb-sec" id="r198507"><div class="bb-round sb-mono"><span class="n">Раунд 07</span><span class="sb-muted">Сітка і відступи</span></div><h2 class="bb-h">Сітка і відступи</h2><div class="bb-md"><ul>
+<li>Сайт: контейнер до 1440px, поля <code>space-3</code>…4vw, секції <code>space-7</code>–<code>space-9</code> по вертикалі.</li>
+<li>Соцмережі: поле 6.6% ширини (72px на 1080). Вгорі — мітка раунду і знак, знизу — заголовок і контакт.</li>
+<li>Сторіс: верхні 8% і нижні 14% без тексту.</li>
+<li>Афіша: поле 6%, виліт 3 мм.</li>
+</ul></div></section><section class="bb-sec" id="r478862"><div class="bb-round sb-mono"><span class="n">Раунд 08</span><span class="sb-muted">Рух</span></div><h2 class="bb-h">Рух</h2><div class="bb-md"><ul>
+<li>Три швидкості: швидко 0.22s (колір, прозорість), база 0.35s (кнопки, зсуви), повільно 0.6s (фото, появи).</li>
+<li>Криві: <code>cubic-bezier(.2,.8,.2,1)</code> — вихід, <code>cubic-bezier(.7,0,.2,1)</code> — туди-назад.</li>
+<li>Характер руху — удар і відскок: швидкий старт, мʼяка зупинка. Канати хитаються, табличка раунду «йде» рингом.</li>
+<li>Для відео й сторіс: склейки під гонг, 3 секунди на кадр, титри появою знизу.</li>
+<li>Поважати «зменшити рух»: без анімацій, лише зміна кольору.</li>
+</ul></div></section><section class="bb-sec" id="r327337"><div class="bb-round sb-mono"><span class="n">Раунд 09</span><span class="sb-muted">Доступність</span></div><h2 class="bb-h">Доступність</h2><div class="bb-md"><ul>
+<li>Текст 4.5:1 мінімум, великий (24px+) — 3:1. Перевірені пари: <code>fg</code>/<code>bg</code>, <code>muted</code>/<code>bg</code>, <code>red</code>/<code>bg</code>, <code>fg</code>/<code>red-deep</code>.</li>
+<li>Фокус — обвідка 2px <code>red</code> з відступом 3px.</li>
+<li>Колір ніколи не несе сенс сам: «зараз тренування» — крапка <code>live</code> і слова.</li>
+</ul></div></section><section class="bb-sec" id="components"><div class="bb-round sb-mono"><span class="n">Раунд 10</span><span class="sb-muted">Компоненти</span></div><h2 class="bb-h">Компоненти</h2><p class="bb-lead">Готові елементи сайту. Наведіть курсор на кнопку, фото і рядок програми — так вони поводяться на сайті.</p><div class="bb-comp"><h3 class="bb-h3">Кнопка</h3><div class="bb-prev"><div class="sb-pad sb-col">
+  <div class="sb-row">
+    <button class="sb-btn"><span>Записатись</span><span>→</span></button>
+    <button class="sb-btn is-hover"><span>Записатись</span><span>→</span></button>
+    <a class="sb-link" href="#">Усі програми →</a>
+  </div>
+  <div class="sb-mono sb-muted" style="font-size:11px">Звичайна · наведення · текстова дія</div>
+</div>
+</div><div class="bb-md"><p>Головна дія: біла плита з моно-написом, при наведенні знизу піднімається червона заливка.</p>
+<ul>
+<li><strong>Коли:</strong> одна головна дія на екран або макет — «Записатись», «Подзвонити». Друга дія — текстове посилання <code>sb-link</code> (моно, підкреслення 1px).</li>
+<li><strong>Що дати:</strong> текст дії (дієслово, 1–2 слова) і стрілку <code>→</code> окремим <code>&lt;span&gt;</code>.</li>
+<li><strong>Розміри:</strong> висота <code>control-h</code> (58px) на сайті, мінімум 44px на телефоні; поля 30px; кути <code>radius-0</code>.</li>
+<li><strong>Кольори:</strong> <code>fg</code> тло + <code>bg</code> текст; наведення — <code>red-deep</code> + <code>fg</code> (4.6:1). Фокус — обвідка 2px <code>red</code> з відступом 3px.</li>
+<li><strong>Не можна:</strong> заокруглювати, робити червону кнопку в спокої, ставити дві плити поруч.</li>
+<li>На сайті зараз наведення залите <code>red</code> (3.4:1 з білим 14px) — система фіксує <code>red-deep</code>; сайт підтягнемо.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Мітка раунду і теги</h3><div class="bb-prev"><div class="sb-pad sb-col">
+  <div class="sb-round sb-mono"><span class="n">Раунд 01</span><span class="sb-muted">Програми</span></div>
+  <div class="sb-round sb-mono"><span class="sb-sq"></span><span>Бровари · з 2012</span></div>
+  <div class="sb-row"><span class="sb-tag light">Чесна відповідь</span><span class="sb-tag red">Новий набір</span><span class="sb-tag" style="border:1px solid rgba(244,244,242,.3)">Діти 6–12</span></div>
+</div>
+</div><div class="bb-md"><p>Мітка секції «Раунд 01 · Програми» і теги-плашки: так клуб нумерує все — секції, кроки, слайди каруселі.</p>
+<ul>
+<li><strong>Коли:</strong> над кожним великим заголовком; у кутку посту; номери кроків («Раунд 01» = крок 1).</li>
+<li><strong>Що дати:</strong> номер (<code>n</code>, двозначний: 01, 02) і назву. Номер — <code>red</code>, назва — <code>muted</code>, стиль <code>mono-label</code>.</li>
+<li><strong>Теги:</strong> <code>sb-tag</code> — моно 11px на <code>bg</code>; <code>.light</code> на червоному тлі; <code>.red</code> (<code>red-deep</code>) для «Новий набір», «Профі».</li>
+<li><strong>Не можна:</strong> «Крок 1», «Секція 1» — тільки раунди; більше 12 раундів (у боксі їх 12).</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Канати</h3><div class="bb-prev"><div class="sb-pad sb-col" style="gap:20px">
+  <div class="sb-ropes"><i></i><i></i><i></i></div>
+  <div class="sb-mono sb-muted" style="font-size:11px">Червоний — завжди верхній · 5px · зазор 14px</div>
+</div>
+</div><div class="bb-md"><p>Три канати рингу — головний графічний знак клубу: верхній <code>red</code>, два нижні <code>rope</code>.</p>
+<ul>
+<li><strong>Коли:</strong> межа між фото і текстом, верх футера, низ сторіс, лінія через афішу. Канати йдуть на всю ширину, від краю до краю.</li>
+<li><strong>Розміри:</strong> товщина <code>rope-h</code> (5px на сайті; ≈0.55% ширини макета в соцмережах), зазор 14px (≈1.3%), тверда тінь <code>shadow-rope</code>.</li>
+<li><strong>Не можна:</strong> міняти порядок кольорів, робити 2 або 4 канати, скошувати, обривати посередині.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Стрічка-бинт</h3><div class="bb-prev"><div style="padding:40px 0;overflow:hidden">
+  <div class="sb-tape" style="transform:rotate(-1.6deg);width:104%;margin-left:-2%"><span>Дисципліна<i></i>Праця<i></i>Результат<i></i>Стань кращою версією себе<i></i>Світ Боксу<i></i>Бровари<i></i></span></div>
+</div>
+</div><div class="bb-md"><p>Стрічка-бинт: біла смуга з червоними краями і девізом клубу, лежить навскіс поперек сторінки.</p>
+<ul>
+<li><strong>Коли:</strong> раз на сторінку або макет — як розділювач між великими блоками; на банері заходу.</li>
+<li><strong>Що дати:</strong> слова девізу: «Дисципліна · Праця · Результат · Стань кращою версією себе · Світ Боксу · Бровари». Роздільник — червоний ромб 12px.</li>
+<li><strong>Розміри:</strong> нахил −1.6° (або +1.6° для другої), ширина 104% (виходить за краї), рамки 4px <code>red</code>, тінь <code>shadow-tape</code>, текст <code>display-tape</code>.</li>
+<li><strong>Не можна:</strong> більше двох стрічок поруч; інший текст, крім девізу і назви клубу.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Біжучий рядок</h3><div class="bb-prev"><div style="padding:24px 0;border-block:1px solid rgba(244,244,242,.16)">
+  <div class="sb-marq"><span>Дисципліна</span><i class="dot"></i><span class="out">Повага</span><i class="dot"></i><span>Характер</span><i class="dot"></i><span class="out">Команда</span><i class="dot"></i><span>Результат</span></div>
+</div>
+</div><div class="bb-md"><p>Біжучий рядок цінностей: великі слова курсивом, кожне друге — контуром, між ними червоний квадрат.</p>
+<ul>
+<li><strong>Коли:</strong> на сайті між секціями; у відео й сторіс — як рухомий фон низу.</li>
+<li><strong>Що дати:</strong> 4–6 слів-цінностей одним словом кожне.</li>
+<li><strong>Стиль:</strong> <code>display</code> 800, 34–64px; контур — обведення 1px <code>fg</code>, без заливки.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Табличка раунду</h3><div class="bb-prev"><div class="sb-pad sb-row" style="gap:48px;align-items:flex-start">
+  <div class="sb-rcard"><div class="sb-rcard-board"><span class="sb-rcard-top">Раунд</span><b class="sb-rcard-big">02</b></div><i class="sb-rcard-pole"></i></div>
+  <div class="sb-rcard" style="--w:180px"><div class="sb-rcard-board"><span class="sb-rcard-top">Помилка</span><b class="sb-rcard-big">404</b><span class="sb-rcard-small">нокдаун</span></div><i class="sb-rcard-pole"></i></div>
+</div>
+</div><div class="bb-md"><p>Табличка раунду, яку виносять між раундами: біла дошка, червона рамка, велика червона цифра, на жердині.</p>
+<ul>
+<li><strong>Коли:</strong> номер раунду в анонсі турніру, сторінка 404, відлік днів («за 03 дні»), нумерація карток у каруселі.</li>
+<li><strong>Що дати:</strong> верхнє слово (<code>Раунд</code>), велику цифру/коротке слово (до 3 знаків), підпис за бажанням.</li>
+<li><strong>Розміри:</strong> ширина 180–280px, дошка 4:3, рамка 6px <code>red</code> + біле кільце 3px, тінь <code>shadow-lift</code>. Цифра — <code>display</code> 900 у <code>red-deep</code> на <code>fg</code>.</li>
+<li><strong>Не можна:</strong> малювати дівчат-ринг-герлз або людей — лише табличку.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Фото</h3><div class="bb-prev"><div class="sb-pad sb-row" style="align-items:flex-start">
+  <figure class="sb-photo sb-grain" style="width:280px;height:280px"><img src="../img/club/thumb/fotosesiia-09-bokser-krik.webp" alt="Боксер у капюшоні кричить перед боєм"><figcaption>Ч/б — за замовчуванням</figcaption></figure>
+  <figure class="sb-photo sb-grain is-hot" style="width:280px;height:280px"><img src="../img/club/thumb/profi-06-peremoha-ruky-vhoru.webp" alt="Перемога: боксер з піднятими руками в рингу"><figcaption>Колір — при наведенні</figcaption></figure>
+</div>
+</div><div class="bb-md"><p>Фото клубу: чорно-біле з контрастом і зерном, при наведенні повертається природний колір.</p>
+<ul>
+<li><strong>Обробка:</strong> CSS <code>filter: grayscale(1) contrast(1.18) brightness(.88)</code>; наведення — <code>grayscale(0) contrast(1.05) brightness(1)</code>, перехід 0.6s. Зерно — шум SVG поверх, 14% overlay.</li>
+<li><strong>Під текстом:</strong> яскравість .48–.62 і градієнт до <code>bg</code> знизу, щоб білий текст читався.</li>
+<li><strong>Для соцмереж і друку</strong> той самий рецепт у Lightroom: чорно-біле, контраст +30, експозиція −0.3, зерно 25/розмір 25, тіні глибокі, без віньєтки.</li>
+<li><strong>Кадр:</strong> кути <code>radius-0</code>, без рамок і тіней; підпис — <code>mono-micro</code> в лівому нижньому куті.</li>
+<li><strong>Не можна:</strong> червоне тонування (дуотон) — обличчя виходять «демонічними»; кольорові фільтри; стокові фото, якщо є свої.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Червоний блок</h3><div class="bb-prev"><div class="sb-red">
+  <h2 class="q"><b>«</b>Бокс — це небезпечно для дитини?<b>»</b></h2>
+  <div><span class="sb-tag" style="margin-bottom:14px">Чесна відповідь</span>
+    <p>Перші місяці діти не б'ються в спаринг. Вчимо стійку, пересування, захист — і лише потім контакт, у шоломі та під наглядом тренера.</p>
+    <a class="more" href="#">Більше про дитячі групи →</a></div>
+</div>
+</div><div class="bb-md"><p>Червоний блок, що розриває чорну сторінку: велике питання або цитата зліва, чесна відповідь справа.</p>
+<ul>
+<li><strong>Коли:</strong> не частіше одного на екран — страх або заперечення («Бокс — це небезпечно?») чи справжній відгук.</li>
+<li><strong>Що дати:</strong> питання/цитату в лапках «», тег (<code>Чесна відповідь</code>), 1–2 абзаци відповіді, посилання.</li>
+<li><strong>Кольори:</strong> тло <code>red-deep</code>, текст <code>fg</code> (4.6:1), лапки і підкреслення посилання — <code>bg</code>. Питання <code>display-statement</code>, відповідь <code>serif-lead</code>.</li>
+<li><strong>Не можна:</strong> вигадані відгуки; тло <code>red</code> під дрібним текстом; дві червоні секції підряд.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Рядок програми</h3><div class="bb-prev"><div class="sb-pad">
+  <div class="sb-prog"><span class="name">Діти</span><p>Від 6 років. Координація, дисципліна, впевненість.</p><span class="go">→</span></div>
+  <div class="sb-prog is-hover"><span class="name">Дівчата</span><p>Окремі групи. Форма, техніка, самозахист.</p><span class="go">→</span></div>
+  <div class="sb-prog"><span class="name">Чоловіки</span><p>Від нуля до спарингів.</p><span class="go">→</span></div>
+</div>
+</div><div class="bb-md"><p>Рядок програми: велика назва курсивом, опис, квадратна стрілка; при наведенні назва їде вправо і червоніє.</p>
+<ul>
+<li><strong>Коли:</strong> списки програм, груп, заходів — замість карток.</li>
+<li><strong>Що дати:</strong> назву 1–2 слова, опис до 60 символів, посилання.</li>
+<li><strong>Стиль:</strong> назва <code>display-row</code>, опис <code>body</code> у <code>muted</code>, межі <code>line</code>; стрілка в квадраті 56px, при наведенні — біла і повернута на −45°.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Відгук</h3><div class="bb-prev"><div class="sb-pad"><div class="sb-review">
+  <span class="stars">★★★★★</span>
+  <blockquote>«Кращий клуб боксу в Броварах в першу чергу для дітей»</blockquote>
+  <span class="sb-mono sb-muted">a.khilskiy · відгук у Google</span>
+</div></div>
+</div><div class="bb-md"><p>Цитата відгуку: зірки Google, текст засічками, автор моно.</p>
+<ul>
+<li><strong>Що дати:</strong> справжній відгук дослівно (скорочення — […]), імʼя як у Google, джерело.</li>
+<li><strong>Кольори:</strong> зірки — лише <code>star</code>; текст <code>serif</code> 22px <code>fg</code>; автор <code>mono-label</code> <code>muted</code>.</li>
+<li><strong>Не можна:</strong> редагувати слова автора, вигадувати відгуки, ставити 5 зірок, якщо відгук мав менше.</li>
+</ul></div></div></section><section class="bb-sec" id="social"><div class="bb-round sb-mono"><span class="n">Раунд 11</span><span class="sb-muted">Соцмережі і друк</span></div><h2 class="bb-h">Соцмережі і друк</h2><p class="bb-lead">Шаблони постів, сторіс і афіші. Поля в [дужках] заміняємо справжніми даними.</p><div class="bb-comp"><h3 class="bb-h3">Пости 1:1 і 4:5</h3><div class="bb-prev bb-scroll"><div class="wrap"><div><div class="sb-frame sb-grain" style="width:400px;height:400px">
+  <div class="ph"><img src="../img/club/thumb/trenuvannia-01-divchyna-lapy-trener.webp" alt="Тренер тримає лапи для дівчини"></div><div class="shade"></div>
+  <div class="ropes" style="bottom:4cqw"><i></i><i></i><i></i></div>
+  <div class="in" style="bottom:13cqw">
+    <div class="top"><span class="n">Раунд 01 · Набір</span><img class="mark" src="../favicon.svg" alt="Світ Боксу"></div>
+    <div style="margin-top:auto">
+      <p class="h" style="font-size:17cqw">Дівчата.<br>Новий набір</p>
+      <p class="meta" style="font-size:3.2cqw;margin-top:3cqw">Бровари · +38 073 721 71 71</p>
+    </div>
+  </div></div><div class="sb-cap">1:1 · 1080×1080 · анонс</div></div><div><div class="sb-frame sb-grain" style="width:400px;height:500px">
+  <div class="ph"><img src="../img/club/thumb/profi-06-peremoha-ruky-vhoru.webp" alt="Перемога в рингу"></div><div class="shade"></div>
+  <div class="in">
+    <div class="top"><span class="n">Перемога</span><span>[дата]</span></div>
+    <div style="margin-top:auto">
+      <span class="sb-tag red" style="font-size:2.8cqw">Профі · [титул]</span>
+      <p class="h" style="font-size:15cqw;margin-top:3cqw">[Імʼя]<br>[Прізвище]</p>
+      <p class="sub" style="font-size:4.4cqw;margin-top:3cqw"><i>характер гартується в рингу</i></p>
+    </div>
+  </div></div><div class="sb-cap">4:5 · 1080×1350 · результат бою</div></div><div><div class="sb-frame red" style="width:400px;height:500px">
+  <div class="in">
+    <div class="top"><span class="n">Відгук · ★★★★★</span><img class="mark" src="../favicon.svg" alt="Світ Боксу"></div>
+    <p class="h" style="font-size:14cqw;margin-top:auto;text-transform:none;line-height:.92"><span style="color:#050505">«</span>Кращий клуб боксу в Броварах в першу чергу для дітей<span style="color:#050505">»</span></p>
+    <p class="meta" style="font-size:3cqw;margin-top:5cqw">a.khilskiy · Google</p>
+  </div></div><div class="sb-cap">4:5 · цитата з відгуку</div></div></div>
+</div><div class="bb-md"><p>Шаблони постів для Instagram і Facebook: анонс 1:1, результат бою 4:5, цитата з відгуку 4:5.</p>
+<ul>
+<li><strong>Експорт:</strong> 1080×1080 або 1080×1350 px. Поле від краю — 6.6% ширини (72px на 1080). Розміри в макеті задані у відсотках ширини, тож шаблон масштабується без перерахунку.</li>
+<li><strong>Будова:</strong> вгорі мітка раунду (<code>red</code>) і знак клубу; знизу великий заголовок <code>display</code> 900 курсивом 2 рядки; під ним моно-рядок з контактом або датою. Фото — ч/б з градієнтом до <code>bg</code> знизу; канати перетинають кадр.</li>
+<li><strong>Одна червона річ на кадр:</strong> або мітка, або тег, або тло цитати.</li>
+<li><strong>Текст на макеті:</strong> до 6 слів у заголовку. Решту — в підпис до посту.</li>
+<li>Поля в [дужках] — заміняємо справжніми даними, ніколи не публікуємо з дужками.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Сторіс 9:16</h3><div class="bb-prev bb-scroll"><div class="wrap"><div><div class="sb-frame" style="width:288px;height:512px">
+  <div class="in" style="inset:8cqw 7cqw 14cqw">
+    <div class="top" style="font-size:4cqw"><span class="n">Розклад · [група]</span><img class="mark" src="../favicon.svg" alt="Світ Боксу" style="width:12cqw;height:12cqw"></div>
+    <p class="h" style="font-size:19cqw;margin-top:10cqw">Тиждень</p>
+    <div style="margin-top:6cqw;border-top:1px solid rgba(244,244,242,.16)"><div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(244,244,242,.16);padding:2.6cqw 0"><span class="meta" style="font-size:4cqw">Пн · Ср · Пт</span><span class="h" style="font-size:9cqw">18:00</span></div><div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(244,244,242,.16);padding:2.6cqw 0"><span class="meta" style="font-size:4cqw">Вт · Чт</span><span class="h" style="font-size:9cqw">19:30</span></div><div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(244,244,242,.16);padding:2.6cqw 0"><span class="meta" style="font-size:4cqw">Сб</span><span class="h" style="font-size:9cqw">11:00</span></div></div>
+    <span class="cta" style="margin-top:auto;font-size:4.4cqw;padding:4cqw 6cqw">Записатись →</span>
+  </div>
+  <div class="ropes" style="bottom:4cqw"><i></i><i></i><i></i></div></div><div class="sb-cap">9:16 · 1080×1920 · розклад</div></div><div><div class="sb-frame sb-grain" style="width:288px;height:512px">
+  <div class="ph"><img src="../img/club/thumb/fotosesiia-09-bokser-krik.webp" alt="Боксер перед боєм"></div><div class="shade"></div>
+  <div class="in" style="inset:8cqw 7cqw 14cqw;align-items:flex-start">
+    <div class="top" style="font-size:4cqw;width:100%"><span class="n">Турнір · [дата]</span><span>[місто]</span></div>
+    <div style="margin-top:12cqw;background:#f4f4f2;color:#050505;border:2cqw solid #ff2936;box-shadow:0 0 0 1cqw #f4f4f2;padding:3cqw 7cqw;text-align:center">
+      <div class="meta" style="font-size:4cqw;letter-spacing:.2em">Раунд</div><div class="h" style="font-size:26cqw;color:#d6202d">01</div></div>
+    <p class="h" style="font-size:15cqw;margin-top:auto">Вболівай<br>за наших</p>
+  </div>
+  <div class="ropes" style="bottom:4cqw"><i></i><i></i><i></i></div></div><div class="sb-cap">9:16 · анонс турніру</div></div></div>
+</div><div class="bb-md"><p>Шаблони сторіс 9:16: розклад тижня і анонс турніру з табличкою раунду.</p>
+<ul>
+<li><strong>Експорт:</strong> 1080×1920 px. Безпечна зона: верх 250px і низ 340px без важливого тексту (там інтерфейс Instagram) — у шаблоні це 8% зверху і 14% знизу.</li>
+<li><strong>Будова:</strong> знак і мітка вгорі, великий заголовок, вміст, кнопка-плита «Записатись →» (посилання — стікером поверх), канати по низу.</li>
+<li><strong>Анонс турніру:</strong> табличка раунду з цифрою — дні до старту або номер бою.</li>
+</ul></div></div><div class="bb-comp"><h3 class="bb-h3">Афіша A4 / A3</h3><div class="bb-prev bb-scroll"><div class="wrap"><div><div class="sb-frame sb-grain" style="width:420px;height:594px">
+  <div class="ph" style="bottom:52%"><img src="../img/club/thumb/komanda-02-komanda-v-rynhu.webp" alt="Команда клубу в рингу"></div>
+  <div class="shade" style="bottom:52%"></div>
+  <div class="ropes" style="top:46%"><i></i><i></i><i></i></div>
+  <div class="in" style="inset:6cqw 6cqw auto"><div class="top"><span class="n">Бровари · з 2012</span><img class="mark" src="../favicon.svg" alt="Світ Боксу" style="width:11cqw;height:11cqw"></div></div>
+  <div class="in" style="inset:55% 6cqw 6cqw">
+    <p class="h" style="font-size:13cqw;white-space:nowrap">Світ Боксу</p>
+    <p class="sub" style="font-size:3.8cqw;margin-top:2cqw">Бокс у Броварах — <i>характер гартується в рингу</i></p>
+    <div style="display:flex;gap:2cqw;margin-top:4cqw;flex-wrap:wrap"><span class="sb-tag" style="border:1px solid rgba(244,244,242,.4);font-size:2.4cqw;padding:1.2cqw 2cqw">Діти від 6</span><span class="sb-tag" style="border:1px solid rgba(244,244,242,.4);font-size:2.4cqw;padding:1.2cqw 2cqw">Дівчата</span><span class="sb-tag" style="border:1px solid rgba(244,244,242,.4);font-size:2.4cqw;padding:1.2cqw 2cqw">Чоловіки</span><span class="sb-tag" style="border:1px solid rgba(244,244,242,.4);font-size:2.4cqw;padding:1.2cqw 2cqw">Індивідуально</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;border-top:1px solid rgba(244,244,242,.16);padding-top:3cqw">
+      <div><div class="meta sb-muted" style="font-size:2.6cqw">Запис</div><div class="h" style="font-size:8cqw">073 721 71 71</div></div>
+      <div style="width:16cqw;height:16cqw;border:1px dashed rgba(244,244,242,.5);display:grid;place-items:center" class="meta"><span style="font-size:2.4cqw">QR</span></div>
+    </div>
+  </div></div><div class="sb-cap">A4 210×297 мм · A3 — та сама сітка ×1.41</div></div></div>
+</div><div class="bb-md"><p>Афіша A4/A3 для залу, школи, під'їзду: фото команди, канати, назва, програми, телефон, QR на запис.</p>
+<ul>
+<li><strong>Формат:</strong> A4 210×297 мм, A3 — та сама сітка ×1.41. Виліт 3 мм, поле 6% ширини (≈13 мм на A4). Друк — CMYK; <code>red</code> ≈ C0 M90 Y75 K0, перевірити пробою.</li>
+<li><strong>Будова:</strong> верхня половина — фото ч/б; канати на межі; знизу назва <code>display-hero</code>, підзаголовок <code>serif</code>, теги програм, телефон великими цифрами і QR (мін. 20×20 мм, веде на форму запису).</li>
+<li><strong>Не можна:</strong> білий фон (чорна афіша впізнавана в будь-якому під'їзді), більше 4 програм, дрібний текст менше 9 pt.</li>
+</ul></div></div></section>
+<footer class="bb-foot">Світ Боксу · Бровари</footer>
+</main></div>
+</body></html>
