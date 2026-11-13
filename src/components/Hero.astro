@@ -66,7 +66,9 @@ const letters = [...site.name];
   .word .ch { display: inline-block; will-change: transform; }
   .word .sp { display: inline-block; width: .22em; }
   .sub { font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.4vw, 34px); line-height: 1.25; max-width: 22ch; }
-  .sub em { font-style: italic; color: var(--muted); }
+  /* Dark halo keeps the subtitle readable where a rope or the photo passes behind it */
+  .sub { text-shadow: 0 0 3px #050505, 0 0 14px rgba(5,5,5,.95), 0 2px 28px rgba(5,5,5,.9); }
+  .sub em { font-style: italic; color: var(--fg); }
   .ctas { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: center; margin-top: 14px; }
   .hint { display: flex; justify-content: space-between; gap: 16px; padding-block: 18px; color: var(--muted); }
   .hint .count { color: var(--fg); font-variant-numeric: tabular-nums; }
@@ -107,7 +109,18 @@ const letters = [...site.name];
   const N = 46;
   // On narrow screens the title sits higher, so the ropes go lower and stay off the text
   const narrow = () => innerWidth <= 980;
-  const ropeY = () => (narrow() ? [.72, .8, .88] : [.50, .63, .76]);
+  // On desktop the red rope crosses the title (by design); the white ones go under the subtitle and
+  // under the buttons, measured from the layout so they never run through the text.
+  const ropeY = () => {
+    if (narrow()) return [.72, .8, .88];
+    const top = hero.getBoundingClientRect().top;
+    const sub = document.querySelector('.hero .sub')?.getBoundingClientRect();
+    const cta = document.querySelector('.hero .ctas')?.getBoundingClientRect();
+    if (!sub || !cta || !H) return [.50, .63, .76];
+    const y2 = Math.min(sub.bottom - top + 14, cta.top - top - 10) / H;
+    const y3 = Math.min(cta.bottom - top + 28, H - 24) / H;
+    return [.50, y2, Math.max(y3, y2 + .04)];
+  };
   const spec = [
     { y: .50, color: '#ff2936', w: 7 },
     { y: .63, color: '#e8e8e4', w: 6 },
@@ -235,6 +248,8 @@ const letters = [...site.name];
 
   build(); draw();
   addEventListener('resize', () => { build(); draw(); });
+  // Web fonts change the text height: place the ropes again once they are in
+  document.fonts?.ready.then(() => { build(); draw(); });
   new IntersectionObserver(([en]) => { running = en.isIntersecting && !reduce; }).observe(hero);
   if (!reduce) requestAnimationFrame(loop);
 </script>
