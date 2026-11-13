@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import Marquee from '../components/Marquee.astro';
 import Programs from '../components/Programs.astro';
+import RedBlock from '../components/RedBlock.astro';
 import Club from '../components/Club.astro';
 import HeavyBag from '../components/HeavyBag.astro';
 import Coaches from '../components/Coaches.astro';
@@ -24,11 +25,26 @@ import MobileMenu from '../components/MobileMenu.astro';
   <main id="main">
     <Programs />
     <Club />
+    <RedBlock
+      q="Бокс — це небезпечно для дитини?"
+      label="Чесна відповідь"
+      text={[
+        'Високі ризики — у професійному боксі, а не в дитячих групах. Режим тренувань підбирають за віком: молодші розвивають дисципліну, спритність, координацію та реакцію.',
+        'До роботи в парах переходять лише тоді, коли дитина готова технічно й фізично. Перед стартом — довідка від лікаря.',
+      ]}
+      href="boxing_kids/" more="Детальніше про бокс для дітей"
+    />
     <HeavyBag />
     <Coaches />
     <Champions />
     <VideoBrief />
     <Life />
+    <RedBlock
+      quote
+      q="Кращий клуб боксу в Броварах в першу чергу для дітей"
+      cite="a.khilskiy · відгук у Google · ★★★★★"
+      href="vidhuky/" more="Усі відгуки"
+    />
     <Reviews />
     <FirstTraining />
     <Signup />
